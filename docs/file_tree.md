@@ -5,7 +5,13 @@ seekbind/
 ├── requirements.txt              — bağımlılıklar
 ├── docker-compose.yml            — PG + Qdrant + Langfuse
 ├── docker-compose.prod.yml       — production overrides
+├── LICENSE                       — MIT lisansı
 ├── README.md
+│
+├── docs/
+│   ├── file_tree.md              — bu dosya
+│   ├── tech_stack.md             — teknoloji listesi
+│   └── terminal_cheatsheet.md    — git/uv/docker komut referansı
 │
 ├── data/
 │   ├── raw/                      — SerpAPI ham çıktıları
@@ -71,11 +77,22 @@ seekbind/
 │   └── conftest.py               — pytest fixtures
 │
 ├── scripts/
-    ├── fetch_serpapi.py          — SerpAPI'den çek → data/raw/
-    ├── enrich_with_llm.py        — LLM ile zenginleştir → data/processed/
-    ├── generate_synthetic.py     — takvim slotları üret → data/processed/
+│   ├── fetch_serpapi.py          — SerpAPI'den çek → data/raw/
+│   ├── generate_synthetic.py     — temizlik + kural tabanlı alanlar
+│   │                                (type, services, fiyat, süre, online,
+│   │                                cinsiyet, available/booked_slots) → data/processed/
+│   ├── enrich_with_llm.py        — sadece rich_description'ı LLM ile
+│   │                                üretip data/processed/'u günceller
 │   ├── load_embeddings.py        — Qdrant'a veri yükleme
-│   └── seed_db.py                — PostgreSQL seed
+│   ├── seed_db.py                — PostgreSQL seed
+│   │
+│   └── constants/                — sentetik veri üretimi için sabit sözlükler
+│       ├── __init__.py
+│       ├── business_types.py     — QUERY_TERM_TO_TYPE
+│       ├── service_taxonomy.py   — SERVICE_TAXONOMY (ağırlıklı)
+│       ├── pricing.py            — PRICE_RANGES_TL, APPOINTMENT_DURATIONS_MIN
+│       ├── attributes.py         — ONLINE_AVAILABLE, GENDER_PREFERENCE_WEIGHTS
+│       └── working_hours.py      — WORKING_HOURS_TEMPLATE, jitter, hafta sonu olasılıkları
 │
 ├── docker/
 │   ├── Dockerfile.backend        — backend image
