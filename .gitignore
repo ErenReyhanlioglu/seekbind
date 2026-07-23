@@ -9,5 +9,41 @@ wheels/
 # Virtual environments
 .venv
 
-# Local-only, GitHub'a gitmesin
-CLAUDE.md
+# Ortam değişkenleri / secret'lar
+.env
+
+# Test / lint / tip kontrolü cache'leri
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+coverage.xml
+
+# Log dosyaları
+*.log
+logs/
+
+# IDE / editör
+.vscode/
+.idea/
+
+# İşletim sistemi
+.DS_Store
+Thumbs.db
+
+# Frontend (React)
+frontend/node_modules/
+frontend/dist/
+frontend/build/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Veri ve değerlendirme çıktıları (büyük/üretilebilir, klasör yapısı .gitkeep ile korunur)
+data/raw/*
+!data/raw/.gitkeep
+data/processed/*
+!data/processed/.gitkeep
+evaluation/results/*
+!evaluation/results/.gitkeep
