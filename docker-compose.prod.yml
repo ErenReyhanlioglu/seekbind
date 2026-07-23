@@ -1,0 +1,20 @@
+# Production override — docker-compose.yml ile birlikte kullanılır:
+# docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+#
+# Prod'da veritabanlarının host'a doğrudan açılmasını istemiyoruz,
+# sadece backend container'ı network üzerinden erişsin.
+
+services:
+  postgres:
+    restart: unless-stopped
+    ports: []
+
+  qdrant:
+    restart: unless-stopped
+    ports: []
+
+  langfuse-db:
+    restart: unless-stopped
+
+  langfuse:
+    restart: unless-stopped
