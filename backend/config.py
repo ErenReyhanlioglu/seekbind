@@ -44,6 +44,9 @@ class Settings(BaseSettings):
     ollama_embedding_model: str
     ollama_llm_model: str
 
+    # SerpAPI (veri toplama)
+    serpapi_api_key: SecretStr
+
     # Langfuse
     langfuse_public_key: SecretStr
     langfuse_secret_key: SecretStr
