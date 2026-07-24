@@ -14,6 +14,7 @@ from pydantic import BaseModel
 from serpapi import GoogleSearch
 
 from backend.config import get_settings
+from scripts.constants import CATEGORIES
 
 logger = logging.getLogger(__name__)
 
@@ -22,29 +23,6 @@ SERPAPI_LOCATION: str = "Kocaeli,Turkey"
 SERPAPI_LANGUAGE: str = "tr"
 GOOGLE_DOMAIN: str = "google.com"
 OUTPUT_FILE_PATH: Path = Path("data/raw/businesses.jsonl")
-
-# Kategori grubu -> [türkçe terim, ...]
-CATEGORIES: dict[str, list[str]] = {
-    "saglik": ["dişçi", "göz doktoru", "psikolog", "fizyoterapist"],
-    "guzellik_bakim": [
-        "kuaför",
-        "berber",
-        "güzellik salonu",
-        "nail salon",
-        "epilasyon",
-        "cilt bakımı",
-    ],
-    "fitness": ["spor salonu", "yüzme havuzu", "yoga"],
-    "egitim": ["özel ders", "dil kursu", "sürücü kursu", "müzik kursu"],
-    "tamir_bakim": [
-        "oto servis",
-        "elektrikçi",
-        "tesisatçı",
-        "klima servisi",
-        "telefon tamiri",
-    ],
-    "diger": ["veteriner", "fotoğrafçı", "noter", "muhasebeci", "avukat"],
-}
 
 
 class SerpApiRequestError(Exception):

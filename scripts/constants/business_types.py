@@ -1,10 +1,33 @@
-"""Sorgu terimlerini standart işletme tiplerine eşler.
+"""Kategori grupları, sorgu terimleri ve standart işletme tipleri.
 
 SerpAPI'nin ham `type` alanı çok dağınık olduğu için (aynı kategori
 onlarca farklı şekilde etiketlenmiş olabiliyor), normalizasyon için
 SerpAPI'nin değil, bizim fetch_serpapi.py'de kullandığımız sabit
 query_term'lerin kaynak alınması tercih edildi.
 """
+
+# Kategori grubu -> [türkçe terim, ...]
+CATEGORIES: dict[str, list[str]] = {
+    "saglik": ["dişçi", "göz doktoru", "psikolog", "fizyoterapist"],
+    "guzellik_bakim": [
+        "kuaför",
+        "berber",
+        "güzellik salonu",
+        "nail salon",
+        "epilasyon",
+        "cilt bakımı",
+    ],
+    "fitness": ["spor salonu", "yüzme havuzu", "yoga"],
+    "egitim": ["özel ders", "dil kursu", "sürücü kursu", "müzik kursu"],
+    "tamir_bakim": [
+        "oto servis",
+        "elektrikçi",
+        "tesisatçı",
+        "klima servisi",
+        "telefon tamiri",
+    ],
+    "diger": ["veteriner", "fotoğrafçı", "noter", "muhasebeci", "avukat"],
+}
 
 QUERY_TERM_TO_TYPE: dict[str, str] = {
     "dişçi": "Diş Kliniği",
@@ -35,3 +58,9 @@ QUERY_TERM_TO_TYPE: dict[str, str] = {
     "muhasebeci": "Muhasebeci",
     "avukat": "Avukat",
 }
+
+
+def get_type_to_category_group() -> dict[str, str]:
+    """type_normalized -> category_group eşlemesini üretir (örn. business_types tablosu için)."""
+    query_term_to_group = {term: group for group, terms in CATEGORIES.items() for term in terms}
+    return {QUERY_TERM_TO_TYPE[term]: group for term, group in query_term_to_group.items()}
