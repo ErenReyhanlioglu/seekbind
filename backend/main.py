@@ -6,7 +6,8 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.gzip import GZipMiddleware
 
-from backend.api.routes import get_qdrant_client, router
+from backend.api.routes import router
+from backend.db.qdrant import get_qdrant_client
 from backend.db.session import get_engine
 
 

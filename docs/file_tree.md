@@ -3,11 +3,21 @@ seekbind/
 ├── .env                          — API key'ler
 ├── .env.example                  — örnek env şablonu
 ├── .gitignore                    — .env dahil
-├── requirements.txt              — bağımlılıklar
+├── .python-version               — uv için Python sürümü
+├── pyproject.toml                — proje meta + bağımlılıklar
+├── uv.lock                       — kilitli bağımlılık sürümleri
+├── alembic.ini                   — Alembic yapılandırması
 ├── docker-compose.yml            — PG + Qdrant + Langfuse
 ├── docker-compose.prod.yml       — production overrides
 ├── LICENSE                       — MIT lisansı
 ├── README.md
+│
+├── alembic/                      — DB migration'ları
+│   ├── README
+│   ├── env.py                    — async migration ortamı
+│   ├── script.py.mako            — migration şablonu
+│   └── versions/
+│       └── 123e8e9f7bc4_...py    — ilk şema (business_types, businesses, appointment_slots)
 │
 ├── docs/
 │   ├── file_tree.md              — bu dosya
@@ -31,8 +41,8 @@ seekbind/
 │   │   └── monitoring.py         — Langfuse entegrasyonu
 │   │
 │   ├── services/
-│   │   ├── embedding.py          — OpenAI + Ollama embedding yönetimi
-│   │   ├── llm.py                — GPT-4o-mini / Qwen3 / Turkish-LLM seçimi
+│   │   ├── embedding.py          — Protocol ile soyutlanmış embedding sağlayıcıları (şu an: OpenAI)
+│   │   ├── llm.py                — gpt-4.1-mini / Qwen3 / Turkish-LLM seçimi
 │   │   ├── tools.py              — tool calling fonksiyonları
 │   │   ├── search.py             — semantic + hybrid search
 │   │   ├── rag.py                — RAG pipeline
@@ -43,8 +53,8 @@ seekbind/
 │   │
 │   ├── db/
 │   │   ├── models.py             — SQLAlchemy modelleri
-│   │   ├── session.py            — DB bağlantı yönetimi
-│   │   └── seed.py               — mock veri yükleme
+│   │   ├── session.py            — DB bağlantı yönetimi (engine, session factory)
+│   │   └── qdrant.py             — Qdrant client yönetimi (singleton)
 │   │
 │   ├── prompts/
 │   │   ├── system.txt                 — ana sistem promptu
@@ -60,10 +70,14 @@ seekbind/
 ├── evaluation/
 │   ├── test_set.json             — 100 test sorusu
 │   ├── ragas_eval.py             — RAGAS değerlendirme
-│   └── results/                  — değerlendirme sonuçları
-│       ├── semantic_only.json
-│       ├── hybrid.json
-│       └── hybrid_rerank.json
+│   └── results/
+│       ├── ragas/                — RAGAS'ın 4 metriğiyle ölçülen uçtan uca sonuçlar
+│       │   ├── semantic_only.json
+│       │   ├── hybrid.json
+│       │   └── hybrid_rerank.json
+│       │       (ileride: model bazlı karşılaştırmalar da buraya)
+│       └── diagnostics/          — RAGAS dışı veri/embedding kalite kontrolleri
+│           └── embedding_diversity_businesses_openai.json
 │
 ├── tests/
 │   ├── unit/
@@ -89,12 +103,13 @@ seekbind/
 │   │                                + keywords üretir → businesses_enriched.jsonl
 │   │                                (kaynağın üzerine yazmaz, resume destekli)
 │   ├── schemas.py                — ProcessedBusinessRecord ortak Pydantic şeması
-│   ├── load_embeddings.py        — Qdrant'a veri yükleme
+│   ├── load_embeddings.py        — Qdrant'a veri yükleme (businesses_openai, 1536 boyut)
+│   ├── check_embedding_diversity.py — mode collapse kontrolü (kategori-içi/kategoriler-arası kosinüs benzerliği)
 │   ├── seed_db.py                — PostgreSQL seed
 │   │
 │   ├── constants/                — sentetik veri üretimi için sabit sözlükler
 │   │   ├── __init__.py
-│   │   ├── business_types.py     — QUERY_TERM_TO_TYPE
+│   │   ├── business_types.py     — CATEGORIES, QUERY_TERM_TO_TYPE, get_type_to_category_group()
 │   │   ├── service_taxonomy.py   — SERVICE_TAXONOMY (ağırlıklı)
 │   │   ├── pricing.py            — PRICE_RANGES_TL, APPOINTMENT_DURATIONS_MIN
 │   │   ├── attributes.py         — ONLINE_AVAILABLE, GENDER_PREFERENCE_WEIGHTS
