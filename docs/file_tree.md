@@ -11,7 +11,8 @@ seekbind/
 ├── docs/
 │   ├── file_tree.md              — bu dosya
 │   ├── tech_stack.md             — teknoloji listesi
-│   └── terminal_cheatsheet.md    — git/uv/docker komut referansı
+│   ├── terminal_cheatsheet.md    — git/uv/docker komut referansı
+│   └── roadmap.md                — faz/branch planı, önemli kararlar
 │
 ├── data/
 │   ├── raw/                      — SerpAPI ham çıktıları
@@ -45,10 +46,11 @@ seekbind/
 │   │   └── seed.py               — mock veri yükleme
 │   │
 │   ├── prompts/
-│   │   ├── system.txt            — ana sistem promptu
-│   │   ├── search_intent.txt     — intent çıkarma promptu
-│   │   ├── recommendation.txt    — öneri üretme promptu
-│   │   └── fallback.txt          — fallback mesaj promptu
+│   │   ├── system.txt                 — ana sistem promptu
+│   │   ├── search_intent.txt          — intent çıkarma promptu
+│   │   ├── recommendation.txt         — öneri üretme promptu
+│   │   ├── fallback.txt               — fallback mesaj promptu
+│   │   └── synthetic_enrichment.txt   — enrich_with_llm.py için batch prompt'u
 │   │
 │   └── middleware/
 │       ├── rate_limit.py         — rate limiting
@@ -77,22 +79,32 @@ seekbind/
 │   └── conftest.py               — pytest fixtures
 │
 ├── scripts/
-│   ├── fetch_serpapi.py          — SerpAPI'den çek → data/raw/
-│   ├── generate_synthetic.py     — temizlik + kural tabanlı alanlar
-│   │                                (type, services, fiyat, süre, online,
-│   │                                cinsiyet, available/booked_slots) → data/processed/
-│   ├── enrich_with_llm.py        — sadece rich_description'ı LLM ile
-│   │                                üretip data/processed/'u günceller
+│   ├── fetch_serpapi.py          — SerpAPI'den çek → data/raw/businesses.jsonl
+│   ├── generate_synthetic.py     — orkestrasyon: temizlik + kural tabanlı
+│   │                                alanlar (type, services, fiyat, süre,
+│   │                                online, cinsiyet, saatler, slotlar, tags)
+│   │                                → data/processed/businesses.jsonl
+│   ├── enrich_with_llm.py        — batch'ler halinde LLM ile rich_description
+│   │                                + keywords üretir → businesses_enriched.jsonl
+│   │                                (kaynağın üzerine yazmaz, resume destekli)
+│   ├── schemas.py                — ProcessedBusinessRecord ortak Pydantic şeması
 │   ├── load_embeddings.py        — Qdrant'a veri yükleme
 │   ├── seed_db.py                — PostgreSQL seed
 │   │
-│   └── constants/                — sentetik veri üretimi için sabit sözlükler
+│   ├── constants/                — sentetik veri üretimi için sabit sözlükler
+│   │   ├── __init__.py
+│   │   ├── business_types.py     — QUERY_TERM_TO_TYPE
+│   │   ├── service_taxonomy.py   — SERVICE_TAXONOMY (ağırlıklı)
+│   │   ├── pricing.py            — PRICE_RANGES_TL, APPOINTMENT_DURATIONS_MIN
+│   │   ├── attributes.py         — ONLINE_AVAILABLE, GENDER_PREFERENCE_WEIGHTS
+│   │   └── working_hours.py      — WORKING_HOURS_TEMPLATE, jitter, hafta sonu olasılıkları
+│   │
+│   └── synthetic/                — generate_synthetic.py'nin kural tabanlı yardımcıları
 │       ├── __init__.py
-│       ├── business_types.py     — QUERY_TERM_TO_TYPE
-│       ├── service_taxonomy.py   — SERVICE_TAXONOMY (ağırlıklı)
-│       ├── pricing.py            — PRICE_RANGES_TL, APPOINTMENT_DURATIONS_MIN
-│       ├── attributes.py         — ONLINE_AVAILABLE, GENDER_PREFERENCE_WEIGHTS
-│       └── working_hours.py      — WORKING_HOURS_TEMPLATE, jitter, hafta sonu olasılıkları
+│       ├── ratings.py            — reviews_original parse, weighted_rating (Bayesian)
+│       ├── selection.py          — hizmet/fiyat seçimi, cinsiyet stratified atama
+│       ├── schedule.py           — çalışma saati jitter + slot üretimi
+│       └── tags.py               — kural tabanlı tags (online, hafta sonu, puan, fiyat)
 │
 ├── docker/
 │   ├── Dockerfile.backend        — backend image

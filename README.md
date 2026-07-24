@@ -21,7 +21,7 @@ SeekBind, [DateBind](https://datebind.com) randevu platformu için geliştirilen
 
 **AI Katmanı**
 - Embedding: OpenAI `text-embedding-3-small`, `embeddingmagibu-200m` (Türkçe özel), `qwen3-embedding:0.6B`
-- LLM: `GPT-4o-mini`, `Qwen3 7B`, `Turkish-LLM 7B`
+- LLM: `gpt-4.1-mini`, `Qwen3 7B`, `Turkish-LLM 7B`
 - Arama: Semantic Search + Hybrid Search (BM25 + vektör) + Reranking
 - RAG (Retrieval Augmented Generation) + Tool Calling mimarisi
 
@@ -38,6 +38,41 @@ SeekBind, [DateBind](https://datebind.com) randevu platformu için geliştirilen
 - Frontend: React
 - Altyapı: Docker
 
-## Kapsam
+## Kurulum
 
-Bu proje TechBind Solutions bünyesinde yürütülen bir staj çalışmasıdır. Mevcut aşamada prototip/demo geliştirme hedeflenmekte olup başarılı sonuçlar alınması durumunda DateBind platformuna entegre edilmesi planlanmaktadır.
+**Gereksinimler:** Python 3.12+, [uv](https://docs.astral.sh/uv/), Docker + Docker Compose
+
+```bash
+# 1. Repoyu klonla
+git clone https://github.com/ErenReyhanlioglu/seekbind.git
+cd seekbind
+
+# 2. Bağımlılıkları kur
+uv sync
+
+# 3. Ortam değişkenlerini ayarla
+cp .env.example .env
+# .env içindeki OPENAI_API_KEY, SERPAPI_API_KEY gibi alanları kendi
+# key'lerinle doldur
+
+# 4. Altyapıyı ayağa kaldır (PostgreSQL + Qdrant + Langfuse)
+docker compose up -d
+```
+
+**Veri pipeline'ı (opsiyonel):** `data/` klasörü repoya dahil değildir
+(`.gitignore`), veriyi kendin üretmen gerekir — her adım kendi API
+maliyetine sahiptir (SerpAPI ücretsiz plan, OpenAI birkaç kuruş):
+
+```bash
+uv run python -m scripts.fetch_serpapi       # SerpAPI'den ham veri çek
+uv run python -m scripts.generate_synthetic  # kural tabanlı zenginleştirme
+uv run python -m scripts.enrich_with_llm     # LLM ile açıklama/keyword üretimi
+```
+
+> **Not:** Proje aktif geliştirme aşamasında — backend API henüz uçtan uca
+> çalışır durumda değil, yukarıdaki adımlar veri hazırlama pipeline'ını
+> kapsar.
+
+## Lisans
+
+[MIT](LICENSE)
