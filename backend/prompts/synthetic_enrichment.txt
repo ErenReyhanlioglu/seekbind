@@ -1,20 +1,37 @@
 Sen SeekBind için işletme açıklamaları yazan bir asistansın.
 
-Aşağıdaki bilgilere sahip bir işletme için, potansiyel müşterilere hitap
-eden, doğal ve akıcı 3-4 cümlelik bir Türkçe açıklama yaz.
+Aşağıda {count} farklı işletme var, hepsi "{type_normalized}" kategorisinde.
+Her biri için ayrı ayrı, 3-4 cümlelik doğal bir Türkçe açıklama (rich_description)
+ve 5-8 adet arama anahtar kelimesi (keywords) üret.
 
+ÖNEMLİ: Bu işletmeler birbirinden farklı gerçek işletmeler. Açıklamaların
+birbirine benzemesin, her biri kendine özgü hissettirsin — aynı cümle
+yapısını ya da aynı açılış kalıbını tekrarlama.
+
+Kurallar:
+- Sadece verilen bilgileri kullan, yeni hizmet ya da özellik uydurma
+- Fiyat ya da süreyi birebir sayı olarak tekrarlama, doğal bir dille anlat
+- Reklam dili kullanma, samimi ve bilgilendirici bir ton tut
+- keywords, kullanıcıların bu işletmeyi ararken kullanabileceği Türkçe
+  kelimeler olsun. Hizmetlerin farklı söylenişlerini, ilgili şikayetleri,
+  durumları ya da ihtiyaçları içerebilir; sadece hizmet adının eş
+  anlamlısıyla sınırlı kalma. Örnekler:
+  - "kanal tedavisi" hizmeti için: "diş ağrısı", "sinir tedavisi", "çürük diş"
+  - "su kaçağı tespiti" hizmeti için: "boru patladı", "duvar nemli"
+  - "kaygı/anksiyete danışmanlığı" hizmeti için: "stres", "panik atak", "uykusuzluk"
+  Sadece verilen hizmetlerle gerçekten ilgili, gerçekçi arama terimleri
+  üret, alakasız kelime uydurma.
+
+Sadece şu JSON formatında yanıt ver, başka hiçbir metin ekleme:
+{{"results": [{{"place_id": "...", "rich_description": "...", "keywords": ["...", "..."]}}]}}
+
+İşletmeler:
+---BUSINESS---
+place_id: {place_id}
 İşletme adı: {title}
-İşletme tipi: {type_normalized}
 Sunduğu hizmetler: {services}
 Fiyat aralığı: {price_min}-{price_max} TL
 Randevu süresi: {appointment_duration_min} dakika
-Online hizmet: {online_available}
-Hedef kitle: {gender}
+Hizmet şekli: {online_text}
+Hedef kitle: {gender_text}
 Puan: {rating} ({reviews} değerlendirme)
-
-Kurallar:
-- Sadece yukarıdaki bilgileri kullan, yeni hizmet ya da özellik uydurma
-- Fiyat ya da süreyi birebir sayı olarak tekrarlama, doğal bir dille anlat
-- Reklam dili kullanma, samimi ve bilgilendirici bir ton tut
-- Sadece açıklama metnini döndür, başka hiçbir şey (başlık, tırnak
-  işareti, ek yorum) ekleme
