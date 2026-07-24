@@ -22,7 +22,7 @@ Durum işaretleri: ✅ tamamlandı · ⏳ sırada · ⬜ planlı
 ## Faz 3 — Backend Çekirdek
 
 - ✅ `feature/api-skeleton` — `main.py`, `routes.py`, `schemas.py`, health-check endpoint
-- ⬜ `feature/embedding-pipeline` — `embedding.py` servisi + Qdrant'a yükleme (`load_embeddings.py`); açıklamalarda "mode collapse" (birbirine çok benzeme) riskini embedding benzerlik dağılımıyla ölç
+- ✅ `feature/embedding-pipeline` — `embedding.py` servisi (Protocol ile soyutlanmış), `load_embeddings.py` ile 478 işletme Qdrant'a yüklendi (`businesses_openai`, 1536 boyut). Mode collapse kontrolü (`check_embedding_diversity.py`) doğrulandı: kategoriler-arası 0.42, kategori-içi 0.63-0.78 — sağlıklı ayrışma, risk yok
 
 ## Faz 4 — Arama & AI Pipeline
 
@@ -71,5 +71,5 @@ Durum işaretleri: ✅ tamamlandı · ⏳ sırada · ⬜ planlı
 - **RAGAS evaluator modeli:** Tutarlılık için OpenAI kullanılacak (farklı modellerin çıktısı karşılaştırılırken değerlendiricinin sabit kalması önemli)
 - **Hybrid search (Faz 4):** BM25 + semantic sonuçları Reciprocal Rank Fusion (RRF) ile birleştirilecek
 - **Hard filter / semantic ayrımı (Faz 4):** "Salı sabahı İzmit'te ucuz dişçi" gibi bir sorguda kesin kısıtlar (gün, saat, konum, fiyat) vektör aramasına karıştırılmaz — LLM'den yapılandırılmış JSON çıktısı (gerçek Tool Calling API'si değil, `enrich_with_llm.py`'deki gibi `response_format=json_object`) ile önce ayrıştırılır, sadece anlamsal kısım ("ucuz dişçi") embedding aramasına gider. Kesin filtreler Qdrant'ın payload filtering'iyle uygulanır (arama alanını daraltır, hız+doğruluk kazandırır)
-- **Sentetik açıklama homojenliği riski (mode collapse):** LLM'ler yüksek olasılıklı kelimelere yönelme eğiliminde, bu da yüzlerce açıklamanın birbirine çok benzemesine (embedding uzayında kümelenme, semantik aramanın ayırt ediciliğini düşürme) yol açabilir. `enrich_with_llm.py`'de bunun için zaten önlem alındı (batch + "birbirine benzemesin" talimatı + `temperature=0.8` + işletme başına farklı girdi verisi), ama `embedding-pipeline`'da gerçek embedding'ler çıkınca kosinüs benzerlik dağılımına bakılıp doğrulanacak
+- **Sentetik açıklama homojenliği riski (mode collapse) — ✅ doğrulandı, risk yok.** LLM'ler yüksek olasılıklı kelimelere yönelme eğiliminde, bu da açıklamaların birbirine çok benzemesine yol açabilirdi. `enrich_with_llm.py`'deki önlemler (batch + "birbirine benzemesin" talimatı + `temperature=0.8` + işletme başına farklı girdi verisi) ölçüldü: 478 işletmenin gerçek embedding'lerinde kategoriler-arası ortalama benzerlik **0.42**, kategori-içi ortalama **0.63-0.78** arası (en yüksek: Sürücü Kursu — dar hizmet setine sahip olduğu için meşru, gerçek bir örtüşme). Hiçbir kategori 0.95 uyarı eşiğine yaklaşmadı, her kategori kategoriler-arası ortalamadan belirgin şekilde (0.21-0.36 fark) ayrışıyor. Sonuçlar `evaluation/results/diagnostics/embedding_diversity_businesses_openai.json`'da saklı (`scripts/check_embedding_diversity.py`)
 - **Reranker model adayı (Faz 4):** `bge-reranker-v2-m3` — hafif, çok dilli (Türkçe dahil) cross-encoder, LLM tabanlı reranking'e göre çok daha düşük gecikme, `<2s` yanıt hedefi için uygun
