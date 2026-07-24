@@ -1,7 +1,9 @@
 """data/processed/businesses.jsonl için ortak Pydantic şeması.
 
-generate_synthetic.py bu şemayı doldurur (rich_description hariç),
-enrich_with_llm.py aynı şemayı okuyup sadece rich_description'ı ekler.
+generate_synthetic.py bu şemayı doldurur (rich_description ve keywords
+hariç), enrich_with_llm.py aynı şemayı okuyup sadece o iki alanı ekler.
+tags, gerçek veriden (online_available, working_hours, rating, fiyat
+konumu) hesaplanan kural tabanlı bir alandır, LLM'e bırakılmaz.
 """
 
 from pydantic import BaseModel
@@ -37,6 +39,7 @@ class ProcessedBusinessRecord(BaseModel):
     type_normalized: str
     rating: float | None
     reviews: int
+    weighted_rating: float | None
     address: str | None
     phone: str | None
     gps_coordinates: dict[str, float] | None
@@ -48,4 +51,6 @@ class ProcessedBusinessRecord(BaseModel):
     working_hours: WorkingHours
     available_slots: list[str]
     booked_slots: list[str]
+    tags: list[str]
+    keywords: list[str] = []
     rich_description: str | None = None
