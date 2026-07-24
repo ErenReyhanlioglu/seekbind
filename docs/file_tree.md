@@ -1,3 +1,4 @@
+```text
 seekbind/
 ├── .env                          — API key'ler
 ├── .env.example                  — örnek env şablonu
@@ -111,3 +112,4 @@ seekbind/
 │   └── Dockerfile.frontend       — frontend image
 │
 └── frontend/                     — React (21s dev MCP)
+```
