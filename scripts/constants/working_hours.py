@@ -4,13 +4,16 @@ SerpAPI'nin `hours` alanı ("Kapanmak üzere · 22:00" gibi) o anki
 anlık durumu anlatıyor, düzenli haftalık programı vermiyor. Bu yüzden
 available_slots üretimi için kategori bazlı bir taban şablon tanımlanır.
 Her işletmenin gerçek açılış/kapanış saati, bu taban üzerine
-generate_synthetic.py'de WORKING_HOURS_JITTER_MIN kadar rastgele
-sapma eklenerek üretilir (aynı kategorideki işletmeler birebir aynı
-saatte açılmasın diye).
+generate_synthetic.py'de WORKING_HOURS_JITTER_OPTIONS_MIN'den seçilen
+bir sapma eklenerek üretilir (aynı kategorideki işletmeler birebir aynı
+saatte açılmasın diye). Açılış ve kapanış için ayrı ayrı, birbirinden
+bağımsız seçim yapılır.
 """
 
-# Her işletmenin taban saatine eklenecek maksimum rastgele sapma (dakika)
-WORKING_HOURS_JITTER_MIN: int = 30
+# İşletmenin taban saatine eklenecek olası sapma büyüklükleri (dakika).
+# Hepsi 5'in katı olduğu için (taban saatler de öyle), sonuç hep düzgün
+# bir dakikada olur, ":52" gibi tuhaf değerler oluşmaz.
+WORKING_HOURS_JITTER_OPTIONS_MIN: list[int] = [5, 10, 15, 30, 45, 60, 75, 90]
 
 # İşletme tipi -> {"weekday"/"saturday"/"sunday": (açılış, kapanış) ya da None (kapalı)}
 WORKING_HOURS_TEMPLATE: dict[str, dict[str, tuple[str, str] | None]] = {
