@@ -26,6 +26,9 @@ async def check_postgres(session: AsyncSession) -> DependencyStatus:
     try:
         await session.execute(text("SELECT 1"))
     except Exception as e:
+        # Bilerek genel Exception: hata tipi ne olursa olsun (SQLAlchemy,
+        # asyncio/socket katmanı vb.) tepkimiz aynı — "unhealthy" işaretle,
+        # detayını raporla. Daraltırsak health-check kendisi 500 ile çöker.
         return DependencyStatus(name="postgres", healthy=False, detail=str(e))
     return DependencyStatus(name="postgres", healthy=True)
 
@@ -35,6 +38,7 @@ async def check_qdrant(client: AsyncQdrantClient) -> DependencyStatus:
     try:
         await client.get_collections()
     except Exception as e:
+        # bkz. check_postgres'teki not — aynı gerekçe burada da geçerli
         return DependencyStatus(name="qdrant", healthy=False, detail=str(e))
     return DependencyStatus(name="qdrant", healthy=True)
 
