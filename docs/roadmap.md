@@ -16,18 +16,18 @@ Durum işaretleri: ✅ tamamlandı · ⏳ sırada · ⬜ planlı
 
 - ✅ `feature/data-collection` — SerpAPI ile İzmit/Kocaeli işletme verisi çekme (`fetch_serpapi.py`), 478 gerçek işletme
 - ✅ `feature/synthetic-data` — kural tabanlı zenginleştirme (`generate_synthetic.py`: tip, hizmet, fiyat, süre, online, cinsiyet, çalışma saati, slotlar, tags) + LLM ile açıklama/keyword (`enrich_with_llm.py`, batch mimarisi, `gpt-4.1-mini`)
-- ⏳ `feature/db-models` — SQLAlchemy modelleri, Alembic migration, `session.py` (şema tasarımı: `docs/database_schema.md`)
-- ⬜ `feature/db-seed` — işlenmiş veriyi Postgres'e yükleme (`seed_db.py`)
+- ✅ `feature/db-models` — SQLAlchemy modelleri, Alembic migration, `session.py` (şema tasarımı: `docs/database_schema.md`)
+- ✅ `feature/db-seed` — işlenmiş veriyi Postgres'e yükleme (`seed_db.py`, bulk upsert + truncate-and-load)
 
 ## Faz 3 — Backend Çekirdek
 
 - ⬜ `feature/api-skeleton` — `main.py`, `routes.py`, `schemas.py`, health-check endpoint
-- ⬜ `feature/embedding-pipeline` — `embedding.py` servisi + Qdrant'a yükleme (`load_embeddings.py`)
+- ⬜ `feature/embedding-pipeline` — `embedding.py` servisi + Qdrant'a yükleme (`load_embeddings.py`); açıklamalarda "mode collapse" (birbirine çok benzeme) riskini embedding benzerlik dağılımıyla ölç
 
 ## Faz 4 — Arama & AI Pipeline
 
-- ⬜ `feature/search-service` — semantic + hybrid search (BM25 + vektör)
-- ⬜ `feature/reranker` — cross-encoder reranking
+- ⬜ `feature/search-service` — semantic + hybrid search (BM25 + vektör); kesin filtreler (konum/gün/fiyat) Qdrant payload filtering ile vektör aramasından önce uygulanacak
+- ⬜ `feature/reranker` — cross-encoder reranking (aday model: `bge-reranker-v2-m3` — hafif, çok dilli, LLM tabanlı reranker'dan daha hızlı)
 - ⬜ `feature/llm-service` — GPT-4o-mini/Qwen3/Turkish-LLM seçim mantığı (runtime)
 - ⬜ `feature/langfuse-integration` — Langfuse SDK'sının backend'e bağlanması (`core/monitoring.py`) — docker-compose'da servis ayakta ama backend'e henüz hiç bağlanmadı
 - ⬜ `feature/rag-pipeline` — RAG orkestrasyon (intent parsing + öneri üretimi — projenin asıl LLM testi)
@@ -70,3 +70,6 @@ Durum işaretleri: ✅ tamamlandı · ⏳ sırada · ⬜ planlı
 - **LLM karşılaştırması (Faz 4):** `gpt-4.1-mini` vs `Qwen3 7B` vs `Turkish-LLM 7B` (Ollama üzerinden) — runtime kalite/maliyet kıyası
 - **RAGAS evaluator modeli:** Tutarlılık için OpenAI kullanılacak (farklı modellerin çıktısı karşılaştırılırken değerlendiricinin sabit kalması önemli)
 - **Hybrid search (Faz 4):** BM25 + semantic sonuçları Reciprocal Rank Fusion (RRF) ile birleştirilecek
+- **Hard filter / semantic ayrımı (Faz 4):** "Salı sabahı İzmit'te ucuz dişçi" gibi bir sorguda kesin kısıtlar (gün, saat, konum, fiyat) vektör aramasına karıştırılmaz — LLM'den yapılandırılmış JSON çıktısı (gerçek Tool Calling API'si değil, `enrich_with_llm.py`'deki gibi `response_format=json_object`) ile önce ayrıştırılır, sadece anlamsal kısım ("ucuz dişçi") embedding aramasına gider. Kesin filtreler Qdrant'ın payload filtering'iyle uygulanır (arama alanını daraltır, hız+doğruluk kazandırır)
+- **Sentetik açıklama homojenliği riski (mode collapse):** LLM'ler yüksek olasılıklı kelimelere yönelme eğiliminde, bu da yüzlerce açıklamanın birbirine çok benzemesine (embedding uzayında kümelenme, semantik aramanın ayırt ediciliğini düşürme) yol açabilir. `enrich_with_llm.py`'de bunun için zaten önlem alındı (batch + "birbirine benzemesin" talimatı + `temperature=0.8` + işletme başına farklı girdi verisi), ama `embedding-pipeline`'da gerçek embedding'ler çıkınca kosinüs benzerlik dağılımına bakılıp doğrulanacak
+- **Reranker model adayı (Faz 4):** `bge-reranker-v2-m3` — hafif, çok dilli (Türkçe dahil) cross-encoder, LLM tabanlı reranking'e göre çok daha düşük gecikme, `<2s` yanıt hedefi için uygun
