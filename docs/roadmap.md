@@ -16,7 +16,7 @@ Durum işaretleri: ✅ tamamlandı · ⏳ sırada · ⬜ planlı
 
 - ✅ `feature/data-collection` — SerpAPI ile İzmit/Kocaeli işletme verisi çekme (`fetch_serpapi.py`), 478 gerçek işletme
 - ✅ `feature/synthetic-data` — kural tabanlı zenginleştirme (`generate_synthetic.py`: tip, hizmet, fiyat, süre, online, cinsiyet, çalışma saati, slotlar, tags) + LLM ile açıklama/keyword (`enrich_with_llm.py`, batch mimarisi, `gpt-4.1-mini`)
-- ⏳ `feature/db-models` — SQLAlchemy modelleri, Alembic migration, `session.py`
+- ⏳ `feature/db-models` — SQLAlchemy modelleri, Alembic migration, `session.py` (şema tasarımı: `docs/database_schema.md`)
 - ⬜ `feature/db-seed` — işlenmiş veriyi Postgres'e yükleme (`seed_db.py`)
 
 ## Faz 3 — Backend Çekirdek
