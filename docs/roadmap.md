@@ -21,7 +21,7 @@ Durum işaretleri: ✅ tamamlandı · ⏳ sırada · ⬜ planlı
 
 ## Faz 3 — Backend Çekirdek
 
-- ⬜ `feature/api-skeleton` — `main.py`, `routes.py`, `schemas.py`, health-check endpoint
+- ✅ `feature/api-skeleton` — `main.py`, `routes.py`, `schemas.py`, health-check endpoint
 - ⬜ `feature/embedding-pipeline` — `embedding.py` servisi + Qdrant'a yükleme (`load_embeddings.py`); açıklamalarda "mode collapse" (birbirine çok benzeme) riskini embedding benzerlik dağılımıyla ölç
 
 ## Faz 4 — Arama & AI Pipeline
