@@ -1,7 +1,5 @@
 """API endpoint tanımları."""
 
-from functools import lru_cache
-
 from fastapi import APIRouter, Depends
 from qdrant_client import AsyncQdrantClient
 from sqlalchemy import text
@@ -9,16 +7,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.api.schemas import DependencyStatus, HealthCheckResponse
 from backend.config import get_settings
+from backend.db.qdrant import get_qdrant_client
 from backend.db.session import get_db_session
 
 router = APIRouter()
-
-
-@lru_cache
-def get_qdrant_client() -> AsyncQdrantClient:
-    """Qdrant client'ını önbellekten döner, tekrar oluşturmaz."""
-    settings = get_settings()
-    return AsyncQdrantClient(url=settings.qdrant_url)
 
 
 async def check_postgres(session: AsyncSession) -> DependencyStatus:
