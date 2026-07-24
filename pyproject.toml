@@ -6,8 +6,11 @@ requires-python = ">=3.12"
 dependencies = [
     "alembic>=1.18.5",
     "asyncpg>=0.31.0",
+    "fastapi>=0.139.2",
     "google-search-results>=2.4.2",
     "openai>=2.48.0",
     "pydantic-settings>=2.14.2",
+    "qdrant-client>=1.18.0",
     "sqlalchemy[asyncio]>=2.0.51",
+    "uvicorn[standard]>=0.51.0",
 ]
