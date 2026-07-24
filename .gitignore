@@ -40,10 +40,13 @@ frontend/build/
 # Jupyter
 .ipynb_checkpoints/
 
-# Veri ve değerlendirme çıktıları (büyük/üretilebilir, klasör yapısı .gitkeep ile korunur)
+# Veri (büyük/üretilebilir, klasör yapısı .gitkeep ile korunur)
 data/raw/*
 !data/raw/.gitkeep
 data/processed/*
 !data/processed/.gitkeep
-evaluation/results/*
-!evaluation/results/.gitkeep
+
+# RAGAS sonuçları Faz 6'da üretilecek, şimdilik boş — klasör yapısı .gitkeep ile korunur.
+# diagnostics/ ise doğrulanmış gerçek sonuçlar içeriyor (örn. embedding diversity), tamamen takip edilir.
+evaluation/results/ragas/*
+!evaluation/results/ragas/.gitkeep
