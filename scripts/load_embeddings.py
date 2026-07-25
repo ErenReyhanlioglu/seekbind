@@ -51,6 +51,7 @@ def build_payload(business: Business) -> dict:
         "online_available": business.online_available,
         "gender": business.gender,
         "tags": business.tags,
+        "is_active": business.is_active,
     }
 
 
