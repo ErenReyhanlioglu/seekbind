@@ -18,11 +18,14 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from backend.db.models import Business
 from backend.db.qdrant import get_qdrant_client
 from backend.db.session import get_session_factory
-from backend.services.embedding import EmbeddingProvider, get_embedding_provider
+from backend.services.embedding import (
+    EmbeddingProvider,
+    get_embedding_provider,
+    get_qdrant_collection_name,
+)
 
 logger = logging.getLogger(__name__)
 
-COLLECTION_PREFIX: str = "businesses"
 EMBEDDING_BATCH_SIZE: int = 50
 
 
@@ -99,7 +102,7 @@ async def main() -> None:
 
     provider = get_embedding_provider()
     qdrant_client = get_qdrant_client()
-    collection_name = f"{COLLECTION_PREFIX}_{provider.name}"
+    collection_name = get_qdrant_collection_name(provider)
 
     await ensure_collection(qdrant_client, collection_name, provider.dimension)
 
