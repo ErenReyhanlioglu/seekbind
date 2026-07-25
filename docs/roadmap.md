@@ -31,8 +31,8 @@ Durum işaretleri: ✅ tamamlandı · ⏳ sırada · ⬜ planlı
 - ⬜ `feature/llm-service` — GPT-4o-mini/Qwen3/Turkish-LLM seçim mantığı (runtime)
 - ⬜ `feature/langfuse-integration` — Langfuse SDK'sının backend'e bağlanması (`core/monitoring.py`) — docker-compose'da servis ayakta ama backend'e henüz hiç bağlanmadı
 - ⬜ `feature/rag-pipeline` — RAG orkestrasyon (intent parsing + öneri üretimi — projenin asıl LLM testi)
-- ⬜ `feature/tool-calling` — `tools.py`
 - ⬜ `feature/calendar-service` — slot/çakışma kontrolü
+- ⬜ `feature/tool-calling` — `tools.py` (calendar-service'i LLM'e tool olarak sunar)
 
 ## Faz 5 — Dayanıklılık & Güvenlik
 
