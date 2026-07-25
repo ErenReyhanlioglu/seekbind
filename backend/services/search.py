@@ -11,11 +11,14 @@ from dataclasses import dataclass
 from datetime import datetime
 from functools import lru_cache
 
+from qdrant_client import AsyncQdrantClient
+from qdrant_client.models import FieldCondition, Filter, MatchValue
 from rank_bm25 import BM25Okapi
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.db.models import Business
+from backend.services.embedding import EmbeddingProvider, get_qdrant_collection_name
 
 Fingerprint = tuple[int, datetime | None]
 _EMPTY_FINGERPRINT: Fingerprint = (0, None)
@@ -162,6 +165,38 @@ class BM25Index:
             zip(snapshot.business_ids, scores, strict=True), key=lambda pair: pair[1], reverse=True
         )
         return ranked[:top_k]
+
+
+def _build_active_only_filter(extra_filter: Filter | None) -> Filter:
+    """is_active=true zorunlu koşulunu, varsa ek filtre koşullarıyla birleştirir.
+
+    is_active her arama isteğinde uygulanmalı — çağıranın SearchFilters'a
+    eklemeyi unutabileceği bir kısıt değil, aramanın kendisinin garantisi.
+    """
+    must_conditions: list[FieldCondition] = [FieldCondition(key="is_active", match=MatchValue(value=True))]
+    if extra_filter is not None and extra_filter.must:
+        must_conditions.extend(extra_filter.must)
+    return Filter(must=must_conditions)
+
+
+async def vector_search(
+    client: AsyncQdrantClient,
+    provider: EmbeddingProvider,
+    query: str,
+    top_k: int,
+    extra_filter: Filter | None = None,
+) -> list[tuple[int, float]]:
+    """Qdrant'ta semantik arama yapar, (business_id, skor) çiftlerini azalan skora göre döner."""
+    [query_vector] = await provider.embed_batch([query])
+    collection_name = get_qdrant_collection_name(provider)
+    response = await client.query_points(
+        collection_name=collection_name,
+        query=query_vector,
+        query_filter=_build_active_only_filter(extra_filter),
+        limit=top_k,
+        with_payload=False,
+    )
+    return [(point.id, point.score) for point in response.points]
 
 
 @lru_cache
