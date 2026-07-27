@@ -44,7 +44,15 @@ seekbind/
 │   │   ├── embedding.py          — Protocol ile soyutlanmış embedding sağlayıcıları (şu an: OpenAI)
 │   │   ├── llm.py                — gpt-4.1-mini / Qwen3 / Turkish-LLM seçimi
 │   │   ├── tools.py              — tool calling fonksiyonları
-│   │   ├── search.py             — semantic + hybrid search
+│   │   ├── search/                — hybrid (semantic + lexical) arama, 300 satır kuralı için pakete bölündü
+│   │   │   ├── __init__.py       — public re-export'lar (search_providers dahil)
+│   │   │   ├── text.py           — Türkçe normalizasyon + tokenization
+│   │   │   ├── bm25.py           — BM25Index (fingerprint tabanlı yenileme) + periyodik refresh loop
+│   │   │   ├── vector.py         — Qdrant semantik arama (query_points, filtreli ID çekme)
+│   │   │   ├── filters.py        — SearchFilters, Qdrant Filter çevirisi, mesafe hesaplama
+│   │   │   ├── availability.py   — tarih/saat müsaitliği (appointment_slots'a karşı, iki fazlı filtrenin 2. fazı)
+│   │   │   ├── fusion.py         — Reciprocal Rank Fusion (RRF)
+│   │   │   └── service.py        — search_providers() orkestrasyonu
 │   │   ├── rag.py                — RAG pipeline
 │   │   ├── reranker.py           — cross-encoder reranking
 │   │   ├── calendar.py           — slot + çakışma kontrolü
@@ -76,12 +84,23 @@ seekbind/
 │       │   ├── hybrid.json
 │       │   └── hybrid_rerank.json
 │       │       (ileride: model bazlı karşılaştırmalar da buraya)
-│       └── diagnostics/          — RAGAS dışı veri/embedding kalite kontrolleri
-│           └── embedding_diversity_businesses_openai.json
+│       └── diagnostics/          — RAGAS dışı veri/embedding/arama kalite kontrolleri
+│           │                        (scripts/diagnostics/ ile birebir eşleşir, her script kendi alt klasörüne yazar)
+│           ├── embedding_diversity/
+│           │   └── <collection_adı>_<zaman_damgası>.json
+│           └── search_smoke_test/
+│               └── <etiket_>zaman_damgası.json
 │
 ├── tests/
 │   ├── unit/
-│   │   ├── test_search.py        — arama servisi testleri
+│   │   ├── search/                — backend/services/search/ paketiyle birebir eşleşir
+│   │   │   ├── test_text.py
+│   │   │   ├── test_bm25.py
+│   │   │   ├── test_vector.py
+│   │   │   ├── test_filters.py
+│   │   │   ├── test_availability.py
+│   │   │   ├── test_fusion.py
+│   │   │   └── test_service.py
 │   │   ├── test_rag.py           — RAG servisi testleri
 │   │   ├── test_calendar.py      — takvim servisi testleri
 │   │   ├── test_reranker.py      — reranker testleri
@@ -104,7 +123,6 @@ seekbind/
 │   │                                (kaynağın üzerine yazmaz, resume destekli)
 │   ├── schemas.py                — ProcessedBusinessRecord ortak Pydantic şeması
 │   ├── load_embeddings.py        — Qdrant'a veri yükleme (businesses_openai, 1536 boyut)
-│   ├── check_embedding_diversity.py — mode collapse kontrolü (kategori-içi/kategoriler-arası kosinüs benzerliği)
 │   ├── seed_db.py                — PostgreSQL seed
 │   │
 │   ├── constants/                — sentetik veri üretimi için sabit sözlükler
@@ -115,12 +133,17 @@ seekbind/
 │   │   ├── attributes.py         — ONLINE_AVAILABLE, GENDER_PREFERENCE_WEIGHTS
 │   │   └── working_hours.py      — WORKING_HOURS_TEMPLATE, jitter, hafta sonu olasılıkları
 │   │
-│   └── synthetic/                — generate_synthetic.py'nin kural tabanlı yardımcıları
+│   ├── synthetic/                — generate_synthetic.py'nin kural tabanlı yardımcıları
+│   │   ├── __init__.py
+│   │   ├── ratings.py            — reviews_original parse, weighted_rating (Bayesian)
+│   │   ├── selection.py          — hizmet/fiyat seçimi, cinsiyet stratified atama
+│   │   ├── schedule.py           — çalışma saati jitter + slot üretimi
+│   │   └── tags.py               — kural tabanlı tags (online, hafta sonu, puan, fiyat)
+│   │
+│   └── diagnostics/              — elle çalıştırılan, gözle değerlendirilen doğrulama script'leri
 │       ├── __init__.py
-│       ├── ratings.py            — reviews_original parse, weighted_rating (Bayesian)
-│       ├── selection.py          — hizmet/fiyat seçimi, cinsiyet stratified atama
-│       ├── schedule.py           — çalışma saati jitter + slot üretimi
-│       └── tags.py               — kural tabanlı tags (online, hafta sonu, puan, fiyat)
+│       ├── check_embedding_diversity.py — mode collapse kontrolü (kategori-içi/kategoriler-arası kosinüs benzerliği)
+│       └── smoke_test_search.py  — search-service'i gerçek DB/Qdrant'a karşı doğrular (BM25/vektör tanısı dahil)
 │
 ├── docker/
 │   ├── Dockerfile.backend        — backend image

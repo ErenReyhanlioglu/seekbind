@@ -14,9 +14,9 @@ Sonuçlar evaluation/results/diagnostics/search_smoke_test/<etiket_>zaman_
 damgası.json'a yazılır — her çalıştırma zaman damgalı olduğu için hiçbir
 sonuç sessizce ezilmez, opsiyonel etiket (sys.argv[1], örn. `before_reranker`)
 dosyaya semantik anlam katar ("bu hangi kilometre taşıydı" sorusuna zaman
-damgası tek başına cevap vermez). Diagnostic script'lerinin sonuç dosyaları
-karışmasın diye ayrı bir alt klasörde tutulur (check_embedding_diversity.py
-'nin çıktısı diagnostics/ kökünde kalıyor, o değiştirilmedi).
+damgası tek başına cevap vermez). Diagnostic script'lerinin her biri kendi
+alt klasörüne yazar (bkz. check_embedding_diversity.py'deki embedding_diversity/
+alt klasörü) ki sonuç dosyaları birbirine karışmasın.
 """
 
 import asyncio

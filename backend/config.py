@@ -68,4 +68,7 @@ class Settings(BaseSettings):
 @lru_cache
 def get_settings() -> Settings:
     """Settings örneğini önbellekten döner, her seferinde .env'i yeniden okumaz."""
-    return Settings()
+    # pydantic-settings alanları constructor argümanından değil .env'den
+    # dolduruyor — Pyright bu runtime davranışını göremediği için tüm
+    # zorunlu alanları eksik argüman sanıyor (bilinen bir stub kısıtlaması).
+    return Settings()  # pyright: ignore[reportCallIssue]
