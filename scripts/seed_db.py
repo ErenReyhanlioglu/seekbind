@@ -17,7 +17,7 @@ import logging
 from datetime import datetime
 from pathlib import Path
 
-from sqlalchemy import delete, func
+from sqlalchemy import delete, func, insert
 from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -139,7 +139,7 @@ async def seed_appointment_slots(
             )
 
     if rows:
-        await session.execute(AppointmentSlot.__table__.insert(), rows)
+        await session.execute(insert(AppointmentSlot), rows)
     return len(rows)
 
 

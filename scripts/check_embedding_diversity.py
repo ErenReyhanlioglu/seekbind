@@ -48,7 +48,10 @@ async def fetch_vectors_by_category(client: AsyncQdrantClient, collection_name: 
             offset=offset,
         )
         for point in points:
-            category = point.payload["type_normalized"]
+            # with_payload=True yukarıda her zaman veriliyor, payload hiçbir
+            # zaman None olmuyor — Qdrant'ın tip stub'ı bunu genel (with_payload
+            # parametresinin değerinden bağımsız) bir Optional olarak işaretliyor.
+            category = point.payload["type_normalized"]  # pyright: ignore[reportOptionalSubscript]
             grouped[category].append(np.array(point.vector))
         if offset is None:
             break
