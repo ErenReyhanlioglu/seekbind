@@ -1,15 +1,20 @@
 """BM25 lexical arama index'i — bellekte tutulur, fingerprint tabanlı yenilenir."""
 
+import asyncio
+import logging
 from dataclasses import dataclass
 from datetime import datetime
 from functools import lru_cache
 
 from rank_bm25 import BM25Okapi
 from sqlalchemy import func, select
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from backend.db.models import Business
 from backend.services.search.text import tokenize
+
+logger = logging.getLogger(__name__)
 
 Fingerprint = tuple[int, datetime | None]
 _EMPTY_FINGERPRINT: Fingerprint = (0, None)
@@ -146,7 +151,29 @@ def get_bm25_index() -> BM25Index:
     """BM25Index singleton'ını döner.
 
     İlk çağrıda boş kurulur; gerçek veriyle doldurmak için build() ya da
-    refresh_if_stale() çağrılması gerekir (bkz. lifespan startup, Faz 4
-    sonraki adım).
+    refresh_if_stale() çağrılması gerekir (bkz. lifespan startup).
     """
     return BM25Index()
+
+
+async def periodic_refresh_loop(
+    index: BM25Index,
+    session_factory: async_sessionmaker[AsyncSession],
+    interval_seconds: int,
+) -> None:
+    """BM25Index'i periyodik olarak tazeler, uygulama kapanana kadar sonsuz döner.
+
+    Her döngüde yeni bir DB session açılır (session'lar arasında paylaşılmaz,
+    kalıcı bir session açık tutulmaz). Bir yenileme denemesi başarısız olursa
+    (örn. geçici DB kesintisi) döngü çökmez — loglanır, bir sonraki cycle'da
+    tekrar denenir. asyncio.CancelledError (lifespan shutdown'da task.cancel()
+    çağrılınca fırlatılır) burada bilerek yakalanmaz, olduğu gibi yukarı
+    fırlatılır ki görev düzgün iptal edilebilsin.
+    """
+    while True:
+        await asyncio.sleep(interval_seconds)
+        try:
+            async with session_factory() as session:
+                await index.refresh_if_stale(session)
+        except SQLAlchemyError as e:
+            logger.warning("BM25 index yenilemesi başarısız, bir sonraki döngüde tekrar denenecek: %s", e)

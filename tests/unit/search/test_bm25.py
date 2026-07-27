@@ -1,7 +1,14 @@
 """backend/services/search/bm25.py için birim testler."""
 
+import asyncio
+from typing import cast
+
+import pytest
+from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
+
 from backend.db.models import Business
-from backend.services.search.bm25 import BM25Index, build_corpus, build_lexical_text
+from backend.services.search.bm25 import BM25Index, build_corpus, build_lexical_text, periodic_refresh_loop
 
 
 def _make_business(
@@ -145,3 +152,52 @@ def test_bm25_index_search_returns_empty_list_for_empty_query_tokens() -> None:
     index.build(businesses, fingerprint=(1, None))
 
     assert index.search("!!!", top_k=10) == []
+
+
+class _FakeSessionCtx:
+    async def __aenter__(self) -> object:
+        return object()
+
+    async def __aexit__(self, *args: object) -> bool:
+        return False
+
+
+class _FakeSessionFactory:
+    def __call__(self) -> _FakeSessionCtx:
+        return _FakeSessionCtx()
+
+
+async def test_periodic_refresh_loop_survives_transient_db_error_and_retries(monkeypatch) -> None:
+    """Bir yenileme denemesi SQLAlchemyError ile başarısız olursa döngü
+    çökmemeli, bir sonraki cycle'da tekrar denemeli."""
+    sleep_count = 0
+
+    async def fake_sleep(seconds: float) -> None:
+        nonlocal sleep_count
+        sleep_count += 1
+        if sleep_count >= 3:
+            # 3. sleep çağrısında kes: 1. ve 2. refresh denemesi zaten
+            # tamamlanmış olur (sleep her zaman refresh'ten ÖNCE çağrılıyor,
+            # 2. sleep'te kesersek 2. refresh hiç başlamamış olurdu).
+            raise asyncio.CancelledError
+
+    monkeypatch.setattr(asyncio, "sleep", fake_sleep)
+
+    index = BM25Index()
+    call_count = 0
+
+    async def fake_refresh_if_stale(session: object) -> bool:
+        nonlocal call_count
+        call_count += 1
+        if call_count == 1:
+            raise SQLAlchemyError("geçici bağlantı hatası")
+        return True
+
+    monkeypatch.setattr(index, "refresh_if_stale", fake_refresh_if_stale)
+    fake_factory = cast(async_sessionmaker[AsyncSession], _FakeSessionFactory())
+
+    with pytest.raises(asyncio.CancelledError):
+        await periodic_refresh_loop(index, fake_factory, interval_seconds=0)
+
+    # 1. deneme hata verdi ama döngü devam etti, 2. deneme başarılı oldu
+    assert call_count == 2

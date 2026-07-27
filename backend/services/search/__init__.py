@@ -22,6 +22,7 @@ from backend.services.search.bm25 import (
     compute_fingerprint,
     fetch_active_businesses,
     get_bm25_index,
+    periodic_refresh_loop,
 )
 from backend.services.search.filters import (
     NearFilter,
@@ -48,6 +49,7 @@ __all__ = [
     "fetch_filtered_business_ids",
     "get_bm25_index",
     "normalize_turkish_text",
+    "periodic_refresh_loop",
     "reciprocal_rank_fusion",
     "search_providers",
     "tokenize",

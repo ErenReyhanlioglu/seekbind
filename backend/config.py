@@ -13,6 +13,9 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 # LLM çağrılarında izin verilen maksimum bekleme süresi (saniye)
 LLM_CALL_TIMEOUT_SECONDS: int = 30
 
+# BM25 index'inin periyodik olarak taze olup olmadığının kontrol edileceği aralık (saniye)
+BM25_REFRESH_INTERVAL_SECONDS: int = 3600
+
 
 class Settings(BaseSettings):
     """.env dosyasından okunan uygulama ayarları."""
@@ -57,6 +60,9 @@ class Settings(BaseSettings):
 
     # LLM çağrı zaman aşımı
     llm_call_timeout_seconds: int = LLM_CALL_TIMEOUT_SECONDS
+
+    # BM25 index yenileme aralığı
+    bm25_refresh_interval_seconds: int = BM25_REFRESH_INTERVAL_SECONDS
 
 
 @lru_cache

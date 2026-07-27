@@ -1,20 +1,43 @@
 """FastAPI uygulamasının giriş noktası."""
 
+import asyncio
 from collections.abc import AsyncIterator
-from contextlib import asynccontextmanager
+from contextlib import asynccontextmanager, suppress
 
 from fastapi import FastAPI
 from fastapi.middleware.gzip import GZipMiddleware
 
 from backend.api.routes import router
+from backend.config import get_settings
 from backend.db.qdrant import get_qdrant_client
-from backend.db.session import get_engine
+from backend.db.session import get_engine, get_session_factory
+from backend.services.search import get_bm25_index, periodic_refresh_loop
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
-    """Kapanışta DB engine'i ve Qdrant client'ını düzgün kapatır (graceful shutdown)."""
+    """Başlangıçta BM25 index'i kurar ve periyodik yenileme görevini başlatır;
+    kapanışta bu görevi + DB engine'i + Qdrant client'ını düzgün kapatır.
+
+    İlk kurulum burada try/except'siz — DB'ye ulaşılamıyorsa uygulama fail-fast
+    çökmeli (sessizce boş bir index'le ayağa kalkmak yerine). Periyodik
+    yenilemedeki geçici hata toleransı periodic_refresh_loop'un kendi işi.
+    """
+    settings = get_settings()
+    bm25_index = get_bm25_index()
+    async with get_session_factory()() as session:
+        await bm25_index.refresh_if_stale(session)
+
+    refresh_task = asyncio.create_task(
+        periodic_refresh_loop(bm25_index, get_session_factory(), settings.bm25_refresh_interval_seconds)
+    )
+
     yield
+
+    refresh_task.cancel()
+    with suppress(asyncio.CancelledError):
+        await refresh_task
+
     await get_engine().dispose()
     await get_qdrant_client().close()
 
