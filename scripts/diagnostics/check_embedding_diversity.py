@@ -12,6 +12,7 @@ import logging
 import random
 import sys
 from collections import defaultdict
+from datetime import datetime
 from pathlib import Path
 
 import numpy as np
@@ -25,7 +26,9 @@ DEFAULT_COLLECTION_NAME: str = "businesses_openai"
 CROSS_CATEGORY_SAMPLE_SIZE: int = 2000
 HIGH_SIMILARITY_WARNING_THRESHOLD: float = 0.95
 SCROLL_PAGE_SIZE: int = 100
-RESULTS_DIR: Path = Path("evaluation/results/diagnostics")
+RESULTS_DIR: Path = Path("evaluation/results/diagnostics/embedding_diversity")
+# Windows dosya sisteminde ":" geçersiz — smoke_test_search.py ile aynı format.
+TIMESTAMP_FORMAT: str = "%Y-%m-%dT%H-%M-%S"
 
 VectorsByCategory = dict[str, list[np.ndarray]]
 
@@ -109,9 +112,17 @@ def build_result(collection_name: str, within: dict[str, float], cross: float, t
 
 
 def write_result(result: dict, collection_name: str) -> Path:
-    """Sonucu evaluation/results/ altına JSON olarak yazar."""
+    """Sonucu evaluation/results/diagnostics/embedding_diversity/ altına JSON olarak yazar.
+
+    Dosya adı zaman damgalı (smoke_test_search.py ile aynı gerekçe) — bu
+    script farklı embedding modelleri karşılaştırılırken (Faz 6) tekrar
+    tekrar çalıştırılacak, önceki bir çalıştırmanın sonucu sessizce
+    kaybolmamalı. collection_name zaten "hangi model" sorusuna cevap
+    veriyor, ayrı bir etikete gerek yok.
+    """
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
-    output_path = RESULTS_DIR / f"embedding_diversity_{collection_name}.json"
+    timestamp = datetime.now().strftime(TIMESTAMP_FORMAT)
+    output_path = RESULTS_DIR / f"{collection_name}_{timestamp}.json"
     output_path.write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8")
     return output_path
 
