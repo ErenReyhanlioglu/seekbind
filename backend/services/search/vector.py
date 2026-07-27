@@ -48,3 +48,37 @@ async def vector_search(
     # her zaman business.id (int) olarak upsert edildiği için (bkz.
     # load_embeddings.py) int()'e daraltmak güvenli.
     return [(int(point.id), point.score) for point in response.points]
+
+
+SCROLL_PAGE_SIZE: int = 200
+
+
+async def fetch_filtered_business_ids(
+    client: AsyncQdrantClient,
+    provider: EmbeddingProvider,
+    extra_filter: Filter | None,
+) -> set[int]:
+    """extra_filter'ı (varsa) sağlayan tüm işletme ID'lerini vektör araması yapmadan döner.
+
+    rank-bm25 kendi başına payload filtering desteklemiyor — BM25 sonuçlarını
+    SearchFilters ile kısıtlamak için bu küme ile kesişim alınır (bkz. service.py).
+    Sadece extra_filter dolu olduğunda çağrılmalı; boşsa BM25 corpus'u zaten
+    sadece aktif işletmelerden kurulu (bkz. bm25.fetch_active_businesses),
+    ekstra bir sorguya gerek yok.
+    """
+    collection_name = get_qdrant_collection_name(provider)
+    ids: set[int] = set()
+    offset = None
+    while True:
+        points, offset = await client.scroll(
+            collection_name=collection_name,
+            scroll_filter=_build_active_only_filter(extra_filter),
+            limit=SCROLL_PAGE_SIZE,
+            offset=offset,
+            with_payload=False,
+            with_vectors=False,
+        )
+        ids.update(int(point.id) for point in points)
+        if offset is None:
+            break
+    return ids
