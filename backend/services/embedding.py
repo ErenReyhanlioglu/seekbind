@@ -77,3 +77,15 @@ def get_embedding_provider() -> EmbeddingProvider:
     eklenince burada config'e göre seçim yapılacak.
     """
     return OpenAIEmbedding()
+
+
+QDRANT_COLLECTION_PREFIX: str = "businesses"
+
+
+def get_qdrant_collection_name(provider: EmbeddingProvider) -> str:
+    """Sağlayıcıya göre Qdrant collection adını üretir (örn. 'businesses_openai').
+
+    load_embeddings.py ve arama tarafı (search.py) aynı collection'ı aynı
+    isimlendirme kuralıyla bulsun diye tek yerden üretilir.
+    """
+    return f"{QDRANT_COLLECTION_PREFIX}_{provider.name}"
