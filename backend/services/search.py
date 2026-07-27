@@ -10,9 +10,11 @@ import re
 from dataclasses import dataclass
 from datetime import datetime
 from functools import lru_cache
+from typing import Literal
 
+from pydantic import BaseModel
 from qdrant_client import AsyncQdrantClient
-from qdrant_client.models import Condition, FieldCondition, Filter, MatchValue
+from qdrant_client.models import Condition, FieldCondition, Filter, GeoPoint, GeoRadius, MatchValue, Range
 from rank_bm25 import BM25Okapi
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -22,6 +24,8 @@ from backend.services.embedding import EmbeddingProvider, get_qdrant_collection_
 
 Fingerprint = tuple[int, datetime | None]
 _EMPTY_FINGERPRINT: Fingerprint = (0, None)
+
+METERS_PER_KM: int = 1000
 
 _TURKISH_UPPERCASE_MAP: dict[str, str] = {"İ": "i", "I": "ı"}
 _NON_WORD_PATTERN: re.Pattern[str] = re.compile(r"[^\w\s]", re.UNICODE)
@@ -167,6 +171,69 @@ class BM25Index:
         pairs = [(business_id, float(score)) for business_id, score in zip(snapshot.business_ids, scores, strict=True)]
         ranked = sorted(pairs, key=lambda pair: pair[1], reverse=True)
         return ranked[:top_k]
+
+
+class NearFilter(BaseModel):
+    """Kullanıcının konumuna göre mesafe filtresi.
+
+    Kullanıcının koordinatını nereden aldığı (login, LLM'in 'yakınımda'
+    sorgusunu ayrıştırması vb.) search-service'i ilgilendirmez — sadece
+    hazır bir (lat, lon, yarıçap) üçlüsü kabul eder.
+    """
+
+    latitude: float
+    longitude: float
+    radius_km: float
+
+
+class SearchFilters(BaseModel):
+    """Aramaya uygulanacak kesin (hard) filtreler — Qdrant payload filtering ile uygulanır."""
+
+    min_price: int | None = None
+    max_price: int | None = None
+    gender: Literal["female", "male", "unisex"] | None = None
+    category: str | None = None
+    online_only: bool = False
+    weekend_open_only: bool = False
+    near: NearFilter | None = None
+
+
+def translate_filters_to_qdrant(filters: SearchFilters) -> Filter | None:
+    """SearchFilters'ı Qdrant'ın Filter/FieldCondition nesnelerine çevirir.
+
+    Fiyat, min_price/max_price ile business.price_min/price_max arasında
+    aralık örtüşmesi (overlap) olarak modellenir — kullanıcının bütçesiyle
+    işletmenin fiyat aralığının kesişip kesişmediğine bakılır, tek bir
+    noktaya eşitlik değil.
+    """
+    conditions: list[Condition] = []
+
+    if filters.max_price is not None:
+        conditions.append(FieldCondition(key="price_min", range=Range(lte=filters.max_price)))
+    if filters.min_price is not None:
+        conditions.append(FieldCondition(key="price_max", range=Range(gte=filters.min_price)))
+    if filters.gender is not None:
+        conditions.append(FieldCondition(key="gender", match=MatchValue(value=filters.gender)))
+    if filters.category is not None:
+        conditions.append(FieldCondition(key="type_normalized", match=MatchValue(value=filters.category)))
+    if filters.online_only:
+        conditions.append(FieldCondition(key="online_available", match=MatchValue(value=True)))
+    if filters.weekend_open_only:
+        conditions.append(FieldCondition(key="open_weekend", match=MatchValue(value=True)))
+    if filters.near is not None:
+        conditions.append(
+            FieldCondition(
+                key="location",
+                geo_radius=GeoRadius(
+                    center=GeoPoint(lon=filters.near.longitude, lat=filters.near.latitude),
+                    radius=filters.near.radius_km * METERS_PER_KM,
+                ),
+            )
+        )
+
+    if not conditions:
+        return None
+    return Filter(must=conditions)
 
 
 def _build_active_only_filter(extra_filter: Filter | None) -> Filter:
