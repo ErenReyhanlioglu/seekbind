@@ -12,7 +12,7 @@ from datetime import datetime
 from functools import lru_cache
 
 from qdrant_client import AsyncQdrantClient
-from qdrant_client.models import FieldCondition, Filter, MatchValue
+from qdrant_client.models import Condition, FieldCondition, Filter, MatchValue
 from rank_bm25 import BM25Okapi
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -161,9 +161,11 @@ class BM25Index:
         if not query_tokens:
             return []
         scores = snapshot.bm25.get_scores(query_tokens)
-        ranked = sorted(
-            zip(snapshot.business_ids, scores, strict=True), key=lambda pair: pair[1], reverse=True
-        )
+        # get_scores numpy.float64 döner, native float'a çeviriyoruz (Pylance
+        # reportReturnType) — RRF'de bunları başka skorlarla karşılaştırırken
+        # de tip tutarlılığı için önemli.
+        pairs = [(business_id, float(score)) for business_id, score in zip(snapshot.business_ids, scores, strict=True)]
+        ranked = sorted(pairs, key=lambda pair: pair[1], reverse=True)
         return ranked[:top_k]
 
 
@@ -172,10 +174,19 @@ def _build_active_only_filter(extra_filter: Filter | None) -> Filter:
 
     is_active her arama isteğinde uygulanmalı — çağıranın SearchFilters'a
     eklemeyi unutabileceği bir kısıt değil, aramanın kendisinin garantisi.
+
+    Qdrant'ın Filter.must alanı tek bir Condition ya da Condition listesi
+    olabilir (List değil) — sadece liste varsayıp .extend() çağırmak, tekil
+    bir Condition geldiğinde (örn. ileride translate_filters_to_qdrant tek
+    koşullu bir filtre üretirse) sessizce yanlış davranırdı.
     """
-    must_conditions: list[FieldCondition] = [FieldCondition(key="is_active", match=MatchValue(value=True))]
-    if extra_filter is not None and extra_filter.must:
-        must_conditions.extend(extra_filter.must)
+    must_conditions: list[Condition] = [FieldCondition(key="is_active", match=MatchValue(value=True))]
+    if extra_filter is not None and extra_filter.must is not None:
+        extra_must = extra_filter.must
+        if isinstance(extra_must, list):
+            must_conditions.extend(extra_must)
+        else:
+            must_conditions.append(extra_must)
     return Filter(must=must_conditions)
 
 
@@ -196,7 +207,10 @@ async def vector_search(
         limit=top_k,
         with_payload=False,
     )
-    return [(point.id, point.score) for point in response.points]
+    # point.id Qdrant'ta ExtendedPointId (int | UUID str) — bu projede
+    # her zaman business.id (int) olarak upsert edildiği için (bkz.
+    # load_embeddings.py) int()'e daraltmak güvenli.
+    return [(int(point.id), point.score) for point in response.points]
 
 
 @lru_cache

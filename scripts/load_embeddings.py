@@ -11,7 +11,7 @@ import asyncio
 import logging
 
 from qdrant_client import AsyncQdrantClient
-from qdrant_client.models import Distance, PointStruct, VectorParams
+from qdrant_client.models import Distance, GeoPoint, PayloadSchemaType, PointStruct, VectorParams
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -44,9 +44,27 @@ def build_embedding_text(business: Business) -> str:
     return "\n".join(part for part in parts if part)
 
 
+def is_open_weekend(working_hours: dict) -> bool:
+    """Cumartesi ya da pazar açılış saati tanımlıysa True döner.
+
+    scripts/synthetic/tags.py'deki "hafta sonu açık" etiketiyle aynı
+    mantık — yeni bir hesaplama icat etmiyoruz.
+    """
+    saturday_open = working_hours.get("saturday", {}).get("open")
+    sunday_open = working_hours.get("sunday", {}).get("open")
+    return saturday_open is not None or sunday_open is not None
+
+
+def build_geo_point(business: Business) -> GeoPoint | None:
+    """İşletmenin koordinatlarından Qdrant GeoPoint'i üretir, koordinat yoksa None döner."""
+    if business.latitude is None or business.longitude is None:
+        return None
+    return GeoPoint(lon=business.longitude, lat=business.latitude)
+
+
 def build_payload(business: Business) -> dict:
     """Qdrant point'ine eklenecek, sorgu anında filtrelenebilecek payload'ı üretir."""
-    return {
+    payload: dict = {
         "place_id": business.place_id,
         "type_normalized": business.type_normalized,
         "price_min": business.price_min,
@@ -55,7 +73,12 @@ def build_payload(business: Business) -> dict:
         "gender": business.gender,
         "tags": business.tags,
         "is_active": business.is_active,
+        "open_weekend": is_open_weekend(business.working_hours),
     }
+    geo_point = build_geo_point(business)
+    if geo_point is not None:
+        payload["location"] = geo_point.model_dump()
+    return payload
 
 
 def chunk(items: list, size: int) -> list[list]:
@@ -78,6 +101,21 @@ async def ensure_collection(client: AsyncQdrantClient, collection_name: str, dim
             vectors_config=VectorParams(size=dimension, distance=Distance.COSINE),
         )
         logger.info("Collection oluşturuldu: %s (boyut=%d)", collection_name, dimension)
+
+
+async def ensure_geo_index(client: AsyncQdrantClient, collection_name: str) -> None:
+    """'location' alanı için geo payload index'i kurar (yoksa oluşturur, varsa dokunmaz).
+
+    GeoRadius filtresiyle konum bazlı arama yapabilmek için gerekli —
+    478 kayıtta zorunlu değil ama doğru pratik, veri büyüdükçe sorun
+    çıkarmaz. create_payload_index zaten var olan bir index için
+    çağrılırsa no-op'tur (idempotent).
+    """
+    await client.create_payload_index(
+        collection_name=collection_name,
+        field_name="location",
+        field_schema=PayloadSchemaType.GEO,
+    )
 
 
 async def embed_and_upsert_batch(
@@ -105,6 +143,7 @@ async def main() -> None:
     collection_name = get_qdrant_collection_name(provider)
 
     await ensure_collection(qdrant_client, collection_name, provider.dimension)
+    await ensure_geo_index(qdrant_client, collection_name)
 
     session_factory = get_session_factory()
     async with session_factory() as session:
