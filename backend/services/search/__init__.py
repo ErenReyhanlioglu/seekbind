@@ -7,7 +7,7 @@ docs/roadmap.md "Önemli kararlar" bölümü.
 
 Alt modüller: text (normalizasyon), bm25 (lexical index), vector
 (semantik arama), filters (SearchFilters), availability (tarih/saat
-müsaitliği, iki fazlı filtrelemenin ikinci fazı).
+müsaitliği, iki fazlı filtrelemenin ikinci fazı), fusion (RRF).
 """
 
 from backend.services.search.availability import (
@@ -23,6 +23,7 @@ from backend.services.search.bm25 import (
     get_bm25_index,
 )
 from backend.services.search.filters import NearFilter, SearchFilters, translate_filters_to_qdrant
+from backend.services.search.fusion import reciprocal_rank_fusion
 from backend.services.search.text import normalize_turkish_text, tokenize
 from backend.services.search.vector import vector_search
 
@@ -38,6 +39,7 @@ __all__ = [
     "fetch_available_business_ids",
     "get_bm25_index",
     "normalize_turkish_text",
+    "reciprocal_rank_fusion",
     "tokenize",
     "translate_filters_to_qdrant",
     "vector_search",
