@@ -28,14 +28,16 @@ Durum işaretleri: ✅ tamamlandı · ⏳ sırada · ⬜ planlı
 
 - ✅ `feature/search-service` — semantic + hybrid search (BM25 + vektör); kesin filtreler (konum/gün/fiyat) Qdrant payload filtering ile vektör aramasından önce uygulanacak
 - ✅ `feature/reranker` — cross-encoder reranking (Jina AI hosted rerank API, `jina-reranker-v3` — yerel bir model yerine, gerekçe [ADR-0013](adr/0013-reranker-provider-selection.md)'te)
-- ⏳ `feature/llm-service` — GPT-4o-mini/Qwen3/Turkish-LLM seçim mantığı (runtime); GPT-4o-mini bilinçli bir seçim — bütçe ve evaluator bağımsızlığı gerekçesiyle, bkz. [ADR-0008](adr/0008-llm-comparison-phase-4.md)
-- ⬜ `feature/langfuse-integration` — Langfuse SDK'sının backend'e bağlanması (`core/monitoring.py`) — docker-compose'da servis ayakta ama backend'e henüz hiç bağlanmadı
+- ⏳ `feature/llm-service` — GPT-4o-mini/Qwen3/Turkish-LLM seçim mantığı (runtime); GPT-4o-mini bilinçli bir seçim — bütçe ve evaluator bağımsızlığı gerekçesiyle, bkz. [ADR-0008](adr/0008-llm-comparison-phase-4.md). Minimal Langfuse izleme (`core/monitoring.py` + `langfuse.openai` sarmalayıcı) bu branch'e dahil edildi — otomatik fallback yok, kapsam bilinçli olarak dar tutuldu
+- ⬜ `feature/langfuse-integration` — `feature/llm-service`'teki minimal izlemenin üzerine daha zengin entegrasyon (dashboard, yapılandırılmış metadata şemaları, maliyet takip UI'ı) — temel bağlantı zaten kuruldu, bu branch onu genişletiyor
 - ⬜ `feature/rag-pipeline` — RAG orkestrasyon (intent parsing + öneri üretimi — projenin asıl LLM testi)
 - ⬜ `feature/calendar-service` — slot/çakışma kontrolü
 - ⬜ `feature/tool-calling` — `tools.py` (calendar-service'i LLM'e tool olarak sunar)
+- ⬜ `test/api-integration` — `tests/integration/test_api.py`; gerçek HTTP istekleriyle uçtan uca endpoint testleri (routing + `Depends()` + Pydantic response şeması + status code). `/health` dışında endpoint olmadığı için şu an yazılamaz — rag-pipeline/calendar-service/tool-calling'in hepsi bitip API yüzeyi tamamlanınca, Faz 4'ün kapanışı olarak buraya kondu
 
 ## Faz 5 — Dayanıklılık & Güvenlik
 
+- ⬜ `test/db-integration` — `tests/integration/test_db.py`; gerçek Postgres'e karşı sorgu testleri (N+1 kontrolü dahil — unit testteki mock'lu session gerçek sorgu sayısını göremez). DB modelleri/migration'lar Faz 2'de tamamlandığı için blokajı yok, `ci-setup`'tan önce burada olması mantıklı — CI'ın container wiring'ine somut bir şey verir
 - ⬜ `feature/cache-layer` — embedding/sonuç cache'leme
 - ⬜ `feature/fallback-mechanism` — hata yönetimi + fallback zinciri
 - ⬜ `feature/middleware` — rate limiting + prompt injection filtresi

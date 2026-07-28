@@ -223,7 +223,12 @@ def main(limit: int | None = None) -> None:
     results: dict[str, ProcessedBusinessRecord] = dict(already_enriched)
     for i, batch in enumerate(batches, start=1):
         for record in enrich_batch(
-            client, header_template, entry_template, batch, settings.openai_llm_model, settings.llm_call_timeout_seconds
+            client,
+            header_template,
+            entry_template,
+            batch,
+            settings.openai_enrichment_llm_model,
+            settings.llm_call_timeout_seconds,
         ):
             results[record.place_id] = record
         logger.info("Batch %d/%d tamamlandı (tip=%s, adet=%d)", i, len(batches), batch[0].type_normalized, len(batch))

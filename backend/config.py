@@ -6,12 +6,18 @@ hardcoded yazılmaz.
 """
 
 from functools import lru_cache
+from typing import Literal
 
 from pydantic import SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 # LLM çağrılarında izin verilen maksimum bekleme süresi (saniye)
 LLM_CALL_TIMEOUT_SECONDS: int = 30
+
+# Dış LLM API'sine (OpenAI/Ollama) izin verilen maksimum eşzamanlı istek
+# sayısı — sınırsız bırakılırsa soket tükenmesi / sağlayıcı rate limit'ine
+# (429) çarpma riski var
+LLM_MAX_CONCURRENT_CALLS: int = 5
 
 # BM25 index'inin periyodik olarak taze olup olmadığının kontrol edileceği aralık (saniye)
 BM25_REFRESH_INTERVAL_SECONDS: int = 3600
@@ -49,12 +55,17 @@ class Settings(BaseSettings):
     # OpenAI
     openai_api_key: SecretStr
     openai_embedding_model: str
-    openai_llm_model: str
+    openai_llm_model: str  # runtime aday — gpt-4o-mini (bkz. docs/adr/0008-llm-comparison-phase-4.md)
+    openai_enrichment_llm_model: str  # veri zenginleştirme, ADR-0001 ile sabit — gpt-4.1-mini
 
-    # Ollama (fallback)
+    # Ollama (yerel sağlayıcı — Qwen3 7B / Turkish-LLM 7B, hangisi test
+    # ediliyorsa OLLAMA_LLM_MODEL'e elle yazılır)
     ollama_base_url: str
     ollama_embedding_model: str
     ollama_llm_model: str
+
+    # Aktif LLM sağlayıcısı (bkz. docs/adr/0008-llm-comparison-phase-4.md)
+    active_llm_provider: Literal["openai", "ollama"] = "openai"
 
     # Jina AI (reranker)
     jina_api_key: SecretStr
@@ -72,6 +83,9 @@ class Settings(BaseSettings):
 
     # LLM çağrı zaman aşımı
     llm_call_timeout_seconds: int = LLM_CALL_TIMEOUT_SECONDS
+
+    # LLM çağrılarında eşzamanlı istek sınırı
+    llm_max_concurrent_calls: int = LLM_MAX_CONCURRENT_CALLS
 
     # BM25 index yenileme aralığı
     bm25_refresh_interval_seconds: int = BM25_REFRESH_INTERVAL_SECONDS

@@ -41,11 +41,11 @@ seekbind/
 │   │   └── schemas.py            — Pydantic modeller
 │   │
 │   ├── core/
-│   │   └── monitoring.py         — Langfuse entegrasyonu
+│   │   └── monitoring.py         — Langfuse entegrasyonu (minimal izleme; `langfuse.openai` sarmalayıcı ile)
 │   │
 │   ├── services/
 │   │   ├── embedding.py          — Protocol ile soyutlanmış embedding sağlayıcıları (şu an: OpenAI)
-│   │   ├── llm.py                — gpt-4.1-mini / Qwen3 / Turkish-LLM seçimi
+│   │   ├── llm.py                — Protocol ile soyutlanmış LLM sağlayıcıları; gpt-4o-mini / Qwen3 / Turkish-LLM seçimi (ADR-0008)
 │   │   ├── tools.py              — tool calling fonksiyonları
 │   │   ├── search/                — hybrid (semantic + lexical) arama, 300 satır kuralı için pakete bölündü
 │   │   │   ├── __init__.py       — public re-export'lar (search_providers dahil)
