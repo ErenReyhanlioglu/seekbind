@@ -23,7 +23,10 @@ seekbind/
 │   ├── file_tree.md              — bu dosya
 │   ├── tech_stack.md             — teknoloji listesi
 │   ├── terminal_cheatsheet.md    — git/uv/docker komut referansı
-│   └── roadmap.md                — faz/branch planı, önemli kararlar
+│   ├── roadmap.md                — faz/branch planı
+│   └── adr/                      — mimari kararlar (ADR), her karar kendi dosyasında
+│       ├── README.md             — ADR indeksi + format açıklaması
+│       └── 0000-...-0013-...md   — numaralı, ADR dosyaları
 │
 ├── data/
 │   ├── raw/                      — SerpAPI ham çıktıları
