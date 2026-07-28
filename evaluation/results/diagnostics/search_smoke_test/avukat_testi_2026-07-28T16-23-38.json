@@ -1,0 +1,495 @@
+{
+  "label": "avukat_testi",
+  "timestamp": "2026-07-28T16-23-38",
+  "scenarios": [
+    {
+      "title": "Özel sorgu: boşanmak istiyorum avukat lazım",
+      "total_candidates": 40,
+      "results": [
+        {
+          "rank": 1,
+          "title": "Avukat Mehmet Can AKYILDIZ",
+          "price_min": 14520,
+          "price_max": 19243,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 2,
+          "title": "Avukat Mehmet Fatih ŞAHİN - İzmit / KOCAELİ",
+          "price_min": 17182,
+          "price_max": 19930,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 3,
+          "title": "Avukat Özge Dörcü | Kocaeli Avukat- İzmit Avukat | İzmit Boşanma, Gayrimenkul, İş, Kira, Ceza Avukatı",
+          "price_min": 10233,
+          "price_max": 13879,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 4,
+          "title": "izmit Avukat Adem Çeçen | Kocaeli Boşanma Avukatı - İzmit Ceza Avukatı - Kocaeli Miras Avukatı",
+          "price_min": 4295,
+          "price_max": 8174,
+          "rating": 4.8,
+          "distance_km": null
+        },
+        {
+          "rank": 5,
+          "title": "Sakaoğlu Hukuk Bürosu | İzmit Boşanma Avukatı- Ceza Hukuku - İzmit Miras Avukatı - İzmit İş Avukatı | Mal Paylaşım Avukatı",
+          "price_min": 13267,
+          "price_max": 16541,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 6,
+          "title": "Kocaeli Avukat Zihni Tolga Şenol | İzmit Avukat | Kocaeli Kira Avukatı | Kocaeli Ceza Avukatı | Miras,Gayrimenkul Avukatı",
+          "price_min": 2665,
+          "price_max": 17193,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 7,
+          "title": "Avukat Nazlıcan Üstbaş",
+          "price_min": 11175,
+          "price_max": 14738,
+          "rating": 4.9,
+          "distance_km": null
+        },
+        {
+          "rank": 8,
+          "title": "Kocaeli Avukat | İzmit Avukat | A&G HUKUK BÜROSU",
+          "price_min": 4088,
+          "price_max": 14695,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 9,
+          "title": "Sağlam & Yılmaz Avukatlık Bürosu İzmit/Kocaeli",
+          "price_min": 11727,
+          "price_max": 19452,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 10,
+          "title": "Aktepe & Yavuz Hukuk Bürosu | Kocaeli/İzmit Avukat | Koceli Boşanma Avukatı | Kocaeli Miras Avukatı | Ceza Avukatı",
+          "price_min": 15155,
+          "price_max": 18873,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 11,
+          "title": "Avukat Ayşe Nur EFE AKYÜZ Hukuk Bürosu İzmit / Kocaeli",
+          "price_min": 2361,
+          "price_max": 18244,
+          "rating": 4.9,
+          "distance_km": null
+        },
+        {
+          "rank": 12,
+          "title": "Yiğit Hukuk Bürosu - Avukat Aleyna Yiğit",
+          "price_min": 13645,
+          "price_max": 16524,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 13,
+          "title": "İzmit Avukat - Kocaeli Avukat & Eksen Hukuk Bürosu",
+          "price_min": 16772,
+          "price_max": 19912,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 14,
+          "title": "Kocaeli Avukat | Çelik Hukuk & Danışmanlık Bürosu",
+          "price_min": 13034,
+          "price_max": 17372,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 15,
+          "title": "KOCAELİ İZMİT AVUKAT MUSTAFA GAFFAR TANYILDIZ",
+          "price_min": 2209,
+          "price_max": 15244,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 16,
+          "title": "Kocaeli Avukat | İzmit Avukat Fatih AKBAŞ | Kocaeli Kira Avukatı - Kocaeli Ceza Avukatı",
+          "price_min": 9812,
+          "price_max": 12803,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 17,
+          "title": "AV. ALİCAN KARAÇAY- KARAÇAY HUKUK & DANIŞMANLIK- KOCAELİ AVUKAT",
+          "price_min": 16108,
+          "price_max": 19803,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 18,
+          "title": "KORKUT HUKUK VE ARABULUCULUK / Kocaeli Avukat Ofisi",
+          "price_min": 4610,
+          "price_max": 10340,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 19,
+          "title": "Av. Hüseyin KAYA Hukuk ve Danışmanlık Bürosu - KOCAELİ AVUKAT",
+          "price_min": 10165,
+          "price_max": 14981,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 20,
+          "title": "UYANIK HUKUK BÜROSU AVUKAT ONUR UYANIK İZMİT KOCAELİ",
+          "price_min": 16002,
+          "price_max": 19661,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 21,
+          "title": "Özel Kocaeli Diş Polikliniği",
+          "price_min": 576,
+          "price_max": 5779,
+          "rating": 4.3,
+          "distance_km": null
+        },
+        {
+          "rank": 22,
+          "title": "Özel Kocaeli Arma Ağız ve Diş Sağlığı Polikliniği",
+          "price_min": 3497,
+          "price_max": 5602,
+          "rating": 4.6,
+          "distance_km": null
+        },
+        {
+          "rank": 23,
+          "title": "AKTAN MALİ MÜŞAVIRLİK Serbest Muhasebeci Mali Müşavir Ercan AKTAN\"",
+          "price_min": 1569,
+          "price_max": 3861,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 24,
+          "title": "Diş Hekimi Tarık Can Kara , İzmit/Kocaeli",
+          "price_min": 753,
+          "price_max": 2392,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 25,
+          "title": "DentAtlas Ağız Ve Diş Sağlığı Polikliniği",
+          "price_min": 950,
+          "price_max": 6033,
+          "rating": 4.8,
+          "distance_km": null
+        },
+        {
+          "rank": 26,
+          "title": "Serbest Muhasebeci Mali Müşavir YUNUS ALKAN",
+          "price_min": 1773,
+          "price_max": 4969,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 27,
+          "title": "Kocaeli Serbest Muhasebeci Mali Müşavirler Odası",
+          "price_min": 3811,
+          "price_max": 4787,
+          "rating": 4.0,
+          "distance_km": null
+        },
+        {
+          "rank": 28,
+          "title": "Dentriva Diş Yahyakaptan - İzmit İmplant-İzmit Nöbetçi Diş-İzmit Diş Teli-İzmit Çocuk Diş-İzmit Ortodonti-İzmit Pedodonti",
+          "price_min": 5057,
+          "price_max": 6738,
+          "rating": 4.8,
+          "distance_km": null
+        },
+        {
+          "rank": 29,
+          "title": "MEHMET AKTAN MALİ MÜŞAVİRLİK BÜROSU",
+          "price_min": 4266,
+          "price_max": 4985,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 30,
+          "title": "Serbest Muhasebeci Mali Müşavir Atilla YILMAZ",
+          "price_min": 2714,
+          "price_max": 4637,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 31,
+          "title": "Özel Marka Ağız ve Diş Sağlığı Polikliniği",
+          "price_min": 3098,
+          "price_max": 4950,
+          "rating": 4.2,
+          "distance_km": null
+        },
+        {
+          "rank": 32,
+          "title": "Yahyakaptan Diş Hekimi Aydın Cevizli- İzmit Nöbetçi Diş - Kocaeli İzmit Acil 7/24 Diş Kliniği -İzmit özel Diş Hastanesi",
+          "price_min": 5369,
+          "price_max": 7077,
+          "rating": 4.9,
+          "distance_km": null
+        },
+        {
+          "rank": 33,
+          "title": "Diş Hekimi Uğur Ümit - İzmit Nöbetçi Dişçi | Kocaeli 7/24 Açık Acil Özel Diş Hastanesi",
+          "price_min": 4662,
+          "price_max": 6049,
+          "rating": 4.9,
+          "distance_km": null
+        },
+        {
+          "rank": 34,
+          "title": "Serbest Muhasebeci Mali Müşavir - Esra İlgili",
+          "price_min": 1192,
+          "price_max": 3221,
+          "rating": null,
+          "distance_km": null
+        },
+        {
+          "rank": 35,
+          "title": "Yeni Ufuklar Sürücü Kursu",
+          "price_min": 14141,
+          "price_max": 19634,
+          "rating": 4.9,
+          "distance_km": null
+        },
+        {
+          "rank": 36,
+          "title": "Bimser Sürücü Kursu",
+          "price_min": 9541,
+          "price_max": 15598,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 37,
+          "title": "Serbest Muhasebeci Mali Müşavir Erkan KÜÇÜK",
+          "price_min": 3079,
+          "price_max": 5000,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 38,
+          "title": "Serbest Muhasebeci Mali̇ Müşavi̇r",
+          "price_min": 3826,
+          "price_max": 4992,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 39,
+          "title": "SERBEST MUHASEBECİ MALİ MÜŞAVİR AYLİN AKDENİZ",
+          "price_min": 4255,
+          "price_max": 4866,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 40,
+          "title": "Dentizmit Ağız ve Diş Sağlığı Polikliniği - Dent İzmit Diş Sağlığı",
+          "price_min": 5079,
+          "price_max": 6391,
+          "rating": 4.7,
+          "distance_km": null
+        }
+      ]
+    }
+  ],
+  "diagnostics": [
+    {
+      "query": "boşanmak istiyorum avukat lazım",
+      "filters": {
+        "online_only": false,
+        "weekend_open_only": false
+      },
+      "vector_top": [
+        {
+          "rank": 1,
+          "title": "Avukat Mehmet Fatih ŞAHİN - İzmit / KOCAELİ",
+          "score": 0.5201439
+        },
+        {
+          "rank": 2,
+          "title": "Avukat Mehmet Can AKYILDIZ",
+          "score": 0.5157974
+        },
+        {
+          "rank": 3,
+          "title": "Avukat Ayşe Nur EFE AKYÜZ Hukuk Bürosu İzmit / Kocaeli",
+          "score": 0.5103035
+        },
+        {
+          "rank": 4,
+          "title": "Avukat Özge Dörcü | Kocaeli Avukat- İzmit Avukat | İzmit Boşanma, Gayrimenkul, İş, Kira, Ceza Avukatı",
+          "score": 0.4999089
+        },
+        {
+          "rank": 5,
+          "title": "Aktepe & Yavuz Hukuk Bürosu | Kocaeli/İzmit Avukat | Koceli Boşanma Avukatı | Kocaeli Miras Avukatı | Ceza Avukatı",
+          "score": 0.49017832
+        },
+        {
+          "rank": 6,
+          "title": "Avukat Nazlıcan Üstbaş",
+          "score": 0.48486605
+        },
+        {
+          "rank": 7,
+          "title": "UYANIK HUKUK BÜROSU AVUKAT ONUR UYANIK İZMİT KOCAELİ",
+          "score": 0.47603157
+        },
+        {
+          "rank": 8,
+          "title": "Sakaoğlu Hukuk Bürosu | İzmit Boşanma Avukatı- Ceza Hukuku - İzmit Miras Avukatı - İzmit İş Avukatı | Mal Paylaşım Avukatı",
+          "score": 0.47436234
+        },
+        {
+          "rank": 9,
+          "title": "Yiğit Hukuk Bürosu - Avukat Aleyna Yiğit",
+          "score": 0.46639046
+        },
+        {
+          "rank": 10,
+          "title": "İzmit Avukat - Kocaeli Avukat & Eksen Hukuk Bürosu",
+          "score": 0.46296856
+        },
+        {
+          "rank": 11,
+          "title": "Kocaeli Avukat Zihni Tolga Şenol | İzmit Avukat | Kocaeli Kira Avukatı | Kocaeli Ceza Avukatı | Miras,Gayrimenkul Avukatı",
+          "score": 0.46231586
+        },
+        {
+          "rank": 12,
+          "title": "izmit Avukat Adem Çeçen | Kocaeli Boşanma Avukatı - İzmit Ceza Avukatı - Kocaeli Miras Avukatı",
+          "score": 0.4531073
+        },
+        {
+          "rank": 13,
+          "title": "Kocaeli Avukat | İzmit Avukat | A&G HUKUK BÜROSU",
+          "score": 0.4520694
+        },
+        {
+          "rank": 14,
+          "title": "Kocaeli Avukat | İzmit Avukat Fatih AKBAŞ | Kocaeli Kira Avukatı - Kocaeli Ceza Avukatı",
+          "score": 0.4511865
+        },
+        {
+          "rank": 15,
+          "title": "Sağlam & Yılmaz Avukatlık Bürosu İzmit/Kocaeli",
+          "score": 0.4398157
+        }
+      ],
+      "bm25_top": [
+        {
+          "rank": 1,
+          "title": "Kocaeli Avukat Zihni Tolga Şenol | İzmit Avukat | Kocaeli Kira Avukatı | Kocaeli Ceza Avukatı | Miras,Gayrimenkul Avukatı",
+          "score": 6.157988789429876
+        },
+        {
+          "rank": 2,
+          "title": "Avukat Mehmet Fatih ŞAHİN - İzmit / KOCAELİ",
+          "score": 5.566942657766309
+        },
+        {
+          "rank": 3,
+          "title": "Avukat Özge Dörcü | Kocaeli Avukat- İzmit Avukat | İzmit Boşanma, Gayrimenkul, İş, Kira, Ceza Avukatı",
+          "score": 5.511023102587074
+        },
+        {
+          "rank": 4,
+          "title": "Avukat Mehmet Can AKYILDIZ",
+          "score": 5.444745842091234
+        },
+        {
+          "rank": 5,
+          "title": "AV. ALİCAN KARAÇAY- KARAÇAY HUKUK & DANIŞMANLIK- KOCAELİ AVUKAT",
+          "score": 5.3856373000329825
+        },
+        {
+          "rank": 6,
+          "title": "Yiğit Hukuk Bürosu - Avukat Aleyna Yiğit",
+          "score": 5.3469394672295465
+        },
+        {
+          "rank": 7,
+          "title": "Kocaeli Avukat | İzmit Avukat Fatih AKBAŞ | Kocaeli Kira Avukatı - Kocaeli Ceza Avukatı",
+          "score": 5.308793784035974
+        },
+        {
+          "rank": 8,
+          "title": "Avukat Nazlıcan Üstbaş",
+          "score": 5.271188516863935
+        },
+        {
+          "rank": 9,
+          "title": "Kocaeli Avukat | İzmit Avukat | A&G HUKUK BÜROSU",
+          "score": 5.161502758771488
+        },
+        {
+          "rank": 10,
+          "title": "Avukat Ayşe Nur EFE AKYÜZ Hukuk Bürosu İzmit / Kocaeli",
+          "score": 5.090880222097872
+        },
+        {
+          "rank": 11,
+          "title": "Bimser Sürücü Kursu",
+          "score": 5.036349107380423
+        },
+        {
+          "rank": 12,
+          "title": "Yeni Ufuklar Sürücü Kursu",
+          "score": 4.884542581620488
+        },
+        {
+          "rank": 13,
+          "title": "UYANIK HUKUK BÜROSU AVUKAT ONUR UYANIK İZMİT KOCAELİ",
+          "score": 4.779059205791372
+        },
+        {
+          "rank": 14,
+          "title": "Kocaeli Avukat | Çelik Hukuk & Danışmanlık Bürosu",
+          "score": 4.688722863211168
+        },
+        {
+          "rank": 15,
+          "title": "KOCAELİ İZMİT AVUKAT MUSTAFA GAFFAR TANYILDIZ",
+          "score": 4.644823390639986
+        }
+      ]
+    }
+  ]
+}

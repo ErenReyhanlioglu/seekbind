@@ -1,0 +1,495 @@
+{
+  "label": "mesafe_testi",
+  "timestamp": "2026-07-28T16-24-24",
+  "scenarios": [
+    {
+      "title": "Özel sorgu: en yakın berbere gitmek istiyorum",
+      "total_candidates": 40,
+      "results": [
+        {
+          "rank": 1,
+          "title": "The Barber House",
+          "price_min": 103,
+          "price_max": 181,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 2,
+          "title": "Berber UNE",
+          "price_min": 247,
+          "price_max": 307,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 3,
+          "title": "Yıldız Erkek Kuaförü Ercan",
+          "price_min": 265,
+          "price_max": 336,
+          "rating": 4.3,
+          "distance_km": null
+        },
+        {
+          "rank": 4,
+          "title": "LİVA BERBER",
+          "price_min": 317,
+          "price_max": 385,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 5,
+          "title": "Kocaeli İzmit Business Berber Shop",
+          "price_min": 354,
+          "price_max": 399,
+          "rating": 4.8,
+          "distance_km": null
+        },
+        {
+          "rank": 6,
+          "title": "Kuaför Kübra Aydin",
+          "price_min": 660,
+          "price_max": 922,
+          "rating": 4.5,
+          "distance_km": null
+        },
+        {
+          "rank": 7,
+          "title": "Men's grooming güngör Akıncı barber business",
+          "price_min": 202,
+          "price_max": 297,
+          "rating": 4.9,
+          "distance_km": null
+        },
+        {
+          "rank": 8,
+          "title": "THE AZOO BARBER SHOP",
+          "price_min": 349,
+          "price_max": 394,
+          "rating": 4.2,
+          "distance_km": null
+        },
+        {
+          "rank": 9,
+          "title": "DeBatu HairDesing",
+          "price_min": 326,
+          "price_max": 393,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 10,
+          "title": "Yahyakaptan Diş Hekimi Aydın Cevizli- İzmit Nöbetçi Diş - Kocaeli İzmit Acil 7/24 Diş Kliniği -İzmit özel Diş Hastanesi",
+          "price_min": 5369,
+          "price_max": 7077,
+          "rating": 4.9,
+          "distance_km": null
+        },
+        {
+          "rank": 11,
+          "title": "Cheri Bakım Güzellik İzmit",
+          "price_min": 1585,
+          "price_max": 1976,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 12,
+          "title": "Merve Vatansever Nail Art izmit Kocaeli",
+          "price_min": 500,
+          "price_max": 594,
+          "rating": 4.7,
+          "distance_km": null
+        },
+        {
+          "rank": 13,
+          "title": "araç tamir oto servis bakım mekanik elektrik motor şanzıman izmit kocaeli",
+          "price_min": 8361,
+          "price_max": 13084,
+          "rating": 4.7,
+          "distance_km": null
+        },
+        {
+          "rank": 14,
+          "title": "SERBEST MUHASEBECİ MALİ MÜŞAVİR ÇİĞDEM KURŞUN GÖÇMEN",
+          "price_min": 2634,
+          "price_max": 3524,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 15,
+          "title": "Diş Hekimi Tarık Can Kara , İzmit/Kocaeli",
+          "price_min": 753,
+          "price_max": 2392,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 16,
+          "title": "Özel Marka Ağız ve Diş Sağlığı Polikliniği",
+          "price_min": 3098,
+          "price_max": 4950,
+          "rating": 4.2,
+          "distance_km": null
+        },
+        {
+          "rank": 17,
+          "title": "İzmit Esse VİP Güzellik Merkezi",
+          "price_min": 280,
+          "price_max": 938,
+          "rating": 4.8,
+          "distance_km": null
+        },
+        {
+          "rank": 18,
+          "title": "cherry nail art İzmit",
+          "price_min": 198,
+          "price_max": 295,
+          "rating": 4.3,
+          "distance_km": null
+        },
+        {
+          "rank": 19,
+          "title": "izmit Birebir özel ders",
+          "price_min": 580,
+          "price_max": 954,
+          "rating": 4.9,
+          "distance_km": null
+        },
+        {
+          "rank": 20,
+          "title": "Dentizmit Ağız ve Diş Sağlığı Polikliniği - Dent İzmit Diş Sağlığı",
+          "price_min": 5079,
+          "price_max": 6391,
+          "rating": 4.7,
+          "distance_km": null
+        },
+        {
+          "rank": 21,
+          "title": "DentAtlas Ağız Ve Diş Sağlığı Polikliniği",
+          "price_min": 950,
+          "price_max": 6033,
+          "rating": 4.8,
+          "distance_km": null
+        },
+        {
+          "rank": 22,
+          "title": "Özel Kocaeli Diş Polikliniği",
+          "price_min": 576,
+          "price_max": 5779,
+          "rating": 4.3,
+          "distance_km": null
+        },
+        {
+          "rank": 23,
+          "title": "İzmit Aquapark",
+          "price_min": 1061,
+          "price_max": 1438,
+          "rating": 3.7,
+          "distance_km": null
+        },
+        {
+          "rank": 24,
+          "title": "Özel Kocaeli Arma Ağız ve Diş Sağlığı Polikliniği",
+          "price_min": 3497,
+          "price_max": 5602,
+          "rating": 4.6,
+          "distance_km": null
+        },
+        {
+          "rank": 25,
+          "title": "Mega Fotoğrafçılık",
+          "price_min": 4629,
+          "price_max": 12916,
+          "rating": 4.4,
+          "distance_km": null
+        },
+        {
+          "rank": 26,
+          "title": "Bimser Sürücü Kursu",
+          "price_min": 9541,
+          "price_max": 15598,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 27,
+          "title": "Marmara Dinamik Spor Kulübü",
+          "price_min": 1200,
+          "price_max": 1434,
+          "rating": 4.1,
+          "distance_km": null
+        },
+        {
+          "rank": 28,
+          "title": "Dentriva Diş Yahyakaptan - İzmit İmplant-İzmit Nöbetçi Diş-İzmit Diş Teli-İzmit Çocuk Diş-İzmit Ortodonti-İzmit Pedodonti",
+          "price_min": 5057,
+          "price_max": 6738,
+          "rating": 4.8,
+          "distance_km": null
+        },
+        {
+          "rank": 29,
+          "title": "İzmit Belediyesi Sanat Akademisi",
+          "price_min": 565,
+          "price_max": 778,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 30,
+          "title": "IMPACT FIGHT CLUB BOKS KİCKBOX MUAY THAİ SPOR SALONU",
+          "price_min": 2553,
+          "price_max": 2945,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 31,
+          "title": "Yeni Ufuklar Sürücü Kursu",
+          "price_min": 14141,
+          "price_max": 19634,
+          "rating": 4.9,
+          "distance_km": null
+        },
+        {
+          "rank": 32,
+          "title": "Apple En ETKİLİ SERVİS & Teknik Servis ( Apple Berk)",
+          "price_min": 1197,
+          "price_max": 2177,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 33,
+          "title": "Başiskele Belediyesi Yeniköy Yarı Olimpik Kapalı Yüzme Havuzu",
+          "price_min": 1032,
+          "price_max": 1405,
+          "rating": 4.2,
+          "distance_km": null
+        },
+        {
+          "rank": 34,
+          "title": "Uzman Akademi Hızlı Okuma Kursu Kocaeli",
+          "price_min": 3830,
+          "price_max": 5094,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 35,
+          "title": "Değişim Elektrik",
+          "price_min": 1451,
+          "price_max": 2093,
+          "rating": 4.8,
+          "distance_km": null
+        },
+        {
+          "rank": 36,
+          "title": "Stüdyo Levent (foto star)",
+          "price_min": 5115,
+          "price_max": 8503,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 37,
+          "title": "Diş Hekimi Uğur Ümit - İzmit Nöbetçi Dişçi | Kocaeli 7/24 Açık Acil Özel Diş Hastanesi",
+          "price_min": 4662,
+          "price_max": 6049,
+          "rating": 4.9,
+          "distance_km": null
+        },
+        {
+          "rank": 38,
+          "title": "Kocaeli Düğün Fotoğrafçısı | Merve Doğru",
+          "price_min": 8516,
+          "price_max": 10859,
+          "rating": 4.9,
+          "distance_km": null
+        },
+        {
+          "rank": 39,
+          "title": "Matematik Özel Ders Derince - İzmit",
+          "price_min": 458,
+          "price_max": 737,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 40,
+          "title": "CEP Fix",
+          "price_min": 1085,
+          "price_max": 1945,
+          "rating": 5.0,
+          "distance_km": null
+        }
+      ]
+    }
+  ],
+  "diagnostics": [
+    {
+      "query": "en yakın berbere gitmek istiyorum",
+      "filters": {
+        "online_only": false,
+        "weekend_open_only": false
+      },
+      "vector_top": [
+        {
+          "rank": 1,
+          "title": "Kocaeli İzmit Business Berber Shop",
+          "score": 0.3583737
+        },
+        {
+          "rank": 2,
+          "title": "Berber UNE",
+          "score": 0.34156716
+        },
+        {
+          "rank": 3,
+          "title": "The Barber House",
+          "score": 0.34144124
+        },
+        {
+          "rank": 4,
+          "title": "LİVA BERBER",
+          "score": 0.33348334
+        },
+        {
+          "rank": 5,
+          "title": "THE AZOO BARBER SHOP",
+          "score": 0.32746604
+        },
+        {
+          "rank": 6,
+          "title": "Yıldız Erkek Kuaförü Ercan",
+          "score": 0.3203078
+        },
+        {
+          "rank": 7,
+          "title": "izmit Birebir özel ders",
+          "score": 0.318824
+        },
+        {
+          "rank": 8,
+          "title": "Men's grooming güngör Akıncı barber business",
+          "score": 0.31661958
+        },
+        {
+          "rank": 9,
+          "title": "Başiskele Belediyesi Yeniköy Yarı Olimpik Kapalı Yüzme Havuzu",
+          "score": 0.30807528
+        },
+        {
+          "rank": 10,
+          "title": "İzmit Aquapark",
+          "score": 0.30549973
+        },
+        {
+          "rank": 11,
+          "title": "Uzman Akademi Hızlı Okuma Kursu Kocaeli",
+          "score": 0.30134782
+        },
+        {
+          "rank": 12,
+          "title": "araç tamir oto servis bakım mekanik elektrik motor şanzıman izmit kocaeli",
+          "score": 0.29884794
+        },
+        {
+          "rank": 13,
+          "title": "Cheri Bakım Güzellik İzmit",
+          "score": 0.29873073
+        },
+        {
+          "rank": 14,
+          "title": "Kuaför Kübra Aydin",
+          "score": 0.29799223
+        },
+        {
+          "rank": 15,
+          "title": "Merve Vatansever Nail Art izmit Kocaeli",
+          "score": 0.2977984
+        }
+      ],
+      "bm25_top": [
+        {
+          "rank": 1,
+          "title": "SERBEST MUHASEBECİ MALİ MÜŞAVİR ÇİĞDEM KURŞUN GÖÇMEN",
+          "score": 5.597972685572338
+        },
+        {
+          "rank": 2,
+          "title": "Bimser Sürücü Kursu",
+          "score": 5.036349107380423
+        },
+        {
+          "rank": 3,
+          "title": "Yeni Ufuklar Sürücü Kursu",
+          "score": 4.884542581620488
+        },
+        {
+          "rank": 4,
+          "title": "Değişim Elektrik",
+          "score": 4.30518161642932
+        },
+        {
+          "rank": 5,
+          "title": "CEP Fix",
+          "score": 4.246158223914355
+        },
+        {
+          "rank": 6,
+          "title": "Mega Fotoğrafçılık",
+          "score": 4.160596495537316
+        },
+        {
+          "rank": 7,
+          "title": "IMPACT FIGHT CLUB BOKS KİCKBOX MUAY THAİ SPOR SALONU",
+          "score": 4.051737721984946
+        },
+        {
+          "rank": 8,
+          "title": "Stüdyo Levent (foto star)",
+          "score": 4.051737721984946
+        },
+        {
+          "rank": 9,
+          "title": "Kocaeli Düğün Fotoğrafçısı | Merve Doğru",
+          "score": 3.973759966250604
+        },
+        {
+          "rank": 10,
+          "title": "Apple En ETKİLİ SERVİS & Teknik Servis ( Apple Berk)",
+          "score": 3.874341726951673
+        },
+        {
+          "rank": 11,
+          "title": "Marmara Dinamik Spor Kulübü",
+          "score": 3.8264750446543316
+        },
+        {
+          "rank": 12,
+          "title": "Yahyakaptan Diş Hekimi Aydın Cevizli- İzmit Nöbetçi Diş - Kocaeli İzmit Acil 7/24 Diş Kliniği -İzmit özel Diş Hastanesi",
+          "score": 0.0
+        },
+        {
+          "rank": 13,
+          "title": "Dentizmit Ağız ve Diş Sağlığı Polikliniği - Dent İzmit Diş Sağlığı",
+          "score": 0.0
+        },
+        {
+          "rank": 14,
+          "title": "Dentriva Diş Yahyakaptan - İzmit İmplant-İzmit Nöbetçi Diş-İzmit Diş Teli-İzmit Çocuk Diş-İzmit Ortodonti-İzmit Pedodonti",
+          "score": 0.0
+        },
+        {
+          "rank": 15,
+          "title": "Diş Hekimi Uğur Ümit - İzmit Nöbetçi Dişçi | Kocaeli 7/24 Açık Acil Özel Diş Hastanesi",
+          "score": 0.0
+        }
+      ]
+    }
+  ]
+}
