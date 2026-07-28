@@ -33,9 +33,11 @@ Durum işaretleri: ✅ tamamlandı · ⏳ sırada · ⬜ planlı
 - ⬜ `feature/rag-pipeline` — RAG orkestrasyon (intent parsing + öneri üretimi — projenin asıl LLM testi)
 - ⬜ `feature/calendar-service` — slot/çakışma kontrolü
 - ⬜ `feature/tool-calling` — `tools.py` (calendar-service'i LLM'e tool olarak sunar)
+- ⬜ `test/api-integration` — `tests/integration/test_api.py`; gerçek HTTP istekleriyle uçtan uca endpoint testleri (routing + `Depends()` + Pydantic response şeması + status code). `/health` dışında endpoint olmadığı için şu an yazılamaz — rag-pipeline/calendar-service/tool-calling'in hepsi bitip API yüzeyi tamamlanınca, Faz 4'ün kapanışı olarak buraya kondu
 
 ## Faz 5 — Dayanıklılık & Güvenlik
 
+- ⬜ `test/db-integration` — `tests/integration/test_db.py`; gerçek Postgres'e karşı sorgu testleri (N+1 kontrolü dahil — unit testteki mock'lu session gerçek sorgu sayısını göremez). DB modelleri/migration'lar Faz 2'de tamamlandığı için blokajı yok, `ci-setup`'tan önce burada olması mantıklı — CI'ın container wiring'ine somut bir şey verir
 - ⬜ `feature/cache-layer` — embedding/sonuç cache'leme
 - ⬜ `feature/fallback-mechanism` — hata yönetimi + fallback zinciri
 - ⬜ `feature/middleware` — rate limiting + prompt injection filtresi
