@@ -25,8 +25,8 @@ tarafından supersede edildi)
 | [0005](0005-rule-based-tags.md) | Kural tabanlı `tags` üretimi | Kabul edildi | 2026-07-24 |
 | [0006](0006-llm-based-keywords.md) | LLM tabanlı `keywords` üretimi | Kabul edildi | 2026-07-24 |
 | [0007](0007-embedding-model-comparison.md) | Embedding modeli karşılaştırması | Planlandı | 2026-07-24 |
-| [0008](0008-llm-comparison-phase-4.md) | Runtime LLM karşılaştırması (Faz 4) | Planlandı | 2026-07-24 |
-| [0009](0009-ragas-evaluator-model.md) | RAGAS evaluator modeli | Kabul edildi | 2026-07-24 |
+| [0008](0008-llm-comparison-phase-4.md) | Runtime LLM karşılaştırması (Faz 4) | Planlandı | 2026-07-28 |
+| [0009](0009-ragas-evaluator-model.md) | RAGAS evaluator modeli | Kabul edildi | 2026-07-28 |
 | [0010](0010-hybrid-search-with-rrf.md) | Hybrid search (BM25 + vektör, RRF) | Kabul edildi | 2026-07-24 |
 | [0011](0011-hard-filter-vs-semantic-separation.md) | Kesin filtre / semantik ayrımı | Kısmen uygulandı | 2026-07-24 |
 | [0012](0012-synthetic-description-mode-collapse-mitigation.md) | Sentetik açıklama mode collapse önlemi | Kabul edildi | 2026-07-24 |

@@ -28,7 +28,7 @@ Durum işaretleri: ✅ tamamlandı · ⏳ sırada · ⬜ planlı
 
 - ✅ `feature/search-service` — semantic + hybrid search (BM25 + vektör); kesin filtreler (konum/gün/fiyat) Qdrant payload filtering ile vektör aramasından önce uygulanacak
 - ✅ `feature/reranker` — cross-encoder reranking (Jina AI hosted rerank API, `jina-reranker-v3` — yerel bir model yerine, gerekçe [ADR-0013](adr/0013-reranker-provider-selection.md)'te)
-- ⏳ `feature/llm-service` — GPT-4o-mini/Qwen3/Turkish-LLM seçim mantığı (runtime)
+- ⏳ `feature/llm-service` — GPT-4o-mini/Qwen3/Turkish-LLM seçim mantığı (runtime); GPT-4o-mini bilinçli bir seçim — bütçe ve evaluator bağımsızlığı gerekçesiyle, bkz. [ADR-0008](adr/0008-llm-comparison-phase-4.md)
 - ⬜ `feature/langfuse-integration` — Langfuse SDK'sının backend'e bağlanması (`core/monitoring.py`) — docker-compose'da servis ayakta ama backend'e henüz hiç bağlanmadı
 - ⬜ `feature/rag-pipeline` — RAG orkestrasyon (intent parsing + öneri üretimi — projenin asıl LLM testi)
 - ⬜ `feature/calendar-service` — slot/çakışma kontrolü
@@ -44,7 +44,7 @@ Durum işaretleri: ✅ tamamlandı · ⏳ sırada · ⬜ planlı
 ## Faz 6 — Değerlendirme
 
 - ⬜ `feature/ragas-testset` — 100 test sorusu hazırlama (`evaluation/test_set.json`)
-- ⬜ `feature/ragas-evaluation` — RAGAS ile Faithfulness/Relevancy/Precision/Recall ölçümü
+- ⬜ `feature/ragas-evaluation` — RAGAS ile Faithfulness/Relevancy/Precision/Recall ölçümü; evaluator modeli ve ablasyon kapsamı (3x3 tam mı, kademeli mi) pilot teste bağlı, henüz kesinleşmedi — bkz. [ADR-0009](adr/0009-ragas-evaluator-model.md)
 
 ## Faz 7 — Frontend
 
