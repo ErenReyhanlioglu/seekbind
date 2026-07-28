@@ -12,17 +12,25 @@ değil, gerçek veriyle cevap vermek için.
 
 Sonuçlar evaluation/results/diagnostics/search_smoke_test/<etiket_>zaman_
 damgası.json'a yazılır — her çalıştırma zaman damgalı olduğu için hiçbir
-sonuç sessizce ezilmez, opsiyonel etiket (sys.argv[1], örn. `before_reranker`)
-dosyaya semantik anlam katar ("bu hangi kilometre taşıydı" sorusuna zaman
-damgası tek başına cevap vermez). Diagnostic script'lerinin her biri kendi
-alt klasörüne yazar (bkz. check_embedding_diversity.py'deki embedding_diversity/
-alt klasörü) ki sonuç dosyaları birbirine karışmasın.
+sonuç sessizce ezilmez, opsiyonel etiket dosyaya semantik anlam katar
+("bu hangi kilometre taşıydı" sorusuna zaman damgası tek başına cevap
+vermez). Diagnostic script'lerinin her biri kendi alt klasörüne yazar
+(bkz. check_embedding_diversity.py'deki embedding_diversity/ alt klasörü)
+ki sonuç dosyaları birbirine karışmasın.
+
+Kullanım:
+    # Sabit 9 senaryonun hepsini çalıştırır
+    uv run python -m scripts.diagnostics.smoke_test_search [etiket]
+
+    # Sadece tek, elle verilen bir sorguyu çalıştırır (ham BM25/vektör
+    # dökümü + reranker sonrası final sonuç dahil) — sabit senaryoları atlar
+    uv run python -m scripts.diagnostics.smoke_test_search --query "boşanmak istiyorum avukat lazım" [etiket]
 """
 
+import argparse
 import asyncio
 import json
 import logging
-import sys
 from datetime import date, datetime, timedelta
 from pathlib import Path
 
@@ -39,7 +47,9 @@ from backend.services.search import (
     BM25Index,
     DateAvailabilityFilter,
     NearFilter,
+    RerankerProvider,
     SearchFilters,
+    get_reranker_provider,
     search_providers,
     translate_filters_to_qdrant,
     vector_search,
@@ -152,11 +162,12 @@ def _write_result(scenarios: list[dict], diagnostics: list[dict], label: str | N
     return output_path
 
 
-async def main(label: str | None = None) -> None:
+async def main(label: str | None = None, custom_query: str | None = None) -> None:
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 
     qdrant_client = get_qdrant_client()
     embedding_provider = get_embedding_provider()
+    reranker_provider: RerankerProvider = get_reranker_provider()
     session_factory = get_session_factory()
 
     scenarios: list[dict] = []
@@ -178,12 +189,27 @@ async def main(label: str | None = None) -> None:
                 qdrant_client=qdrant_client,
                 bm25_index=bm25_index,
                 embedding_provider=embedding_provider,
+                reranker_provider=reranker_provider,
                 query=query,
                 filters=filters,
                 availability=availability,
                 limit=DISPLAY_LIMIT,
             )
             scenarios.append(_print_and_record(title, response.results, response.total))
+
+        if custom_query is not None:
+            # Sabit senaryolar yerine sadece elle verilen tek sorgu — hem ham
+            # BM25/vektör dökümü hem reranker sonrası final sonuç kaydedilir.
+            diagnostics.append(
+                await _diagnose_query(
+                    session, qdrant_client, bm25_index, embedding_provider, custom_query, SearchFilters()
+                )
+            )
+            await run(f"Özel sorgu: {custom_query}", custom_query, SearchFilters())
+            output_path = _write_result(scenarios, diagnostics, label)
+            logger.info("Sonuçlar kaydedildi: %s", output_path)
+            await reranker_provider.close()
+            return
 
         # 1) Sade semantik + fiyat filtresi
         await run("Ucuz diş kliniği (max_price=1500)", "ucuz diş kliniği", SearchFilters(max_price=1500))
@@ -235,7 +261,24 @@ async def main(label: str | None = None) -> None:
     logger.info("Sonuçlar kaydedildi: %s", output_path)
     logger.info("Smoke test tamamlandı.")
 
+    # FastAPI lifespan yok — reranker'ın httpx.AsyncClient'ını burada elle kapatıyoruz.
+    await reranker_provider.close()
+
+
+def _parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "label", nargs="?", default=None, help="Sonuç dosyasının adına eklenecek opsiyonel etiket"
+    )
+    parser.add_argument(
+        "--query",
+        "-q",
+        default=None,
+        help="Verilirse, sabit 9 senaryo yerine sadece bu tek sorgu çalıştırılır",
+    )
+    return parser.parse_args()
+
 
 if __name__ == "__main__":
-    label_arg = sys.argv[1] if len(sys.argv) > 1 else None
-    asyncio.run(main(label_arg))
+    args = _parse_args()
+    asyncio.run(main(label=args.label, custom_query=args.query))

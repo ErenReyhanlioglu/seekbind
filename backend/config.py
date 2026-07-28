@@ -16,6 +16,15 @@ LLM_CALL_TIMEOUT_SECONDS: int = 30
 # BM25 index'inin periyodik olarak taze olup olmadığının kontrol edileceği aralık (saniye)
 BM25_REFRESH_INTERVAL_SECONDS: int = 3600
 
+# Jina rerank API çağrısı için zaman aşımı (saniye) — arama <2s hedefindeyken
+# LLM çağrı zaman aşımından (30s) daha sıkı tutulur, aksi halde tek başına
+# reranker çağrısı tüm bütçeyi tüketebilir.
+JINA_RERANK_TIMEOUT_SECONDS: int = 10
+
+# Jina reranker modeli — v2-base-multilingual'dan daha yeni, daha iyi BEIR
+# skoru ve yine çok dilli (bkz. docs/roadmap.md "Önemli kararlar")
+JINA_RERANKER_MODEL: str = "jina-reranker-v3"
+
 
 class Settings(BaseSettings):
     """.env dosyasından okunan uygulama ayarları."""
@@ -47,6 +56,9 @@ class Settings(BaseSettings):
     ollama_embedding_model: str
     ollama_llm_model: str
 
+    # Jina AI (reranker)
+    jina_api_key: SecretStr
+
     # SerpAPI (veri toplama)
     serpapi_api_key: SecretStr
 
@@ -63,6 +75,10 @@ class Settings(BaseSettings):
 
     # BM25 index yenileme aralığı
     bm25_refresh_interval_seconds: int = BM25_REFRESH_INTERVAL_SECONDS
+
+    # Jina reranker
+    jina_reranker_model: str = JINA_RERANKER_MODEL
+    jina_rerank_timeout_seconds: int = JINA_RERANK_TIMEOUT_SECONDS
 
 
 @lru_cache

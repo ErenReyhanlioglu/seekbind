@@ -7,8 +7,9 @@ docs/roadmap.md "Önemli kararlar" bölümü.
 
 Alt modüller: text (normalizasyon), bm25 (lexical index), vector
 (semantik arama), filters (SearchFilters), availability (tarih/saat
-müsaitliği, iki fazlı filtrelemenin ikinci fazı), fusion (RRF), service
-(hepsini birleştiren search_providers orkestrasyonu).
+müsaitliği, iki fazlı filtrelemenin ikinci fazı), fusion (RRF), reranker
+(Jina AI ile cross-encoder reranking), service (hepsini birleştiren
+search_providers orkestrasyonu).
 """
 
 from backend.services.search.availability import (
@@ -31,6 +32,11 @@ from backend.services.search.filters import (
     translate_filters_to_qdrant,
 )
 from backend.services.search.fusion import reciprocal_rank_fusion
+from backend.services.search.reranker import (
+    RerankerProvider,
+    RerankerServiceError,
+    get_reranker_provider,
+)
 from backend.services.search.service import search_providers
 from backend.services.search.text import normalize_turkish_text, tokenize
 from backend.services.search.vector import fetch_filtered_business_ids, vector_search
@@ -39,6 +45,8 @@ __all__ = [
     "BM25Index",
     "DateAvailabilityFilter",
     "NearFilter",
+    "RerankerProvider",
+    "RerankerServiceError",
     "SearchFilters",
     "build_corpus",
     "build_lexical_text",
@@ -48,6 +56,7 @@ __all__ = [
     "fetch_available_business_ids",
     "fetch_filtered_business_ids",
     "get_bm25_index",
+    "get_reranker_provider",
     "normalize_turkish_text",
     "periodic_refresh_loop",
     "reciprocal_rank_fusion",

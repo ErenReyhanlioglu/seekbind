@@ -1,0 +1,2295 @@
+{
+  "label": "after_reranker",
+  "timestamp": "2026-07-27T21-39-09",
+  "scenarios": [
+    {
+      "title": "Ucuz diş kliniği (max_price=1500)",
+      "total_candidates": 32,
+      "results": [
+        {
+          "rank": 1,
+          "title": "DentAtlas Ağız Ve Diş Sağlığı Polikliniği",
+          "price_min": 950,
+          "price_max": 6033,
+          "rating": 4.8,
+          "distance_km": null
+        },
+        {
+          "rank": 2,
+          "title": "The Barber House",
+          "price_min": 103,
+          "price_max": 181,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 3,
+          "title": "Diş Hekimi Tarık Can Kara , İzmit/Kocaeli",
+          "price_min": 753,
+          "price_max": 2392,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 4,
+          "title": "Özel Kocaeli Diş Polikliniği",
+          "price_min": 576,
+          "price_max": 5779,
+          "rating": 4.3,
+          "distance_km": null
+        },
+        {
+          "rank": 5,
+          "title": "Yuvam Veteriner Kliniği",
+          "price_min": 483,
+          "price_max": 2950,
+          "rating": 4.2,
+          "distance_km": null
+        },
+        {
+          "rank": 6,
+          "title": "E.L.M Poliklinik",
+          "price_min": 661,
+          "price_max": 1422,
+          "rating": 4.8,
+          "distance_km": null
+        },
+        {
+          "rank": 7,
+          "title": "İzmit Protez Tırnak & Büşra Kardaş",
+          "price_min": 288,
+          "price_max": 582,
+          "rating": 4.6,
+          "distance_km": null
+        },
+        {
+          "rank": 8,
+          "title": "SOCİAL BEAUTY AESTHETİC GÜZELLİK MERKEZİ - Saç Terapisi - Cilt Bakımı - Protez Tırnak - Lazer Epilasyon",
+          "price_min": 963,
+          "price_max": 1409,
+          "rating": 4.9,
+          "distance_km": null
+        },
+        {
+          "rank": 9,
+          "title": "Fzt. M. Akif Oker & Fzt. Muharrem Sönmez Fizyoterapi Kliniği",
+          "price_min": 1012,
+          "price_max": 1248,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 10,
+          "title": "İzmit Esse VİP Güzellik Merkezi",
+          "price_min": 280,
+          "price_max": 938,
+          "rating": 4.8,
+          "distance_km": null
+        },
+        {
+          "rank": 11,
+          "title": "Greenmed İzmit Kişisel Bakım Merkezi",
+          "price_min": 790,
+          "price_max": 1753,
+          "rating": 4.3,
+          "distance_km": null
+        },
+        {
+          "rank": 12,
+          "title": "Kocaeli Göz Doktoru -Op.Dr.Mustafa Şahiner,Lazer cerrahisi,SMILE lazer,Akıllı Mercek,Keratokonus,Göz Çizdirme",
+          "price_min": 568,
+          "price_max": 855,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 13,
+          "title": "Protez Tırnak İzmit Çinare",
+          "price_min": 279,
+          "price_max": 452,
+          "rating": 4.8,
+          "distance_km": null
+        },
+        {
+          "rank": 14,
+          "title": "cherry nail art İzmit",
+          "price_min": 198,
+          "price_max": 295,
+          "rating": 4.3,
+          "distance_km": null
+        },
+        {
+          "rank": 15,
+          "title": "Viva İzmit Güzellik Merkezi",
+          "price_min": 903,
+          "price_max": 1862,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 16,
+          "title": "ZeyNail's STUDİO",
+          "price_min": 449,
+          "price_max": 534,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 17,
+          "title": "Kocaeli Düğün Fotoğrafçısı - İzmit Düğün Çekimi - Kocaeli Düğün Klibi - Doğukan Şimdi Production",
+          "price_min": 1193,
+          "price_max": 3828,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 18,
+          "title": "Bulvar Veteriner Polikliniği",
+          "price_min": 542,
+          "price_max": 1953,
+          "rating": 4.3,
+          "distance_km": null
+        },
+        {
+          "rank": 19,
+          "title": "Aslı Zan Güzellik Merkezi - Soprano Lazer Epilasyon - Hydrafacial Cilt Bakımı",
+          "price_min": 910,
+          "price_max": 1957,
+          "rating": 4.7,
+          "distance_km": null
+        },
+        {
+          "rank": 20,
+          "title": "Özel Vera Lazer Poliklinigi",
+          "price_min": 1046,
+          "price_max": 1302,
+          "rating": 4.7,
+          "distance_km": null
+        },
+        {
+          "rank": 21,
+          "title": "Özel Çağın Göz Hastanesi",
+          "price_min": 659,
+          "price_max": 926,
+          "rating": 4.8,
+          "distance_km": null
+        },
+        {
+          "rank": 22,
+          "title": "Pasteur Veterinary",
+          "price_min": 361,
+          "price_max": 1395,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 23,
+          "title": "Ece Öztep Estetik",
+          "price_min": 943,
+          "price_max": 1197,
+          "rating": 4.8,
+          "distance_km": null
+        },
+        {
+          "rank": 24,
+          "title": "Dünyagöz İzmit Hastanesi",
+          "price_min": 982,
+          "price_max": 1438,
+          "rating": 4.8,
+          "distance_km": null
+        },
+        {
+          "rank": 25,
+          "title": "HIÇKIDIK PETSHOP AKVARYUM İZMİT",
+          "price_min": 347,
+          "price_max": 935,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 26,
+          "title": "TrendEstetik Güzellik Merkezi",
+          "price_min": 314,
+          "price_max": 1062,
+          "rating": 4.9,
+          "distance_km": null
+        },
+        {
+          "rank": 27,
+          "title": "Veni Vidi Göz İzmit",
+          "price_min": 666,
+          "price_max": 1130,
+          "rating": 4.7,
+          "distance_km": null
+        },
+        {
+          "rank": 28,
+          "title": "ANIMAL ACADEMY VETERİNER KLİNİĞİ KÖRFEZ",
+          "price_min": 637,
+          "price_max": 1729,
+          "rating": 4.4,
+          "distance_km": null
+        },
+        {
+          "rank": 29,
+          "title": "Erkan Ekşioğlu İzmit Dünya Göz Hastanesi",
+          "price_min": 792,
+          "price_max": 1258,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 30,
+          "title": "Fauna Veteriner Kliniği Kocaeli",
+          "price_min": 1254,
+          "price_max": 2776,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 31,
+          "title": "Ejder Veteriner Kliniği",
+          "price_min": 415,
+          "price_max": 1799,
+          "rating": 3.9,
+          "distance_km": null
+        },
+        {
+          "rank": 32,
+          "title": "Alkan Veteriner Kliniği",
+          "price_min": 1202,
+          "price_max": 2655,
+          "rating": null,
+          "distance_km": null
+        }
+      ]
+    },
+    {
+      "title": "Ucuz diş kliniği (filtresiz)",
+      "total_candidates": 35,
+      "results": [
+        {
+          "rank": 1,
+          "title": "The Barber House",
+          "price_min": 103,
+          "price_max": 181,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 2,
+          "title": "Yahyakaptan Diş Hekimi Aydın Cevizli- İzmit Nöbetçi Diş - Kocaeli İzmit Acil 7/24 Diş Kliniği -İzmit özel Diş Hastanesi",
+          "price_min": 5369,
+          "price_max": 7077,
+          "rating": 4.9,
+          "distance_km": null
+        },
+        {
+          "rank": 3,
+          "title": "Uzman Diş Hekimi Kerem Çağlar GÜMÜŞ - Diş Kliniği",
+          "price_min": 3578,
+          "price_max": 7223,
+          "rating": 4.8,
+          "distance_km": null
+        },
+        {
+          "rank": 4,
+          "title": "Uzman Diş Grup - İmplant - Gömülü Diş - Ortodonti - Pedodonti - Gülüş Tasarımı - Kocaeli Diş Kliniği",
+          "price_min": 1741,
+          "price_max": 7423,
+          "rating": 4.8,
+          "distance_km": null
+        },
+        {
+          "rank": 5,
+          "title": "Diş Hekimi Ahmet Melih Bozoğlu Diş Kliniği",
+          "price_min": 6748,
+          "price_max": 7949,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 6,
+          "title": "Özel Marka Ağız ve Diş Sağlığı Polikliniği",
+          "price_min": 3098,
+          "price_max": 4950,
+          "rating": 4.2,
+          "distance_km": null
+        },
+        {
+          "rank": 7,
+          "title": "Dentİzmit Gölcük Ağız ve Diş Sağlığı Poliklinikleri - Diş Hastanesi",
+          "price_min": 6008,
+          "price_max": 7791,
+          "rating": 4.7,
+          "distance_km": null
+        },
+        {
+          "rank": 8,
+          "title": "Dentizmit Diş Poliklinikleri - Başiskele Şubesi",
+          "price_min": 4798,
+          "price_max": 6276,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 9,
+          "title": "Dr.Tarık Can Kara",
+          "price_min": 2319,
+          "price_max": 4886,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 10,
+          "title": "Özel Kocaeli Diş Polikliniği",
+          "price_min": 576,
+          "price_max": 5779,
+          "rating": 4.3,
+          "distance_km": null
+        },
+        {
+          "rank": 11,
+          "title": "Özel Dentkartepe Ağız Ve Diş Sağlığı Polikliniği",
+          "price_min": 1634,
+          "price_max": 4885,
+          "rating": 4.9,
+          "distance_km": null
+        },
+        {
+          "rank": 12,
+          "title": "Diş Hekimi Uğur Ümit - İzmit Nöbetçi Dişçi | Kocaeli 7/24 Açık Acil Özel Diş Hastanesi",
+          "price_min": 4662,
+          "price_max": 6049,
+          "rating": 4.9,
+          "distance_km": null
+        },
+        {
+          "rank": 13,
+          "title": "Özel Kocaeli Arma Ağız ve Diş Sağlığı Polikliniği",
+          "price_min": 3497,
+          "price_max": 5602,
+          "rating": 4.6,
+          "distance_km": null
+        },
+        {
+          "rank": 14,
+          "title": "KOSTÜ AĞIZ VE DİŞ SAĞLIĞI UYGULAMA VE ARAŞTIRMA MERKEZİ",
+          "price_min": 4586,
+          "price_max": 5962,
+          "rating": 3.8,
+          "distance_km": null
+        },
+        {
+          "rank": 15,
+          "title": "UZMAN VETERİNER KLİNİĞİ İZMİT KOCAELİ",
+          "price_min": 1749,
+          "price_max": 2393,
+          "rating": 4.7,
+          "distance_km": null
+        },
+        {
+          "rank": 16,
+          "title": "Dentriva Diş Yahyakaptan - İzmit İmplant-İzmit Nöbetçi Diş-İzmit Diş Teli-İzmit Çocuk Diş-İzmit Ortodonti-İzmit Pedodonti",
+          "price_min": 5057,
+          "price_max": 6738,
+          "rating": 4.8,
+          "distance_km": null
+        },
+        {
+          "rank": 17,
+          "title": "DentAtlas Ağız Ve Diş Sağlığı Polikliniği",
+          "price_min": 950,
+          "price_max": 6033,
+          "rating": 4.8,
+          "distance_km": null
+        },
+        {
+          "rank": 18,
+          "title": "Diş Hekimi Tarık Can Kara , İzmit/Kocaeli",
+          "price_min": 753,
+          "price_max": 2392,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 19,
+          "title": "Diş Hekimi Dr. Deniz Doğan - İzmit Diş Hekimi & Protetik Diş Tedavisi Uzmanı",
+          "price_min": 4698,
+          "price_max": 6216,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 20,
+          "title": "Kocaeli Göz Doktoru -Op.Dr.Mustafa Şahiner,Lazer cerrahisi,SMILE lazer,Akıllı Mercek,Keratokonus,Göz Çizdirme",
+          "price_min": 568,
+          "price_max": 855,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 21,
+          "title": "Dt. Emine Sungur Yılmaz",
+          "price_min": 3446,
+          "price_max": 6545,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 22,
+          "title": "Fzt. M. Akif Oker & Fzt. Muharrem Sönmez Fizyoterapi Kliniği",
+          "price_min": 1012,
+          "price_max": 1248,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 23,
+          "title": "Dentizmit Ağız ve Diş Sağlığı Polikliniği - Dent İzmit Diş Sağlığı",
+          "price_min": 5079,
+          "price_max": 6391,
+          "rating": 4.7,
+          "distance_km": null
+        },
+        {
+          "rank": 24,
+          "title": "Kartepe Veteriner Kliniği",
+          "price_min": 2168,
+          "price_max": 2629,
+          "rating": 4.6,
+          "distance_km": null
+        },
+        {
+          "rank": 25,
+          "title": "Dr. Muharrem Özgeldi",
+          "price_min": 5772,
+          "price_max": 7354,
+          "rating": 3.0,
+          "distance_km": null
+        },
+        {
+          "rank": 26,
+          "title": "Clinic İzmit Veteriner | Değirmendere",
+          "price_min": 1636,
+          "price_max": 2952,
+          "rating": 4.8,
+          "distance_km": null
+        },
+        {
+          "rank": 27,
+          "title": "Özel Çağın Göz Hastanesi",
+          "price_min": 659,
+          "price_max": 926,
+          "rating": 4.8,
+          "distance_km": null
+        },
+        {
+          "rank": 28,
+          "title": "Bulvar Veteriner Polikliniği",
+          "price_min": 542,
+          "price_max": 1953,
+          "rating": 4.3,
+          "distance_km": null
+        },
+        {
+          "rank": 29,
+          "title": "Masal Veteriner Polikliniği",
+          "price_min": 2015,
+          "price_max": 2596,
+          "rating": 4.8,
+          "distance_km": null
+        },
+        {
+          "rank": 30,
+          "title": "Pasteur Hayvan Hastanesi",
+          "price_min": 1823,
+          "price_max": 2228,
+          "rating": 4.4,
+          "distance_km": null
+        },
+        {
+          "rank": 31,
+          "title": "Yuvam Veteriner Kliniği",
+          "price_min": 483,
+          "price_max": 2950,
+          "rating": 4.2,
+          "distance_km": null
+        },
+        {
+          "rank": 32,
+          "title": "Ejder Veteriner Kliniği",
+          "price_min": 415,
+          "price_max": 1799,
+          "rating": 3.9,
+          "distance_km": null
+        },
+        {
+          "rank": 33,
+          "title": "Fauna Veteriner Kliniği Kocaeli",
+          "price_min": 1254,
+          "price_max": 2776,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 34,
+          "title": "Pasteur Veterinary",
+          "price_min": 361,
+          "price_max": 1395,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 35,
+          "title": "ANIMAL ACADEMY VETERİNER KLİNİĞİ KÖRFEZ",
+          "price_min": 637,
+          "price_max": 1729,
+          "rating": 4.4,
+          "distance_km": null
+        }
+      ]
+    },
+    {
+      "title": "Kadınlara yönelik kuaför",
+      "total_candidates": 14,
+      "results": [
+        {
+          "rank": 1,
+          "title": "Yasemin Uzuner Kuaför",
+          "price_min": 744,
+          "price_max": 1152,
+          "rating": 4.3,
+          "distance_km": null
+        },
+        {
+          "rank": 2,
+          "title": "Serkan Aygün Hair Designer",
+          "price_min": 444,
+          "price_max": 1133,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 3,
+          "title": "MATMAZEL KUAFÖR İZMİT - KADIN KUAFÖRÜ",
+          "price_min": 378,
+          "price_max": 948,
+          "rating": 4.5,
+          "distance_km": null
+        },
+        {
+          "rank": 4,
+          "title": "YasemiN Şentürk Kuaför",
+          "price_min": 207,
+          "price_max": 839,
+          "rating": 4.4,
+          "distance_km": null
+        },
+        {
+          "rank": 5,
+          "title": "Emre Yıldız Hair Stylist",
+          "price_min": 701,
+          "price_max": 969,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 6,
+          "title": "Ali Gür Kuaför İzmit Ncity Avm",
+          "price_min": 419,
+          "price_max": 709,
+          "rating": 3.2,
+          "distance_km": null
+        },
+        {
+          "rank": 7,
+          "title": "Kuaför Orhan",
+          "price_min": 802,
+          "price_max": 1054,
+          "rating": 4.3,
+          "distance_km": null
+        },
+        {
+          "rank": 8,
+          "title": "END Hair Studio Kocaeli (END Bay & Bayan Kuaförü)",
+          "price_min": 498,
+          "price_max": 1053,
+          "rating": 4.2,
+          "distance_km": null
+        },
+        {
+          "rank": 9,
+          "title": "Ola Kuaför İzmit",
+          "price_min": 620,
+          "price_max": 1129,
+          "rating": 4.4,
+          "distance_km": null
+        },
+        {
+          "rank": 10,
+          "title": "NG Kuaför Güzellik Salonu GÖKHAN ERGİN",
+          "price_min": 1038,
+          "price_max": 1199,
+          "rating": 4.8,
+          "distance_km": null
+        },
+        {
+          "rank": 11,
+          "title": "Mehmet Tatlı Kuaför",
+          "price_min": 678,
+          "price_max": 857,
+          "rating": 3.4,
+          "distance_km": null
+        },
+        {
+          "rank": 12,
+          "title": "Emre Şimşek Hair Studio",
+          "price_min": 524,
+          "price_max": 796,
+          "rating": 4.8,
+          "distance_km": null
+        },
+        {
+          "rank": 13,
+          "title": "Gökdemir Hair Design Studio",
+          "price_min": 1020,
+          "price_max": 1191,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 14,
+          "title": "Serval Hair Design",
+          "price_min": 535,
+          "price_max": 989,
+          "rating": 4.7,
+          "distance_km": null
+        }
+      ]
+    },
+    {
+      "title": "Ucuz kuaför (max_price=1000)",
+      "total_candidates": 34,
+      "results": [
+        {
+          "rank": 1,
+          "title": "The Barber House",
+          "price_min": 103,
+          "price_max": 181,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 2,
+          "title": "Mustafa Turan Bay Bayan Kuaför Yahya Kaptan İzmit Kocaeli",
+          "price_min": 994,
+          "price_max": 1196,
+          "rating": 4.9,
+          "distance_km": null
+        },
+        {
+          "rank": 3,
+          "title": "Kadir Alkan Hair Artist Bay Bayan Kuaför Yahya kaptan İzmit Kocaeli",
+          "price_min": 687,
+          "price_max": 984,
+          "rating": 4.8,
+          "distance_km": null
+        },
+        {
+          "rank": 4,
+          "title": "my kuaför",
+          "price_min": 408,
+          "price_max": 1082,
+          "rating": 4.4,
+          "distance_km": null
+        },
+        {
+          "rank": 5,
+          "title": "Kuaför Orhan",
+          "price_min": 802,
+          "price_max": 1054,
+          "rating": 4.3,
+          "distance_km": null
+        },
+        {
+          "rank": 6,
+          "title": "Kuaför Kübra Aydin",
+          "price_min": 660,
+          "price_max": 922,
+          "rating": 4.5,
+          "distance_km": null
+        },
+        {
+          "rank": 7,
+          "title": "Ali Gür Kuaför İzmit Ncity Avm",
+          "price_min": 419,
+          "price_max": 709,
+          "rating": 3.2,
+          "distance_km": null
+        },
+        {
+          "rank": 8,
+          "title": "MATMAZEL KUAFÖR İZMİT - KADIN KUAFÖRÜ",
+          "price_min": 378,
+          "price_max": 948,
+          "rating": 4.5,
+          "distance_km": null
+        },
+        {
+          "rank": 9,
+          "title": "KUAFÖR SERHAT",
+          "price_min": 155,
+          "price_max": 357,
+          "rating": 4.6,
+          "distance_km": null
+        },
+        {
+          "rank": 10,
+          "title": "Ola Kuaför İzmit",
+          "price_min": 620,
+          "price_max": 1129,
+          "rating": 4.4,
+          "distance_km": null
+        },
+        {
+          "rank": 11,
+          "title": "DentAtlas Ağız Ve Diş Sağlığı Polikliniği",
+          "price_min": 950,
+          "price_max": 6033,
+          "rating": 4.8,
+          "distance_km": null
+        },
+        {
+          "rank": 12,
+          "title": "Barber Level Up | Erkek Kuaförü",
+          "price_min": 245,
+          "price_max": 309,
+          "rating": 4.6,
+          "distance_km": null
+        },
+        {
+          "rank": 13,
+          "title": "YasemiN Şentürk Kuaför",
+          "price_min": 207,
+          "price_max": 839,
+          "rating": 4.4,
+          "distance_km": null
+        },
+        {
+          "rank": 14,
+          "title": "Dr.Tamer Erkek Kuaförü",
+          "price_min": 126,
+          "price_max": 226,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 15,
+          "title": "Yasemin Uzuner Kuaför",
+          "price_min": 744,
+          "price_max": 1152,
+          "rating": 4.3,
+          "distance_km": null
+        },
+        {
+          "rank": 16,
+          "title": "Berber UNE",
+          "price_min": 247,
+          "price_max": 307,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 17,
+          "title": "Diş Hekimi Tarık Can Kara , İzmit/Kocaeli",
+          "price_min": 753,
+          "price_max": 2392,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 18,
+          "title": "END Hair Studio Kocaeli (END Bay & Bayan Kuaförü)",
+          "price_min": 498,
+          "price_max": 1053,
+          "rating": 4.2,
+          "distance_km": null
+        },
+        {
+          "rank": 19,
+          "title": "KUAFÖR ARZU ERTÜRK HAİR MAKEUP",
+          "price_min": 186,
+          "price_max": 637,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 20,
+          "title": "BAYBER41 Erkek Kuaförü",
+          "price_min": 337,
+          "price_max": 391,
+          "rating": 4.6,
+          "distance_km": null
+        },
+        {
+          "rank": 21,
+          "title": "Kocaeli İzmit Business Berber Shop",
+          "price_min": 354,
+          "price_max": 399,
+          "rating": 4.8,
+          "distance_km": null
+        },
+        {
+          "rank": 22,
+          "title": "DeBatu HairDesing",
+          "price_min": 326,
+          "price_max": 393,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 23,
+          "title": "BayLoca3 Erkek Kuaförü",
+          "price_min": 298,
+          "price_max": 381,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 24,
+          "title": "Mehmet Tatlı Kuaför",
+          "price_min": 678,
+          "price_max": 857,
+          "rating": 3.4,
+          "distance_km": null
+        },
+        {
+          "rank": 25,
+          "title": "Hair Doctor Onur Topova Erkek Kuaförü",
+          "price_min": 141,
+          "price_max": 250,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 26,
+          "title": "Yıldız Erkek Kuaförü Ercan",
+          "price_min": 265,
+          "price_max": 336,
+          "rating": 4.3,
+          "distance_km": null
+        },
+        {
+          "rank": 27,
+          "title": "Serkan Aygün Hair Designer",
+          "price_min": 444,
+          "price_max": 1133,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 28,
+          "title": "Işık Uysal Men Hair Studio",
+          "price_min": 232,
+          "price_max": 320,
+          "rating": 4.7,
+          "distance_km": null
+        },
+        {
+          "rank": 29,
+          "title": "THE AZOO BARBER SHOP",
+          "price_min": 349,
+          "price_max": 394,
+          "rating": 4.2,
+          "distance_km": null
+        },
+        {
+          "rank": 30,
+          "title": "Men's grooming güngör Akıncı barber business",
+          "price_min": 202,
+          "price_max": 297,
+          "rating": 4.9,
+          "distance_km": null
+        },
+        {
+          "rank": 31,
+          "title": "MG Erkek Kuaförü",
+          "price_min": 333,
+          "price_max": 378,
+          "rating": 4.0,
+          "distance_km": null
+        },
+        {
+          "rank": 32,
+          "title": "Lux erkek kuaförü",
+          "price_min": 229,
+          "price_max": 387,
+          "rating": 4.9,
+          "distance_km": null
+        },
+        {
+          "rank": 33,
+          "title": "Özel Kocaeli Diş Polikliniği",
+          "price_min": 576,
+          "price_max": 5779,
+          "rating": 4.3,
+          "distance_km": null
+        },
+        {
+          "rank": 34,
+          "title": "Prime Fade Hair Studio",
+          "price_min": 776,
+          "price_max": 1190,
+          "rating": 5.0,
+          "distance_km": null
+        }
+      ]
+    },
+    {
+      "title": "Hafta sonu açık güzellik salonu",
+      "total_candidates": 40,
+      "results": [
+        {
+          "rank": 1,
+          "title": "NG Kuaför Güzellik Salonu GÖKHAN ERGİN",
+          "price_min": 1038,
+          "price_max": 1199,
+          "rating": 4.8,
+          "distance_km": null
+        },
+        {
+          "rank": 2,
+          "title": "His Beauty İzmit Güzellik Salonu, Lazer Epilasyon, Kalıcı Makyaj ve Cilt Bakımı",
+          "price_min": 860,
+          "price_max": 1496,
+          "rating": 4.5,
+          "distance_km": null
+        },
+        {
+          "rank": 3,
+          "title": "Viva Vibe Güzellik Salonu",
+          "price_min": 649,
+          "price_max": 1423,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 4,
+          "title": "Viva İzmit Güzellik Merkezi",
+          "price_min": 903,
+          "price_max": 1862,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 5,
+          "title": "tuba demir art&brows",
+          "price_min": 1443,
+          "price_max": 1792,
+          "rating": 4.1,
+          "distance_km": null
+        },
+        {
+          "rank": 6,
+          "title": "SOCİAL BEAUTY AESTHETİC GÜZELLİK MERKEZİ - Saç Terapisi - Cilt Bakımı - Protez Tırnak - Lazer Epilasyon",
+          "price_min": 963,
+          "price_max": 1409,
+          "rating": 4.9,
+          "distance_km": null
+        },
+        {
+          "rank": 7,
+          "title": "Elisa Beauty Clinic's",
+          "price_min": 666,
+          "price_max": 1490,
+          "rating": 4.7,
+          "distance_km": null
+        },
+        {
+          "rank": 8,
+          "title": "Olab Beauty - Güzellik Merkezi - Cilt Bakımı & Protez Tırnak & Kafa Masajı",
+          "price_min": 1693,
+          "price_max": 1973,
+          "rating": 4.9,
+          "distance_km": null
+        },
+        {
+          "rank": 9,
+          "title": "İzmit Happy Paradise Masaj Salonu",
+          "price_min": 442,
+          "price_max": 568,
+          "rating": 4.4,
+          "distance_km": null
+        },
+        {
+          "rank": 10,
+          "title": "Men's grooming güngör Akıncı barber business",
+          "price_min": 202,
+          "price_max": 297,
+          "rating": 4.9,
+          "distance_km": null
+        },
+        {
+          "rank": 11,
+          "title": "Brassiva Estetik & Güzellik",
+          "price_min": 1094,
+          "price_max": 1953,
+          "rating": 4.7,
+          "distance_km": null
+        },
+        {
+          "rank": 12,
+          "title": "ENZA BEAUTY & AESTHETİC I KOCAELİ | İZMİT | GÜZELLİK MERKEZİ | LAZER EPİLASYON | CİLT BAKIMI | ZAYIFLAMA",
+          "price_min": 558,
+          "price_max": 1638,
+          "rating": 4.5,
+          "distance_km": null
+        },
+        {
+          "rank": 13,
+          "title": "Estrend Estetik Ve Güzellik Merkezleri",
+          "price_min": 281,
+          "price_max": 1274,
+          "rating": 4.7,
+          "distance_km": null
+        },
+        {
+          "rank": 14,
+          "title": "İzmit Esse VİP Güzellik Merkezi",
+          "price_min": 280,
+          "price_max": 938,
+          "rating": 4.8,
+          "distance_km": null
+        },
+        {
+          "rank": 15,
+          "title": "Zer Beauty&Care",
+          "price_min": 1691,
+          "price_max": 1974,
+          "rating": 4.5,
+          "distance_km": null
+        },
+        {
+          "rank": 16,
+          "title": "Hazal Özmen Nail STUDİO- İzmit Protez Tırnak",
+          "price_min": 443,
+          "price_max": 565,
+          "rating": 4.5,
+          "distance_km": null
+        },
+        {
+          "rank": 17,
+          "title": "Rain Nail Studio",
+          "price_min": 351,
+          "price_max": 490,
+          "rating": 4.8,
+          "distance_km": null
+        },
+        {
+          "rank": 18,
+          "title": "Gökdemir Hair Design Studio",
+          "price_min": 1020,
+          "price_max": 1191,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 19,
+          "title": "Cheri Bakım Güzellik İzmit",
+          "price_min": 1585,
+          "price_max": 1976,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 20,
+          "title": "NUREFŞAN KOCA NAIL STUDIO & BEAUTY",
+          "price_min": 381,
+          "price_max": 459,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 21,
+          "title": "ENİSSE BEAUTY",
+          "price_min": 1257,
+          "price_max": 1672,
+          "rating": 4.5,
+          "distance_km": null
+        },
+        {
+          "rank": 22,
+          "title": "Aslı Zan Güzellik Merkezi - Soprano Lazer Epilasyon - Hydrafacial Cilt Bakımı",
+          "price_min": 910,
+          "price_max": 1957,
+          "rating": 4.7,
+          "distance_km": null
+        },
+        {
+          "rank": 23,
+          "title": "Deniz Ülker Beauty",
+          "price_min": 370,
+          "price_max": 1539,
+          "rating": 4.8,
+          "distance_km": null
+        },
+        {
+          "rank": 24,
+          "title": "Nuxe Nail Studio",
+          "price_min": 338,
+          "price_max": 441,
+          "rating": 3.7,
+          "distance_km": null
+        },
+        {
+          "rank": 25,
+          "title": "my kuaför",
+          "price_min": 408,
+          "price_max": 1082,
+          "rating": 4.4,
+          "distance_km": null
+        },
+        {
+          "rank": 26,
+          "title": "EMSOİNS ESTETİK VE GÜZELLİK MERKEZİ",
+          "price_min": 250,
+          "price_max": 1605,
+          "rating": 4.4,
+          "distance_km": null
+        },
+        {
+          "rank": 27,
+          "title": "TrendEstetik Güzellik Merkezi",
+          "price_min": 314,
+          "price_max": 1062,
+          "rating": 4.9,
+          "distance_km": null
+        },
+        {
+          "rank": 28,
+          "title": "Greenmed İzmit Kişisel Bakım Merkezi",
+          "price_min": 790,
+          "price_max": 1753,
+          "rating": 4.3,
+          "distance_km": null
+        },
+        {
+          "rank": 29,
+          "title": "Sudabe Yılmaz Estetik Ve Güzellik",
+          "price_min": 592,
+          "price_max": 1085,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 30,
+          "title": "İzmit Belediyesi Atatürk Spor Salonu",
+          "price_min": 2019,
+          "price_max": 2774,
+          "rating": 3.7,
+          "distance_km": null
+        },
+        {
+          "rank": 31,
+          "title": "ZeyNail's STUDİO",
+          "price_min": 449,
+          "price_max": 534,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 32,
+          "title": "Nouvelle Vie Estetik ve Güzellik Merkez Şube - Kocaeli",
+          "price_min": 1168,
+          "price_max": 1749,
+          "rating": 4.4,
+          "distance_km": null
+        },
+        {
+          "rank": 33,
+          "title": "Fitness Time",
+          "price_min": 1512,
+          "price_max": 2356,
+          "rating": 4.9,
+          "distance_km": null
+        },
+        {
+          "rank": 34,
+          "title": "İZMİT MyGYM FİTNESS VÜCUT GELİŞTİRME SALONU",
+          "price_min": 1695,
+          "price_max": 2788,
+          "rating": 4.4,
+          "distance_km": null
+        },
+        {
+          "rank": 35,
+          "title": "Nouvelle Vie Estetik ve Güzellik Fethiye Şubesi",
+          "price_min": 388,
+          "price_max": 1069,
+          "rating": 4.7,
+          "distance_km": null
+        },
+        {
+          "rank": 36,
+          "title": "FitActiv Pilates Güzellik Bölgesel İncelme ve Zayıflama",
+          "price_min": 891,
+          "price_max": 1058,
+          "rating": 4.9,
+          "distance_km": null
+        },
+        {
+          "rank": 37,
+          "title": "IMPACT FIGHT CLUB BOKS KİCKBOX MUAY THAİ SPOR SALONU",
+          "price_min": 2553,
+          "price_max": 2945,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 38,
+          "title": "PlayStüdyo İzmit | Kadınlara Özel Spor Salonu",
+          "price_min": 696,
+          "price_max": 1818,
+          "rating": 4.1,
+          "distance_km": null
+        },
+        {
+          "rank": 39,
+          "title": "Ita Sportx - Yahya Kaptan",
+          "price_min": 725,
+          "price_max": 1793,
+          "rating": 4.2,
+          "distance_km": null
+        },
+        {
+          "rank": 40,
+          "title": "MACFit İzmit Arasta Park",
+          "price_min": 1715,
+          "price_max": 2118,
+          "rating": 4.2,
+          "distance_km": null
+        }
+      ]
+    },
+    {
+      "title": "İzmit merkeze 5km içinde berber",
+      "total_candidates": 40,
+      "results": [
+        {
+          "rank": 1,
+          "title": "Berber UNE",
+          "price_min": 247,
+          "price_max": 307,
+          "rating": 5.0,
+          "distance_km": 2.6558884456215703
+        },
+        {
+          "rank": 2,
+          "title": "LİVA BERBER",
+          "price_min": 317,
+          "price_max": 385,
+          "rating": 5.0,
+          "distance_km": 2.46162384958344
+        },
+        {
+          "rank": 3,
+          "title": "KUAFÖR SERHAT",
+          "price_min": 155,
+          "price_max": 357,
+          "rating": 4.6,
+          "distance_km": 3.337927408021061
+        },
+        {
+          "rank": 4,
+          "title": "Kocaeli İzmit Business Berber Shop",
+          "price_min": 354,
+          "price_max": 399,
+          "rating": 4.8,
+          "distance_km": 1.1333402030611848
+        },
+        {
+          "rank": 5,
+          "title": "MG Erkek Kuaförü",
+          "price_min": 333,
+          "price_max": 378,
+          "rating": 4.0,
+          "distance_km": 1.2409268235121609
+        },
+        {
+          "rank": 6,
+          "title": "The Barber House",
+          "price_min": 103,
+          "price_max": 181,
+          "rating": 5.0,
+          "distance_km": 1.4919997411551709
+        },
+        {
+          "rank": 7,
+          "title": "THE AZOO BARBER SHOP",
+          "price_min": 349,
+          "price_max": 394,
+          "rating": 4.2,
+          "distance_km": 0.5070686018148989
+        },
+        {
+          "rank": 8,
+          "title": "Yıldız Erkek Kuaförü Ercan",
+          "price_min": 265,
+          "price_max": 336,
+          "rating": 4.3,
+          "distance_km": 1.0624156491611967
+        },
+        {
+          "rank": 9,
+          "title": "DeBatu HairDesing",
+          "price_min": 326,
+          "price_max": 393,
+          "rating": 5.0,
+          "distance_km": 0.06979131437629094
+        },
+        {
+          "rank": 10,
+          "title": "BAYBER41 Erkek Kuaförü",
+          "price_min": 337,
+          "price_max": 391,
+          "rating": 4.6,
+          "distance_km": 0.5829116563132424
+        },
+        {
+          "rank": 11,
+          "title": "Men's grooming güngör Akıncı barber business",
+          "price_min": 202,
+          "price_max": 297,
+          "rating": 4.9,
+          "distance_km": 1.6394364163757198
+        },
+        {
+          "rank": 12,
+          "title": "my kuaför",
+          "price_min": 408,
+          "price_max": 1082,
+          "rating": 4.4,
+          "distance_km": 2.3995975667855522
+        },
+        {
+          "rank": 13,
+          "title": "Kuaför Kübra Aydin",
+          "price_min": 660,
+          "price_max": 922,
+          "rating": 4.5,
+          "distance_km": 0.28082249431673717
+        },
+        {
+          "rank": 14,
+          "title": "Hair Doctor Onur Topova Erkek Kuaförü",
+          "price_min": 141,
+          "price_max": 250,
+          "rating": 5.0,
+          "distance_km": 1.1075138559709279
+        },
+        {
+          "rank": 15,
+          "title": "Kuaför Orhan",
+          "price_min": 802,
+          "price_max": 1054,
+          "rating": 4.3,
+          "distance_km": 1.0945912691331288
+        },
+        {
+          "rank": 16,
+          "title": "Işık Uysal Men Hair Studio",
+          "price_min": 232,
+          "price_max": 320,
+          "rating": 4.7,
+          "distance_km": 0.6272757123800485
+        },
+        {
+          "rank": 17,
+          "title": "tuba demir art&brows",
+          "price_min": 1443,
+          "price_max": 1792,
+          "rating": 4.1,
+          "distance_km": 1.0733315370853815
+        },
+        {
+          "rank": 18,
+          "title": "Brassiva Estetik & Güzellik",
+          "price_min": 1094,
+          "price_max": 1953,
+          "rating": 4.7,
+          "distance_km": 1.176953423401903
+        },
+        {
+          "rank": 19,
+          "title": "izmit Birebir özel ders",
+          "price_min": 580,
+          "price_max": 954,
+          "rating": 4.9,
+          "distance_km": 1.296031325021568
+        },
+        {
+          "rank": 20,
+          "title": "Diş Hekimi Tarık Can Kara , İzmit/Kocaeli",
+          "price_min": 753,
+          "price_max": 2392,
+          "rating": 5.0,
+          "distance_km": 0.8276992006575677
+        },
+        {
+          "rank": 21,
+          "title": "Yahyakaptan Diş Hekimi Aydın Cevizli- İzmit Nöbetçi Diş - Kocaeli İzmit Acil 7/24 Diş Kliniği -İzmit özel Diş Hastanesi",
+          "price_min": 5369,
+          "price_max": 7077,
+          "rating": 4.9,
+          "distance_km": 1.7158452305992873
+        },
+        {
+          "rank": 22,
+          "title": "BayLoca3 Erkek Kuaförü",
+          "price_min": 298,
+          "price_max": 381,
+          "rating": 5.0,
+          "distance_km": 0.565567504042238
+        },
+        {
+          "rank": 23,
+          "title": "Özel Marka Ağız ve Diş Sağlığı Polikliniği",
+          "price_min": 3098,
+          "price_max": 4950,
+          "rating": 4.2,
+          "distance_km": 2.9646619503889693
+        },
+        {
+          "rank": 24,
+          "title": "Emek Oto Ford Özel Servisi İzmit",
+          "price_min": 2331,
+          "price_max": 8991,
+          "rating": 4.4,
+          "distance_km": 2.049632832058314
+        },
+        {
+          "rank": 25,
+          "title": "Özel Kocaeli Diş Polikliniği",
+          "price_min": 576,
+          "price_max": 5779,
+          "rating": 4.3,
+          "distance_km": 1.2230433594603327
+        },
+        {
+          "rank": 26,
+          "title": "DentAtlas Ağız Ve Diş Sağlığı Polikliniği",
+          "price_min": 950,
+          "price_max": 6033,
+          "rating": 4.8,
+          "distance_km": 0.835033774676509
+        },
+        {
+          "rank": 27,
+          "title": "Dentizmit Ağız ve Diş Sağlığı Polikliniği - Dent İzmit Diş Sağlığı",
+          "price_min": 5079,
+          "price_max": 6391,
+          "rating": 4.7,
+          "distance_km": 0.9343355794515907
+        },
+        {
+          "rank": 28,
+          "title": "OLBİA PETSHOP",
+          "price_min": 1424,
+          "price_max": 2311,
+          "rating": 4.7,
+          "distance_km": 3.204458123218194
+        },
+        {
+          "rank": 29,
+          "title": "Özel Kocaeli Arma Ağız ve Diş Sağlığı Polikliniği",
+          "price_min": 3497,
+          "price_max": 5602,
+          "rating": 4.6,
+          "distance_km": 2.100533819486981
+        },
+        {
+          "rank": 30,
+          "title": "Bemol Piyano Okulu",
+          "price_min": 583,
+          "price_max": 1079,
+          "rating": 5.0,
+          "distance_km": 2.4760728622416197
+        },
+        {
+          "rank": 31,
+          "title": "BİRDOST OTOMOTİV FIAT ÖZEL SERVİS",
+          "price_min": 11293,
+          "price_max": 14298,
+          "rating": 4.6,
+          "distance_km": 2.2689986894230874
+        },
+        {
+          "rank": 32,
+          "title": "Diş Hekimi Uğur Ümit - İzmit Nöbetçi Dişçi | Kocaeli 7/24 Açık Acil Özel Diş Hastanesi",
+          "price_min": 4662,
+          "price_max": 6049,
+          "rating": 4.9,
+          "distance_km": 0.2927189272219683
+        },
+        {
+          "rank": 33,
+          "title": "popüler hoca",
+          "price_min": 633,
+          "price_max": 751,
+          "rating": 5.0,
+          "distance_km": 3.3766050513057557
+        },
+        {
+          "rank": 34,
+          "title": "Dentriva Diş Yahyakaptan - İzmit İmplant-İzmit Nöbetçi Diş-İzmit Diş Teli-İzmit Çocuk Diş-İzmit Ortodonti-İzmit Pedodonti",
+          "price_min": 5057,
+          "price_max": 6738,
+          "rating": 4.8,
+          "distance_km": 1.7519171253676062
+        },
+        {
+          "rank": 35,
+          "title": "Uzman Diş Grup - İmplant - Gömülü Diş - Ortodonti - Pedodonti - Gülüş Tasarımı - Kocaeli Diş Kliniği",
+          "price_min": 1741,
+          "price_max": 7423,
+          "rating": 4.8,
+          "distance_km": 2.46695680262607
+        },
+        {
+          "rank": 36,
+          "title": "Body Club Sport Center",
+          "price_min": 2231,
+          "price_max": 2764,
+          "rating": 4.9,
+          "distance_km": 3.7811893678145214
+        },
+        {
+          "rank": 37,
+          "title": "KOSTÜ AĞIZ VE DİŞ SAĞLIĞI UYGULAMA VE ARAŞTIRMA MERKEZİ",
+          "price_min": 4586,
+          "price_max": 5962,
+          "rating": 3.8,
+          "distance_km": 0.7788875525921344
+        },
+        {
+          "rank": 38,
+          "title": "Bekirdere Üçyol Sürücü Kursu",
+          "price_min": 15027,
+          "price_max": 17521,
+          "rating": 4.8,
+          "distance_km": 1.3419245153444395
+        },
+        {
+          "rank": 39,
+          "title": "Özlü Otomotiv | İzmit Oto Servis (Özel)",
+          "price_min": 10843,
+          "price_max": 13657,
+          "rating": 5.0,
+          "distance_km": 1.9062750058867324
+        },
+        {
+          "rank": 40,
+          "title": "Bimser Sürücü Kursu",
+          "price_min": 9541,
+          "price_max": 15598,
+          "rating": 5.0,
+          "distance_km": 1.245164239120426
+        }
+      ]
+    },
+    {
+      "title": "Diş kliniği, 2026-07-28 sabahı müsait",
+      "total_candidates": 32,
+      "results": [
+        {
+          "rank": 1,
+          "title": "Yahyakaptan Diş Hekimi Aydın Cevizli- İzmit Nöbetçi Diş - Kocaeli İzmit Acil 7/24 Diş Kliniği -İzmit özel Diş Hastanesi",
+          "price_min": 5369,
+          "price_max": 7077,
+          "rating": 4.9,
+          "distance_km": null
+        },
+        {
+          "rank": 2,
+          "title": "Dentizmit Diş Poliklinikleri - Başiskele Şubesi",
+          "price_min": 4798,
+          "price_max": 6276,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 3,
+          "title": "Diş Hekimi Ahmet Melih Bozoğlu Diş Kliniği",
+          "price_min": 6748,
+          "price_max": 7949,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 4,
+          "title": "Özel Marka Ağız ve Diş Sağlığı Polikliniği",
+          "price_min": 3098,
+          "price_max": 4950,
+          "rating": 4.2,
+          "distance_km": null
+        },
+        {
+          "rank": 5,
+          "title": "Uzman Diş Hekimi Kerem Çağlar GÜMÜŞ - Diş Kliniği",
+          "price_min": 3578,
+          "price_max": 7223,
+          "rating": 4.8,
+          "distance_km": null
+        },
+        {
+          "rank": 6,
+          "title": "Dentİzmit Gölcük Ağız ve Diş Sağlığı Poliklinikleri - Diş Hastanesi",
+          "price_min": 6008,
+          "price_max": 7791,
+          "rating": 4.7,
+          "distance_km": null
+        },
+        {
+          "rank": 7,
+          "title": "Özel Kocaeli Diş Polikliniği",
+          "price_min": 576,
+          "price_max": 5779,
+          "rating": 4.3,
+          "distance_km": null
+        },
+        {
+          "rank": 8,
+          "title": "Uzman Diş Grup - İmplant - Gömülü Diş - Ortodonti - Pedodonti - Gülüş Tasarımı - Kocaeli Diş Kliniği",
+          "price_min": 1741,
+          "price_max": 7423,
+          "rating": 4.8,
+          "distance_km": null
+        },
+        {
+          "rank": 9,
+          "title": "Dentriva Diş Yahyakaptan - İzmit İmplant-İzmit Nöbetçi Diş-İzmit Diş Teli-İzmit Çocuk Diş-İzmit Ortodonti-İzmit Pedodonti",
+          "price_min": 5057,
+          "price_max": 6738,
+          "rating": 4.8,
+          "distance_km": null
+        },
+        {
+          "rank": 10,
+          "title": "Diş Hekimi Uğur Ümit - İzmit Nöbetçi Dişçi | Kocaeli 7/24 Açık Acil Özel Diş Hastanesi",
+          "price_min": 4662,
+          "price_max": 6049,
+          "rating": 4.9,
+          "distance_km": null
+        },
+        {
+          "rank": 11,
+          "title": "Foto Klinik izmit",
+          "price_min": 9568,
+          "price_max": 12890,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 12,
+          "title": "Özel Dentkartepe Ağız Ve Diş Sağlığı Polikliniği",
+          "price_min": 1634,
+          "price_max": 4885,
+          "rating": 4.9,
+          "distance_km": null
+        },
+        {
+          "rank": 13,
+          "title": "Dentizmit Ağız ve Diş Sağlığı Polikliniği - Dent İzmit Diş Sağlığı",
+          "price_min": 5079,
+          "price_max": 6391,
+          "rating": 4.7,
+          "distance_km": null
+        },
+        {
+          "rank": 14,
+          "title": "Dr.Tarık Can Kara",
+          "price_min": 2319,
+          "price_max": 4886,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 15,
+          "title": "DentAtlas Ağız Ve Diş Sağlığı Polikliniği",
+          "price_min": 950,
+          "price_max": 6033,
+          "rating": 4.8,
+          "distance_km": null
+        },
+        {
+          "rank": 16,
+          "title": "Fzt. M. Akif Oker & Fzt. Muharrem Sönmez Fizyoterapi Kliniği",
+          "price_min": 1012,
+          "price_max": 1248,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 17,
+          "title": "Kartepe Veteriner Kliniği",
+          "price_min": 2168,
+          "price_max": 2629,
+          "rating": 4.6,
+          "distance_km": null
+        },
+        {
+          "rank": 18,
+          "title": "Özel Kocaeli Arma Ağız ve Diş Sağlığı Polikliniği",
+          "price_min": 3497,
+          "price_max": 5602,
+          "rating": 4.6,
+          "distance_km": null
+        },
+        {
+          "rank": 19,
+          "title": "Dt. Emine Sungur Yılmaz",
+          "price_min": 3446,
+          "price_max": 6545,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 20,
+          "title": "UZMAN VETERİNER KLİNİĞİ İZMİT KOCAELİ",
+          "price_min": 1749,
+          "price_max": 2393,
+          "rating": 4.7,
+          "distance_km": null
+        },
+        {
+          "rank": 21,
+          "title": "Clinic İzmit Veteriner | Değirmendere",
+          "price_min": 1636,
+          "price_max": 2952,
+          "rating": 4.8,
+          "distance_km": null
+        },
+        {
+          "rank": 22,
+          "title": "Diş Hekimi Dr. Deniz Doğan - İzmit Diş Hekimi & Protetik Diş Tedavisi Uzmanı",
+          "price_min": 4698,
+          "price_max": 6216,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 23,
+          "title": "Masal Veteriner Polikliniği",
+          "price_min": 2015,
+          "price_max": 2596,
+          "rating": 4.8,
+          "distance_km": null
+        },
+        {
+          "rank": 24,
+          "title": "Dr. Muharrem Özgeldi",
+          "price_min": 5772,
+          "price_max": 7354,
+          "rating": 3.0,
+          "distance_km": null
+        },
+        {
+          "rank": 25,
+          "title": "Bulvar Veteriner Polikliniği",
+          "price_min": 542,
+          "price_max": 1953,
+          "rating": 4.3,
+          "distance_km": null
+        },
+        {
+          "rank": 26,
+          "title": "Kocaeli Göz Doktoru -Op.Dr.Mustafa Şahiner,Lazer cerrahisi,SMILE lazer,Akıllı Mercek,Keratokonus,Göz Çizdirme",
+          "price_min": 568,
+          "price_max": 855,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 27,
+          "title": "Pasteur Hayvan Hastanesi",
+          "price_min": 1823,
+          "price_max": 2228,
+          "rating": 4.4,
+          "distance_km": null
+        },
+        {
+          "rank": 28,
+          "title": "HIÇKIDIK PETSHOP AKVARYUM İZMİT",
+          "price_min": 347,
+          "price_max": 935,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 29,
+          "title": "Pasteur Veterinary",
+          "price_min": 361,
+          "price_max": 1395,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 30,
+          "title": "ANIMAL ACADEMY VETERİNER KLİNİĞİ KÖRFEZ",
+          "price_min": 637,
+          "price_max": 1729,
+          "rating": 4.4,
+          "distance_km": null
+        },
+        {
+          "rank": 31,
+          "title": "Fauna Veteriner Kliniği Kocaeli",
+          "price_min": 1254,
+          "price_max": 2776,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 32,
+          "title": "Ejder Veteriner Kliniği",
+          "price_min": 415,
+          "price_max": 1799,
+          "rating": 3.9,
+          "distance_km": null
+        }
+      ]
+    },
+    {
+      "title": "Diş kliniği (1000-3000TL aralığı)",
+      "total_candidates": 32,
+      "results": [
+        {
+          "rank": 1,
+          "title": "Özel Dentkartepe Ağız Ve Diş Sağlığı Polikliniği",
+          "price_min": 1634,
+          "price_max": 4885,
+          "rating": 4.9,
+          "distance_km": null
+        },
+        {
+          "rank": 2,
+          "title": "Özel Kocaeli Diş Polikliniği",
+          "price_min": 576,
+          "price_max": 5779,
+          "rating": 4.3,
+          "distance_km": null
+        },
+        {
+          "rank": 3,
+          "title": "Uzman Diş Grup - İmplant - Gömülü Diş - Ortodonti - Pedodonti - Gülüş Tasarımı - Kocaeli Diş Kliniği",
+          "price_min": 1741,
+          "price_max": 7423,
+          "rating": 4.8,
+          "distance_km": null
+        },
+        {
+          "rank": 4,
+          "title": "DentAtlas Ağız Ve Diş Sağlığı Polikliniği",
+          "price_min": 950,
+          "price_max": 6033,
+          "rating": 4.8,
+          "distance_km": null
+        },
+        {
+          "rank": 5,
+          "title": "Diş Hekimi Tarık Can Kara , İzmit/Kocaeli",
+          "price_min": 753,
+          "price_max": 2392,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 6,
+          "title": "Kartepe Veteriner Kliniği",
+          "price_min": 2168,
+          "price_max": 2629,
+          "rating": 4.6,
+          "distance_km": null
+        },
+        {
+          "rank": 7,
+          "title": "Dr.Tarık Can Kara",
+          "price_min": 2319,
+          "price_max": 4886,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 8,
+          "title": "E.L.M Poliklinik",
+          "price_min": 661,
+          "price_max": 1422,
+          "rating": 4.8,
+          "distance_km": null
+        },
+        {
+          "rank": 9,
+          "title": "Viva İzmit Güzellik Merkezi",
+          "price_min": 903,
+          "price_max": 1862,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 10,
+          "title": "Klinik Psikolog Sena Tunç | Kocaeli Klinik Psikolog– İzmit Klinik Psikolog",
+          "price_min": 659,
+          "price_max": 1449,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 11,
+          "title": "Clinic İzmit Veteriner | Değirmendere",
+          "price_min": 1636,
+          "price_max": 2952,
+          "rating": 4.8,
+          "distance_km": null
+        },
+        {
+          "rank": 12,
+          "title": "Fzt. M. Akif Oker & Fzt. Muharrem Sönmez Fizyoterapi Kliniği",
+          "price_min": 1012,
+          "price_max": 1248,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 13,
+          "title": "Op. Dr. Çağrı Yiğit",
+          "price_min": 1041,
+          "price_max": 1366,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 14,
+          "title": "UZMAN VETERİNER KLİNİĞİ İZMİT KOCAELİ",
+          "price_min": 1749,
+          "price_max": 2393,
+          "rating": 4.7,
+          "distance_km": null
+        },
+        {
+          "rank": 15,
+          "title": "Dünyagöz İzmit Hastanesi",
+          "price_min": 982,
+          "price_max": 1438,
+          "rating": 4.8,
+          "distance_km": null
+        },
+        {
+          "rank": 16,
+          "title": "my kuaför",
+          "price_min": 408,
+          "price_max": 1082,
+          "rating": 4.4,
+          "distance_km": null
+        },
+        {
+          "rank": 17,
+          "title": "Derince Yüzme Havuzu",
+          "price_min": 811,
+          "price_max": 1175,
+          "rating": 4.3,
+          "distance_km": null
+        },
+        {
+          "rank": 18,
+          "title": "SOCİAL BEAUTY AESTHETİC GÜZELLİK MERKEZİ - Saç Terapisi - Cilt Bakımı - Protez Tırnak - Lazer Epilasyon",
+          "price_min": 963,
+          "price_max": 1409,
+          "rating": 4.9,
+          "distance_km": null
+        },
+        {
+          "rank": 19,
+          "title": "Yuvam Veteriner Kliniği",
+          "price_min": 483,
+          "price_max": 2950,
+          "rating": 4.2,
+          "distance_km": null
+        },
+        {
+          "rank": 20,
+          "title": "Bulvar Veteriner Polikliniği",
+          "price_min": 542,
+          "price_max": 1953,
+          "rating": 4.3,
+          "distance_km": null
+        },
+        {
+          "rank": 21,
+          "title": "Veni Vidi Göz İzmit",
+          "price_min": 666,
+          "price_max": 1130,
+          "rating": 4.7,
+          "distance_km": null
+        },
+        {
+          "rank": 22,
+          "title": "Wetnose Veteriner Kliniği Kocaeli",
+          "price_min": 2160,
+          "price_max": 2633,
+          "rating": 4.2,
+          "distance_km": null
+        },
+        {
+          "rank": 23,
+          "title": "Klinik Psikolog Sema Nur Atıcı - Kocaeli Klinik Psikolog",
+          "price_min": 1950,
+          "price_max": 2495,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 24,
+          "title": "Deniz Ülker Beauty",
+          "price_min": 370,
+          "price_max": 1539,
+          "rating": 4.8,
+          "distance_km": null
+        },
+        {
+          "rank": 25,
+          "title": "Masal Veteriner Polikliniği",
+          "price_min": 2015,
+          "price_max": 2596,
+          "rating": 4.8,
+          "distance_km": null
+        },
+        {
+          "rank": 26,
+          "title": "Pasteur Veterinary",
+          "price_min": 361,
+          "price_max": 1395,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 27,
+          "title": "ANIMAL ACADEMY VETERİNER KLİNİĞİ KÖRFEZ",
+          "price_min": 637,
+          "price_max": 1729,
+          "rating": 4.4,
+          "distance_km": null
+        },
+        {
+          "rank": 28,
+          "title": "Pasteur Hayvan Hastanesi",
+          "price_min": 1823,
+          "price_max": 2228,
+          "rating": 4.4,
+          "distance_km": null
+        },
+        {
+          "rank": 29,
+          "title": "Kartepe Violet Veteriner Kliniği",
+          "price_min": 875,
+          "price_max": 1557,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 30,
+          "title": "Alkan Veteriner Kliniği",
+          "price_min": 1202,
+          "price_max": 2655,
+          "rating": null,
+          "distance_km": null
+        },
+        {
+          "rank": 31,
+          "title": "Fauna Veteriner Kliniği Kocaeli",
+          "price_min": 1254,
+          "price_max": 2776,
+          "rating": 5.0,
+          "distance_km": null
+        },
+        {
+          "rank": 32,
+          "title": "Ejder Veteriner Kliniği",
+          "price_min": 415,
+          "price_max": 1799,
+          "rating": 3.9,
+          "distance_km": null
+        }
+      ]
+    },
+    {
+      "title": "Diş kliniği (max_price=10, muhtemelen boş)",
+      "total_candidates": 0,
+      "results": []
+    }
+  ],
+  "diagnostics": [
+    {
+      "query": "ucuz diş kliniği",
+      "filters": {
+        "max_price": 1500,
+        "online_only": false,
+        "weekend_open_only": false
+      },
+      "vector_top": [
+        {
+          "rank": 1,
+          "title": "Özel Kocaeli Diş Polikliniği",
+          "score": 0.5836482
+        },
+        {
+          "rank": 2,
+          "title": "DentAtlas Ağız Ve Diş Sağlığı Polikliniği",
+          "score": 0.5240968
+        },
+        {
+          "rank": 3,
+          "title": "Kocaeli Göz Doktoru -Op.Dr.Mustafa Şahiner,Lazer cerrahisi,SMILE lazer,Akıllı Mercek,Keratokonus,Göz Çizdirme",
+          "score": 0.47937977
+        },
+        {
+          "rank": 4,
+          "title": "Diş Hekimi Tarık Can Kara , İzmit/Kocaeli",
+          "score": 0.4770618
+        },
+        {
+          "rank": 5,
+          "title": "Bulvar Veteriner Polikliniği",
+          "score": 0.4736383
+        },
+        {
+          "rank": 6,
+          "title": "Yuvam Veteriner Kliniği",
+          "score": 0.4597929
+        },
+        {
+          "rank": 7,
+          "title": "ANIMAL ACADEMY VETERİNER KLİNİĞİ KÖRFEZ",
+          "score": 0.43221402
+        },
+        {
+          "rank": 8,
+          "title": "Özel Çağın Göz Hastanesi",
+          "score": 0.42684394
+        },
+        {
+          "rank": 9,
+          "title": "Ejder Veteriner Kliniği",
+          "score": 0.42234218
+        },
+        {
+          "rank": 10,
+          "title": "Fauna Veteriner Kliniği Kocaeli",
+          "score": 0.4182207
+        },
+        {
+          "rank": 11,
+          "title": "Dünyagöz İzmit Hastanesi",
+          "score": 0.41314465
+        },
+        {
+          "rank": 12,
+          "title": "Veni Vidi Göz İzmit",
+          "score": 0.41214573
+        },
+        {
+          "rank": 13,
+          "title": "SOCİAL BEAUTY AESTHETİC GÜZELLİK MERKEZİ - Saç Terapisi - Cilt Bakımı - Protez Tırnak - Lazer Epilasyon",
+          "score": 0.41093636
+        },
+        {
+          "rank": 14,
+          "title": "Ece Öztep Estetik",
+          "score": 0.41035464
+        },
+        {
+          "rank": 15,
+          "title": "cherry nail art İzmit",
+          "score": 0.40520746
+        }
+      ],
+      "bm25_top": [
+        {
+          "rank": 1,
+          "title": "Yahyakaptan Diş Hekimi Aydın Cevizli- İzmit Nöbetçi Diş - Kocaeli İzmit Acil 7/24 Diş Kliniği -İzmit özel Diş Hastanesi",
+          "score": 10.616653725578466
+        },
+        {
+          "rank": 2,
+          "title": "Dentizmit Diş Poliklinikleri - Başiskele Şubesi",
+          "score": 10.003713718825919
+        },
+        {
+          "rank": 3,
+          "title": "Diş Hekimi Ahmet Melih Bozoğlu Diş Kliniği",
+          "score": 9.637580298399424
+        },
+        {
+          "rank": 4,
+          "title": "Kartepe Veteriner Kliniği",
+          "score": 8.999307634436477
+        },
+        {
+          "rank": 5,
+          "title": "UZMAN VETERİNER KLİNİĞİ İZMİT KOCAELİ",
+          "score": 8.885809534076866
+        },
+        {
+          "rank": 6,
+          "title": "Özel Marka Ağız ve Diş Sağlığı Polikliniği",
+          "score": 8.820962371133836
+        },
+        {
+          "rank": 7,
+          "title": "Uzman Diş Hekimi Kerem Çağlar GÜMÜŞ - Diş Kliniği",
+          "score": 8.803974802015313
+        },
+        {
+          "rank": 8,
+          "title": "Yuvam Veteriner Kliniği",
+          "score": 8.77518447179534
+        },
+        {
+          "rank": 9,
+          "title": "Uzman Diş Grup - İmplant - Gömülü Diş - Ortodonti - Pedodonti - Gülüş Tasarımı - Kocaeli Diş Kliniği",
+          "score": 8.70287576334299
+        },
+        {
+          "rank": 10,
+          "title": "Diş Hekimi Uğur Ümit - İzmit Nöbetçi Dişçi | Kocaeli 7/24 Açık Acil Özel Diş Hastanesi",
+          "score": 8.66696358201919
+        },
+        {
+          "rank": 11,
+          "title": "Özel Dentkartepe Ağız Ve Diş Sağlığı Polikliniği",
+          "score": 8.593613090245102
+        },
+        {
+          "rank": 12,
+          "title": "Dentriva Diş Yahyakaptan - İzmit İmplant-İzmit Nöbetçi Diş-İzmit Diş Teli-İzmit Çocuk Diş-İzmit Ortodonti-İzmit Pedodonti",
+          "score": 8.561115434321685
+        },
+        {
+          "rank": 13,
+          "title": "Dentİzmit Gölcük Ağız ve Diş Sağlığı Poliklinikleri - Diş Hastanesi",
+          "score": 8.327353778976306
+        },
+        {
+          "rank": 14,
+          "title": "Dentizmit Ağız ve Diş Sağlığı Polikliniği - Dent İzmit Diş Sağlığı",
+          "score": 6.1085625005040844
+        },
+        {
+          "rank": 15,
+          "title": "Diş Hekimi Tarık Can Kara , İzmit/Kocaeli",
+          "score": 6.060582584848444
+        }
+      ]
+    }
+  ]
+}

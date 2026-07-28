@@ -84,6 +84,18 @@ class _FakeEmbeddingProvider:
         return [[0.1, 0.2, 0.3] for _ in texts]
 
 
+class _IdentityRerankerProvider:
+    """Sırayı değiştirmeden döner — bu testler reranking mantığını değil,
+    RRF/filtre/sayfalama davranışını doğruluyor (reranker'ın kendi testleri
+    test_reranker.py'de ayrıca var)."""
+
+    async def rerank(self, query: str, documents: list[str], top_n: int) -> list[tuple[int, float]]:
+        return [(i, 1.0) for i in range(len(documents))]
+
+    async def close(self) -> None:
+        pass
+
+
 def _make_session_returning(businesses: list[Business]) -> AsyncMock:
     session = AsyncMock()
     scalars_result = SimpleNamespace(all=lambda: businesses)
@@ -122,15 +134,18 @@ async def test_search_providers_skips_filtered_id_fetch_when_no_filters(monkeypa
         qdrant_client=AsyncMock(),
         bm25_index=bm25_index,
         embedding_provider=_FakeEmbeddingProvider(),
+        reranker_provider=_IdentityRerankerProvider(),
         query="diş",
         filters=SearchFilters(),
     )
 
     assert fetch_filtered_called is False
-    # total=3: BM25 top_k içinde tüm corpus'u döner (>0 skor filtresi
-    # bilerek yok, bkz. bm25.py "DİKKAT" notu) — asıl doğruluk sinyali
-    # business 1'in en alakalı olarak en üstte sıralanması.
-    assert response.total == 3
+    # total artık DB'den gerçekten çekilen işletme sayısı (BM25/RRF top_k
+    # içinde 3 aday olsa da — >0 skor filtresi bilerek yok, bkz. bm25.py
+    # "DİKKAT" notu — mock session sadece business 1'i "var" sayıyor).
+    # Asıl doğruluk sinyali business 1'in en alakalı olarak en üstte
+    # sıralanması.
+    assert response.total == 1
     assert response.results[0].id == 1
 
 
@@ -168,6 +183,7 @@ async def test_search_providers_intersects_bm25_with_filtered_ids_when_filters_p
         qdrant_client=AsyncMock(),
         bm25_index=bm25_index,
         embedding_provider=_FakeEmbeddingProvider(),
+        reranker_provider=_IdentityRerankerProvider(),
         query="diş",
         filters=SearchFilters(gender="unisex"),
     )
@@ -190,6 +206,7 @@ async def test_search_providers_applies_limit_and_offset(monkeypatch) -> None:
         qdrant_client=AsyncMock(),
         bm25_index=BM25Index(),  # hiç build() çağrılmadı, .search() her zaman [] döner
         embedding_provider=_FakeEmbeddingProvider(),
+        reranker_provider=_IdentityRerankerProvider(),
         query="diş",
         filters=SearchFilters(),
         limit=1,

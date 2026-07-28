@@ -11,7 +11,7 @@ from backend.api.routes import router
 from backend.config import get_settings
 from backend.db.qdrant import get_qdrant_client
 from backend.db.session import get_engine, get_session_factory
-from backend.services.search import get_bm25_index, periodic_refresh_loop
+from backend.services.search import get_bm25_index, get_reranker_provider, periodic_refresh_loop
 
 
 @asynccontextmanager
@@ -40,6 +40,7 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
 
     await get_engine().dispose()
     await get_qdrant_client().close()
+    await get_reranker_provider().close()
 
 
 def create_app() -> FastAPI:

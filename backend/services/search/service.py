@@ -4,9 +4,12 @@ Sırayla: (1) vektör + BM25'ten aday çekilir (BM25 sonuçları, hard filtre
 varsa Qdrant'tan çekilen filtrelenmiş ID kümesiyle kesişime sokulur —
 rank-bm25 kendi başına payload filtering desteklemediği için), (2) RRF ile
 birleştirilir, (3) varsa tarih/saat müsaitliğine göre ikinci fazda daraltılır,
-(4) limit/offset ile dilimlenir, (5) işletme kayıtları çekilip response
-şemasına eşlenir.
+(4) aday işletmelerin verisi çekilir, (5) cross-encoder reranker ile yeniden
+sıralanır (başarısız olursa RRF sırası korunur, arama çökmez), (6) limit/offset
+ile dilimlenir, (7) response şemasına eşlenir.
 """
+
+import logging
 
 from qdrant_client import AsyncQdrantClient
 from sqlalchemy import select
@@ -16,10 +19,13 @@ from backend.api.schemas import ProviderResult, SearchResponse
 from backend.db.models import Business
 from backend.services.embedding import EmbeddingProvider
 from backend.services.search.availability import DateAvailabilityFilter, fetch_available_business_ids
-from backend.services.search.bm25 import BM25Index
+from backend.services.search.bm25 import BM25Index, build_lexical_text
 from backend.services.search.filters import NearFilter, SearchFilters, compute_distance_km, translate_filters_to_qdrant
 from backend.services.search.fusion import reciprocal_rank_fusion
+from backend.services.search.reranker import RerankerProvider, RerankerServiceError
 from backend.services.search.vector import fetch_filtered_business_ids, vector_search
+
+logger = logging.getLogger(__name__)
 
 CANDIDATE_DEPTH_PER_SOURCE: int = 30
 CANDIDATE_POOL_SIZE: int = 40
@@ -37,6 +43,29 @@ async def _fetch_businesses_by_id(session: AsyncSession, business_ids: list[int]
     result = await session.execute(select(Business).where(Business.id.in_(business_ids)))
     businesses_by_id = {business.id: business for business in result.scalars().all()}
     return [businesses_by_id[bid] for bid in business_ids if bid in businesses_by_id]
+
+
+async def _rerank_businesses(
+    reranker_provider: RerankerProvider,
+    query: str,
+    businesses: list[Business],
+) -> list[Business]:
+    """İşletmeleri cross-encoder reranker ile yeniden sıralar.
+
+    Reranker başarısız olursa (zaman aşımı, API hatası) tüm aramayı
+    çökertmek yerine mevcut (RRF/müsaitlik sonrası) sıra korunur —
+    CLAUDE.md'nin fallback ilkesi: reranksiz ama yine de mantıklı bir
+    sonuç dönmeye devam eder.
+    """
+    if not businesses:
+        return businesses
+    documents = [build_lexical_text(business) for business in businesses]
+    try:
+        ranked = await reranker_provider.rerank(query, documents, top_n=len(documents))
+    except RerankerServiceError as e:
+        logger.warning("Reranker başarısız, RRF sırası korunuyor: %s", e)
+        return businesses
+    return [businesses[index] for index, _ in ranked]
 
 
 def _to_provider_result(business: Business, near: NearFilter | None) -> ProviderResult:
@@ -68,6 +97,7 @@ async def search_providers(
     qdrant_client: AsyncQdrantClient,
     bm25_index: BM25Index,
     embedding_provider: EmbeddingProvider,
+    reranker_provider: RerankerProvider,
     query: str,
     filters: SearchFilters,
     availability: DateAvailabilityFilter | None = None,
@@ -75,7 +105,8 @@ async def search_providers(
     offset: int = 0,
 ) -> SearchResponse:
     """Hybrid (semantik + lexical) arama yapar, hard filtreleri ve opsiyonel
-    tarih/saat müsaitliğini uygular, sayfalanmış sonuçları döner."""
+    tarih/saat müsaitliğini uygular, cross-encoder ile yeniden sıralar,
+    sayfalanmış sonuçları döner."""
     qdrant_filter = translate_filters_to_qdrant(filters)
 
     vector_results = await vector_search(
@@ -97,8 +128,10 @@ async def search_providers(
         available_ids = await fetch_available_business_ids(session, candidate_ids, availability)
         candidate_ids = [business_id for business_id in candidate_ids if business_id in available_ids]
 
-    page_ids = candidate_ids[offset : offset + limit]
-    businesses = await _fetch_businesses_by_id(session, page_ids)
-    results = [_to_provider_result(business, filters.near) for business in businesses]
+    candidates = await _fetch_businesses_by_id(session, candidate_ids)
+    candidates = await _rerank_businesses(reranker_provider, query, candidates)
 
-    return SearchResponse(results=results, total=len(candidate_ids))
+    page = candidates[offset : offset + limit]
+    results = [_to_provider_result(business, filters.near) for business in page]
+
+    return SearchResponse(results=results, total=len(candidates))
