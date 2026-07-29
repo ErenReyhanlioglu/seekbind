@@ -7,7 +7,10 @@ mantığı tek bir yerde tutuluyor.
 
 from pathlib import Path
 
-PROMPT_DIR = Path("backend/prompts")
+# __file__'a göre (proje köküne/CWD'ye göre değil) — uygulama farklı bir
+# çalışma dizininden başlatılırsa (örn. Docker WORKDIR farklıysa) CWD-bağımlı
+# bir yol kırılırdı, __file__ her zaman bu dosyanın gerçek konumunu verir.
+PROMPT_DIR = Path(__file__).parent.parent.parent / "prompts"
 SYSTEM_PROMPT_PATH = PROMPT_DIR / "system.txt"
 SEARCH_INTENT_PROMPT_PATH = PROMPT_DIR / "search_intent.txt"
 RECOMMENDATION_PROMPT_PATH = PROMPT_DIR / "recommendation.txt"

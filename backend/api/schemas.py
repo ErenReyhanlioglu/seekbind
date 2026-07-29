@@ -7,6 +7,13 @@ buradaki gibi ayrı bir response schema'sına eşlenir.
 
 from pydantic import BaseModel, Field
 
+# search_providers()'ın aday havuzu üst sınırıyla (CANDIDATE_POOL_SIZE,
+# backend/services/search/service.py) aynı olmalı — buradan import edilemiyor
+# çünkü service.py zaten bu dosyadan (ProviderResult/SearchResponse için)
+# import ediyor, döngüsel import olurdu. Search tarafında bu değer değişirse
+# burası da elle güncellenmeli.
+MAX_RECOMMEND_LIMIT: int = 40
+
 
 class DependencyStatus(BaseModel):
     """Tek bir dış bağımlılığın (Postgres, Qdrant, LLM config vb.) sağlık durumu."""
@@ -65,7 +72,7 @@ class RecommendRequest(BaseModel):
     """
 
     query: str = Field(min_length=1, max_length=500)  # ucuz bir maliyet/kötüye kullanım sınırı
-    limit: int = Field(default=10, ge=1, le=40)
+    limit: int = Field(default=10, ge=1, le=MAX_RECOMMEND_LIMIT)
     offset: int = Field(default=0, ge=0)
 
 

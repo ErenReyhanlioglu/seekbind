@@ -24,7 +24,8 @@ logger = logging.getLogger(__name__)
 
 INPUT_FILE_PATH: Path = Path("data/processed/businesses.jsonl")
 OUTPUT_FILE_PATH: Path = Path("data/processed/businesses_enriched.jsonl")
-PROMPT_TEMPLATE_PATH: Path = Path("backend/prompts/synthetic_enrichment.txt")
+# __file__'a göre (proje köküne/CWD'ye göre değil) — bkz. backend/services/rag/prompts.py
+PROMPT_TEMPLATE_PATH: Path = Path(__file__).parent.parent / "backend" / "prompts" / "synthetic_enrichment.txt"
 ENTRY_DELIMITER: str = "---BUSINESS---"
 
 BATCH_SIZE: int = 6
