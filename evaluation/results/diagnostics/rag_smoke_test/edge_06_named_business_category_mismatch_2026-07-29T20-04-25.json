@@ -1,0 +1,159 @@
+{
+  "label": "edge_06_named_business_category_mismatch",
+  "timestamp": "2026-07-29T20-04-25",
+  "scenarios": [
+    {
+      "title": "Özel sorgu: LİVA BERBER'den dişçi randevusu istiyorum",
+      "query": "LİVA BERBER'den dişçi randevusu istiyorum",
+      "total": 40,
+      "recommendation": "LİVA BERBER, dişçi randevusu almak için doğru bir adres değil; burası bir berber. Ancak, İzmit'te diş hekimliği hizmeti almak istiyorsanız, Diş Hekimi Dr. Deniz Doğan'ı düşünebilirsiniz. Kendisi, diş çekimi, diş temizliği gibi temel hizmetlerin yanı sıra, implant ve zirkonyum kaplama gibi ileri tedaviler de sunuyor. Uzmanlığı sayesinde ihtiyaçlarınızı karşılamak için iyi bir seçenek olabilir.",
+      "top_results": [
+        {
+          "id": 91,
+          "title": "KUAFÖR SERHAT",
+          "type_normalized": "Berber",
+          "rating": 4.6,
+          "weighted_rating": 4.7038091151792525,
+          "price_min": 155,
+          "price_max": 357,
+          "address": "İzmit/Kocaeli, Türkiye",
+          "phone": "+90 546 595 62 45",
+          "online_available": false,
+          "gender": "male",
+          "services": [
+            "saç kesimi",
+            "cilt bakımı",
+            "sakal şekillendirme",
+            "sakal tıraşı"
+          ],
+          "tags": [
+            "hafta sonu açık"
+          ],
+          "rich_description": "KUAFÖR SERHAT, saç kesimi ve sakal şekillendirme hizmetlerini kişiye özel yaklaşımla gerçekleştiriyor. Cilt bakımı ve sakal tıraşı da sunularak erkeklerin tüm bakım ihtiyaçları karşılanıyor. Yaklaşık 45 dakika süren seanslarda titiz ve yüz yüze hizmet anlayışı öne çıkar.",
+          "distance_km": null
+        },
+        {
+          "id": 90,
+          "title": "LİVA BERBER",
+          "type_normalized": "Berber",
+          "rating": 5.0,
+          "weighted_rating": 4.890130182143256,
+          "price_min": 317,
+          "price_max": 385,
+          "address": "İzmit/Kocaeli, Türkiye",
+          "phone": "+90 533 622 58 41",
+          "online_available": false,
+          "gender": "male",
+          "services": [
+            "kaş düzeltme",
+            "sakal tıraşı",
+            "sakal şekillendirme",
+            "saç kesimi",
+            "cilt bakımı",
+            "yüz maskesi"
+          ],
+          "tags": [
+            "hafta sonu açık",
+            "yüksek puanlı",
+            "premium"
+          ],
+          "rich_description": "LİVA BERBER, erkeklere yönelik kapsamlı bakım seçenekleriyle dikkat çekiyor. Saç kesimi, kaş düzeltme, sakal tıraşı ve cilt bakımı gibi hizmetleri hızlı ve etkili şekilde sunuyor. Yüz maskesi uygulaması ise cildinizin tazelenmesini sağlıyor ve 20 dakikada tamamlanıyor.",
+          "distance_km": null
+        },
+        {
+          "id": 103,
+          "title": "The Barber House",
+          "type_normalized": "Berber",
+          "rating": 5.0,
+          "weighted_rating": 4.773032086795937,
+          "price_min": 103,
+          "price_max": 181,
+          "address": "İzmit/Kocaeli, Türkiye",
+          "phone": "+90 539 240 61 34",
+          "online_available": false,
+          "gender": "male",
+          "services": [
+            "cilt bakımı",
+            "saç kesimi",
+            "çocuk tıraşı",
+            "sakal tıraşı"
+          ],
+          "tags": [
+            "hafta sonu açık",
+            "uygun fiyatlı"
+          ],
+          "rich_description": "The Barber House, uygun fiyatlarla erkeklere yönelik saç kesimi, sakal tıraşı ve cilt bakımı sunar. Çocuk tıraşı da bulunan bu mekan, 45 dakikalık randevularla detaylı bir bakım imkanı sağlar. Müşteriler yüz yüze hizmetle kendilerini rahat hissedebilirler.",
+          "distance_km": null
+        },
+        {
+          "id": 15,
+          "title": "Diş Hekimi Dr. Deniz Doğan - İzmit Diş Hekimi & Protetik Diş Tedavisi Uzmanı",
+          "type_normalized": "Diş Kliniği",
+          "rating": 5.0,
+          "weighted_rating": 4.855045702491523,
+          "price_min": 4698,
+          "price_max": 6216,
+          "address": "Meditorium sağlık plaza, yazgı sok no:70 kat:2 no:19",
+          "phone": "+90 543 609 71 41",
+          "online_available": false,
+          "gender": "unisex",
+          "services": [
+            "implant",
+            "diş temizliği (detertraj)",
+            "diş çekimi",
+            "diş dolgusu",
+            "zirkonyum kaplama"
+          ],
+          "tags": [
+            "hafta sonu açık",
+            "yüksek puanlı"
+          ],
+          "rich_description": "Dr. Deniz Doğan, İzmit'te implant ve zirkonyum kaplama gibi ileri tedaviler yaparken aynı zamanda diş çekimi ve temizliği hizmetleri sunuyor. Uzmanlığı protetik diş tedavisi alanında olup, kapsamlı ağız bakımı için tercih edilen bir isimdir. 45 dakikalık seansları ile randevularınızı planlayabilirsiniz.",
+          "distance_km": null
+        },
+        {
+          "id": 88,
+          "title": "Men's grooming güngör Akıncı barber business",
+          "type_normalized": "Berber",
+          "rating": 4.9,
+          "weighted_rating": 4.858302128839886,
+          "price_min": 202,
+          "price_max": 297,
+          "address": "İzmit/Kocaeli, Türkiye",
+          "phone": "+90 532 662 53 81",
+          "online_available": false,
+          "gender": "male",
+          "services": [
+            "yüz maskesi",
+            "sakal şekillendirme",
+            "sakal tıraşı"
+          ],
+          "tags": [
+            "hafta sonu açık",
+            "yüksek puanlı"
+          ],
+          "rich_description": "Men's grooming Güngör Akıncı, erkekler için sakal şekillendirme ve tıraşı hizmetlerinde öne çıkıyor. Yüz maskesi uygulamaları ile cildinizi canlandırırken, profesyonel dokunuşlarla tarzınızı yenilemenize yardımcı oluyor. Hizmetler yaklaşık yarım saatte tamamlanıyor ve yüz yüze ilgi gösteriliyor.",
+          "distance_km": null
+        }
+      ]
+    }
+  ],
+  "intent_diagnostics": [
+    {
+      "query": "LİVA BERBER'den dişçi randevusu istiyorum",
+      "parsed_intent": {
+        "semantic_query": "LİVA BERBER'den dişçi randevusu istiyorum",
+        "min_price": null,
+        "max_price": null,
+        "price_preference": null,
+        "rating_preference": null,
+        "gender": null,
+        "category": null,
+        "online_only": false,
+        "weekend_open_only": false,
+        "day_of_week": null,
+        "time_of_day": null
+      }
+    }
+  ]
+}

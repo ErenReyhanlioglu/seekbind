@@ -1,0 +1,157 @@
+{
+  "label": "edge_05_conflicting_price",
+  "timestamp": "2026-07-29T20-03-12",
+  "scenarios": [
+    {
+      "title": "Özel sorgu: ucuz bir dişçi ve pahalı bir berber öner",
+      "query": "ucuz bir dişçi ve pahalı bir berber öner",
+      "total": 40,
+      "recommendation": "İzmit bölgesinde aradığınız ucuz dişçi olarak Yahyakaptan Diş Hekimi Aydın Cevizli, kapsamlı hizmetleri ve uzman kadrosuyla dikkat çekiyor. Ancak fiyat aralığı biraz yüksek. Pahalı bir berber arayışınız için ise The Barber House’ı öneririm. Uygun fiyatlarla kaliteli saç kesimi ve sakal tıraşı hizmetleri sunan bu mekan, yüz yüze hizmet anlayışıyla da memnuniyet sağlıyor.",
+      "top_results": [
+        {
+          "id": 103,
+          "title": "The Barber House",
+          "type_normalized": "Berber",
+          "rating": 5.0,
+          "weighted_rating": 4.773032086795937,
+          "price_min": 103,
+          "price_max": 181,
+          "address": "İzmit/Kocaeli, Türkiye",
+          "phone": "+90 539 240 61 34",
+          "online_available": false,
+          "gender": "male",
+          "services": [
+            "cilt bakımı",
+            "saç kesimi",
+            "çocuk tıraşı",
+            "sakal tıraşı"
+          ],
+          "tags": [
+            "hafta sonu açık",
+            "uygun fiyatlı"
+          ],
+          "rich_description": "The Barber House, uygun fiyatlarla erkeklere yönelik saç kesimi, sakal tıraşı ve cilt bakımı sunar. Çocuk tıraşı da bulunan bu mekan, 45 dakikalık randevularla detaylı bir bakım imkanı sağlar. Müşteriler yüz yüze hizmetle kendilerini rahat hissedebilirler.",
+          "distance_km": null
+        },
+        {
+          "id": 97,
+          "title": "Berber UNE",
+          "type_normalized": "Berber",
+          "rating": 5.0,
+          "weighted_rating": 4.7570484309364955,
+          "price_min": 247,
+          "price_max": 307,
+          "address": "İzmit/Kocaeli, Türkiye",
+          "phone": "+90 544 953 91 39",
+          "online_available": false,
+          "gender": "male",
+          "services": [
+            "sakal şekillendirme",
+            "saç kesimi",
+            "çocuk tıraşı",
+            "sakal tıraşı",
+            "cilt bakımı",
+            "kaş düzeltme"
+          ],
+          "tags": [
+            "hafta sonu açık"
+          ],
+          "rich_description": "Berber UNE, kısa sürede etkili sonuçlar almak isteyen erkekler için uygun bir tercih. Sakal tıraşı, şekillendirme ve kaş düzeltme gibi hizmetler 20 dakikada tamamlanıyor. Çocuk tıraşı da sunan bu mekan, kişiye özel yüz yüze hizmet anlayışıyla öne çıkıyor.",
+          "distance_km": null
+        },
+        {
+          "id": 1,
+          "title": "Yahyakaptan Diş Hekimi Aydın Cevizli- İzmit Nöbetçi Diş - Kocaeli İzmit Acil 7/24 Diş Kliniği -İzmit özel Diş Hastanesi",
+          "type_normalized": "Diş Kliniği",
+          "rating": 4.9,
+          "weighted_rating": 4.892282690999628,
+          "price_min": 5369,
+          "price_max": 7077,
+          "address": "Gazi Mustafa Kemal Blv. No:111",
+          "phone": "+90 505 318 90 69",
+          "online_available": false,
+          "gender": "unisex",
+          "services": [
+            "implant",
+            "gülüş tasarımı",
+            "diş çekimi",
+            "diş beyazlatma"
+          ],
+          "tags": [
+            "hafta sonu açık",
+            "yüksek puanlı",
+            "premium"
+          ],
+          "rich_description": "Yahyakaptan Diş Hekimi Aydın Cevizli, İzmit'te 7/24 ulaşılabilen özel diş kliniği olarak implant uygulamaları, diş çekimi ve gülüş tasarımı gibi kapsamlı tedaviler sunmaktadır. Diş beyazlatma işlemleriyle estetik görünümünüzü destekleyen kliniğin uzman kadrosu, her yaştan hastaya kişiye özel çözümler üretmektedir.",
+          "distance_km": null
+        },
+        {
+          "id": 101,
+          "title": "Barber Level Up | Erkek Kuaförü",
+          "type_normalized": "Berber",
+          "rating": 4.6,
+          "weighted_rating": 4.63524147083576,
+          "price_min": 245,
+          "price_max": 309,
+          "address": "İzmit/Kocaeli, Türkiye",
+          "phone": "+90 507 846 48 56",
+          "online_available": false,
+          "gender": "male",
+          "services": [
+            "sakal tıraşı",
+            "çocuk tıraşı",
+            "cilt bakımı",
+            "kaş düzeltme",
+            "saç kesimi"
+          ],
+          "tags": [
+            "hafta sonu açık"
+          ],
+          "rich_description": "Barber Level Up | Erkek Kuaförü, sakal tıraşı ve saç kesiminin yanında cilt bakımı ve kaş düzeltme gibi detaylı erkek bakım hizmetleri sağlar. Çocuk tıraşı da sunan bu kuaförde, yaklaşık 45 dakikalık randevularla konforlu bir deneyim yaşanır. Erkeklerin tüm bakım ihtiyaçlarına yönelik kapsamlı çözümler mevcuttur.",
+          "distance_km": null
+        },
+        {
+          "id": 102,
+          "title": "Yıldız Erkek Kuaförü Ercan",
+          "type_normalized": "Berber",
+          "rating": 4.3,
+          "weighted_rating": 4.618821920392379,
+          "price_min": 265,
+          "price_max": 336,
+          "address": "İzmit, Türkiye",
+          "phone": "+90 537 965 52 32",
+          "online_available": false,
+          "gender": "male",
+          "services": [
+            "sakal tıraşı",
+            "cilt bakımı",
+            "saç kesimi"
+          ],
+          "tags": [
+            "hafta sonu açık"
+          ],
+          "rich_description": "Yıldız Erkek Kuaförü Ercan, saç kesimi, sakal tıraşı ve cilt bakımına odaklanan samimi bir erkek kuaförüdür. 45 dakikalık seanslarla kişiye özel hizmet sunarken, rahat bir ortamda yüz yüze iletişimle işlemler gerçekleştirilir. Erkek bakımına önem verenler için tercih edilen bir mekandır.",
+          "distance_km": null
+        }
+      ]
+    }
+  ],
+  "intent_diagnostics": [
+    {
+      "query": "ucuz bir dişçi ve pahalı bir berber öner",
+      "parsed_intent": {
+        "semantic_query": "ucuz bir dişçi ve pahalı bir berber öner",
+        "min_price": null,
+        "max_price": null,
+        "price_preference": null,
+        "rating_preference": null,
+        "gender": null,
+        "category": null,
+        "online_only": false,
+        "weekend_open_only": false,
+        "day_of_week": null,
+        "time_of_day": null
+      }
+    }
+  ]
+}

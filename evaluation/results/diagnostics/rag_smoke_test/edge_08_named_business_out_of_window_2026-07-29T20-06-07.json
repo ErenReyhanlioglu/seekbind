@@ -1,0 +1,31 @@
+{
+  "label": "edge_08_named_business_out_of_window",
+  "timestamp": "2026-07-29T20-06-07",
+  "scenarios": [
+    {
+      "title": "Özel sorgu: LİVA BERBER'den gelecek hafta pazartesi için randevu istiyorum",
+      "query": "LİVA BERBER'den gelecek hafta pazartesi için randevu istiyorum",
+      "total": 0,
+      "recommendation": "Aramanıza uygun bir işletme bulamadım, farklı bir arama deneyebilirsin.",
+      "top_results": []
+    }
+  ],
+  "intent_diagnostics": [
+    {
+      "query": "LİVA BERBER'den gelecek hafta pazartesi için randevu istiyorum",
+      "parsed_intent": {
+        "semantic_query": "LİVA BERBER'den gelecek hafta pazartesi için randevu istiyorum",
+        "min_price": null,
+        "max_price": null,
+        "price_preference": null,
+        "rating_preference": null,
+        "gender": null,
+        "category": "Berber",
+        "online_only": false,
+        "weekend_open_only": false,
+        "day_of_week": "pazartesi",
+        "time_of_day": null
+      }
+    }
+  ]
+}

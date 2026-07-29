@@ -1,0 +1,162 @@
+{
+  "label": "edge_04_multi_category",
+  "timestamp": "2026-07-29T20-01-38",
+  "scenarios": [
+    {
+      "title": "Özel sorgu: İzmit'te hem dişçi hem berber öner",
+      "query": "İzmit'te hem dişçi hem berber öner",
+      "total": 40,
+      "recommendation": "İzmit'te hem dişçi hem de berber arıyorsanız, önerim Yahyakaptan Diş Hekimi Aydın Cevizli ve Kocaeli İzmit Business Berber Shop olacaktır. Aydın Cevizli, 7/24 hizmet veren bir diş kliniği olarak kapsamlı tedavi seçenekleri sunuyor, böylece acil durumlarınızda hızlıca destek alabilirsiniz. Berber Shop ise erkeklerin saç ve sakal bakımı için çeşitli hizmetler sağlıyor; hızlı ve etkili bir şekilde tazelenmek için güzel bir tercih. Her iki işletme de yüksek puanlarıyla güvenilir seçenekler arasında yer alıyor.",
+      "top_results": [
+        {
+          "id": 1,
+          "title": "Yahyakaptan Diş Hekimi Aydın Cevizli- İzmit Nöbetçi Diş - Kocaeli İzmit Acil 7/24 Diş Kliniği -İzmit özel Diş Hastanesi",
+          "type_normalized": "Diş Kliniği",
+          "rating": 4.9,
+          "weighted_rating": 4.892282690999628,
+          "price_min": 5369,
+          "price_max": 7077,
+          "address": "Gazi Mustafa Kemal Blv. No:111",
+          "phone": "+90 505 318 90 69",
+          "online_available": false,
+          "gender": "unisex",
+          "services": [
+            "implant",
+            "gülüş tasarımı",
+            "diş çekimi",
+            "diş beyazlatma"
+          ],
+          "tags": [
+            "hafta sonu açık",
+            "yüksek puanlı",
+            "premium"
+          ],
+          "rich_description": "Yahyakaptan Diş Hekimi Aydın Cevizli, İzmit'te 7/24 ulaşılabilen özel diş kliniği olarak implant uygulamaları, diş çekimi ve gülüş tasarımı gibi kapsamlı tedaviler sunmaktadır. Diş beyazlatma işlemleriyle estetik görünümünüzü destekleyen kliniğin uzman kadrosu, her yaştan hastaya kişiye özel çözümler üretmektedir.",
+          "distance_km": null
+        },
+        {
+          "id": 4,
+          "title": "Diş Hekimi Uğur Ümit - İzmit Nöbetçi Dişçi | Kocaeli 7/24 Açık Acil Özel Diş Hastanesi",
+          "type_normalized": "Diş Kliniği",
+          "rating": 4.9,
+          "weighted_rating": 4.876608511300425,
+          "price_min": 4662,
+          "price_max": 6049,
+          "address": "Devlet Hst. Sk. No:30 Kat: 2",
+          "phone": "+90 531 573 78 41",
+          "online_available": false,
+          "gender": "unisex",
+          "services": [
+            "diş çekimi",
+            "diş temizliği (detertraj)",
+            "protez",
+            "diş eti tedavisi (periodontoloji)",
+            "diş dolgusu",
+            "implant"
+          ],
+          "tags": [
+            "yüksek puanlı"
+          ],
+          "rich_description": "Diş Hekimi Uğur Ümit, Kocaeli'de 7/24 açık olan acil diş hastanesi olarak diş eti tedavisinden implant uygulamalarına kadar kapsamlı hizmetler sunmaktadır. Protez, diş dolgusu ve diş temizliği işlemleri kısa sürede gerçekleştirilmektedir. Acil diş problemlerinde hızlı müdahale imkanı sunan klinik, her yaş grubuna hitap etmektedir.",
+          "distance_km": null
+        },
+        {
+          "id": 7,
+          "title": "Diş Hekimi Tarık Can Kara , İzmit/Kocaeli",
+          "type_normalized": "Diş Kliniği",
+          "rating": 5.0,
+          "weighted_rating": 4.806184703331362,
+          "price_min": 753,
+          "price_max": 2392,
+          "address": null,
+          "phone": "+90 531 343 73 05",
+          "online_available": false,
+          "gender": "unisex",
+          "services": [
+            "diş çekimi",
+            "pedodonti (çocuk diş hekimliği)",
+            "protez"
+          ],
+          "tags": [
+            "hafta sonu açık",
+            "yüksek puanlı",
+            "uygun fiyatlı"
+          ],
+          "rich_description": "Diş Hekimi Tarık Can Kara, İzmit'te aileden bireylere geniş kapsamlı diş sağlığı hizmetleri sunuyor. Çocuk diş hekimliği alanında uzman olan klinik, aynı zamanda diş çekimi ve protez tedavileriyle de destek sağlıyor. Randevular yaklaşık 45 dakika sürüyor ve her yaştan hasta kabul ediliyor.",
+          "distance_km": null
+        },
+        {
+          "id": 93,
+          "title": "Kocaeli İzmit Business Berber Shop",
+          "type_normalized": "Berber",
+          "rating": 4.8,
+          "weighted_rating": 4.772503132832081,
+          "price_min": 354,
+          "price_max": 399,
+          "address": "İzmit/Kocaeli, Türkiye",
+          "phone": "+90 554 477 69 45",
+          "online_available": false,
+          "gender": "male",
+          "services": [
+            "çocuk tıraşı",
+            "sakal tıraşı",
+            "saç kesimi",
+            "kaş düzeltme",
+            "cilt bakımı",
+            "yüz maskesi"
+          ],
+          "tags": [
+            "hafta sonu açık",
+            "premium"
+          ],
+          "rich_description": "Kocaeli İzmit Business Berber Shop, erkeklerin saç, sakal ve cilt bakımına yönelik çeşitli hizmetler sunuyor. Çocuk tıraşı ve kaş düzeltme gibi detaylar da hizmet kapsamına dahil. Kısa sürede tamamlanan bakımlarla tazelenmiş bir görünüm elde etmek mümkün.",
+          "distance_km": null
+        },
+        {
+          "id": 3,
+          "title": "Dentriva Diş Yahyakaptan - İzmit İmplant-İzmit Nöbetçi Diş-İzmit Diş Teli-İzmit Çocuk Diş-İzmit Ortodonti-İzmit Pedodonti",
+          "type_normalized": "Diş Kliniği",
+          "rating": 4.8,
+          "weighted_rating": 4.797375895430465,
+          "price_min": 5057,
+          "price_max": 6738,
+          "address": "Demokrasi Cd. No:49",
+          "phone": "+90 533 465 24 72",
+          "online_available": false,
+          "gender": "unisex",
+          "services": [
+            "diş temizliği (detertraj)",
+            "diş dolgusu",
+            "zirkonyum kaplama",
+            "protez",
+            "ortodonti (tel tedavisi)"
+          ],
+          "tags": [
+            "hafta sonu açık",
+            "premium"
+          ],
+          "rich_description": "Dentriva Diş Yahyakaptan, İzmit'te ortodonti ve pedodonti alanlarında da hizmet sunan geniş kapsamlı bir diş kliniğidir. Zirkonyum kaplama ve protez uygulamalarının yanı sıra diş dolgusu ve profesyonel diş temizliği de yapılmaktadır. Modern tedavi yöntemleriyle hasta memnuniyetine önem veren klinik, her yaştan bireye uygun çözümler üretmektedir.",
+          "distance_km": null
+        }
+      ]
+    }
+  ],
+  "intent_diagnostics": [
+    {
+      "query": "İzmit'te hem dişçi hem berber öner",
+      "parsed_intent": {
+        "semantic_query": "İzmit'te hem dişçi hem berber öner",
+        "min_price": null,
+        "max_price": null,
+        "price_preference": null,
+        "rating_preference": null,
+        "gender": null,
+        "category": null,
+        "online_only": false,
+        "weekend_open_only": false,
+        "day_of_week": null,
+        "time_of_day": null
+      }
+    }
+  ]
+}

@@ -34,3 +34,4 @@ tarafından supersede edildi)
 | [0014](0014-price-threshold-resolution.md) | Fiyat eşiği hesaplama (LLM tahmini yerine gerçek DB verisi) | Kabul edildi | 2026-07-29 |
 | [0015](0015-rating-based-ranking-gap.md) | Puan/kalite bazlı sıralama eksikliği | Kabul edildi, uygulandı | 2026-07-29 |
 | [0016](0016-langfuse-trace-grouping.md) | Langfuse trace gruplama ve yapılandırılmış metadata | Kabul edildi, uygulandı | 2026-07-29 |
+| [0017](0017-tool-calling-not-needed.md) | Tool calling gerekli değil — çoklu-hizmet arama SeekBind 2.0'a bırakıldı | Kabul edildi | 2026-07-29 |

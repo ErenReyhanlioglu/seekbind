@@ -1,0 +1,159 @@
+{
+  "label": "edge_01_named_business",
+  "timestamp": "2026-07-29T19-59-06",
+  "scenarios": [
+    {
+      "title": "Özel sorgu: LİVA BERBER'den randevu almak istiyorum",
+      "query": "LİVA BERBER'den randevu almak istiyorum",
+      "total": 17,
+      "recommendation": "LİVA BERBER'den randevu almak istediğinizi belirttiniz. Bu işletme, erkeklere yönelik kapsamlı bakım seçenekleri ile dikkat çekiyor ve yüksek bir müşteri puanına sahip. Saç kesimi, sakal tıraşı gibi hizmetlerin yanı sıra cilt bakımı ve yüz maskesi uygulamaları da sunarak keyifli bir deneyim yaşatıyor. Randevunuzu alarak profesyonel bir bakım sürecinin tadını çıkarabilirsiniz.",
+      "top_results": [
+        {
+          "id": 90,
+          "title": "LİVA BERBER",
+          "type_normalized": "Berber",
+          "rating": 5.0,
+          "weighted_rating": 4.890130182143256,
+          "price_min": 317,
+          "price_max": 385,
+          "address": "İzmit/Kocaeli, Türkiye",
+          "phone": "+90 533 622 58 41",
+          "online_available": false,
+          "gender": "male",
+          "services": [
+            "kaş düzeltme",
+            "sakal tıraşı",
+            "sakal şekillendirme",
+            "saç kesimi",
+            "cilt bakımı",
+            "yüz maskesi"
+          ],
+          "tags": [
+            "hafta sonu açık",
+            "yüksek puanlı",
+            "premium"
+          ],
+          "rich_description": "LİVA BERBER, erkeklere yönelik kapsamlı bakım seçenekleriyle dikkat çekiyor. Saç kesimi, kaş düzeltme, sakal tıraşı ve cilt bakımı gibi hizmetleri hızlı ve etkili şekilde sunuyor. Yüz maskesi uygulaması ise cildinizin tazelenmesini sağlıyor ve 20 dakikada tamamlanıyor.",
+          "distance_km": null
+        },
+        {
+          "id": 91,
+          "title": "KUAFÖR SERHAT",
+          "type_normalized": "Berber",
+          "rating": 4.6,
+          "weighted_rating": 4.7038091151792525,
+          "price_min": 155,
+          "price_max": 357,
+          "address": "İzmit/Kocaeli, Türkiye",
+          "phone": "+90 546 595 62 45",
+          "online_available": false,
+          "gender": "male",
+          "services": [
+            "saç kesimi",
+            "cilt bakımı",
+            "sakal şekillendirme",
+            "sakal tıraşı"
+          ],
+          "tags": [
+            "hafta sonu açık"
+          ],
+          "rich_description": "KUAFÖR SERHAT, saç kesimi ve sakal şekillendirme hizmetlerini kişiye özel yaklaşımla gerçekleştiriyor. Cilt bakımı ve sakal tıraşı da sunularak erkeklerin tüm bakım ihtiyaçları karşılanıyor. Yaklaşık 45 dakika süren seanslarda titiz ve yüz yüze hizmet anlayışı öne çıkar.",
+          "distance_km": null
+        },
+        {
+          "id": 103,
+          "title": "The Barber House",
+          "type_normalized": "Berber",
+          "rating": 5.0,
+          "weighted_rating": 4.773032086795937,
+          "price_min": 103,
+          "price_max": 181,
+          "address": "İzmit/Kocaeli, Türkiye",
+          "phone": "+90 539 240 61 34",
+          "online_available": false,
+          "gender": "male",
+          "services": [
+            "cilt bakımı",
+            "saç kesimi",
+            "çocuk tıraşı",
+            "sakal tıraşı"
+          ],
+          "tags": [
+            "hafta sonu açık",
+            "uygun fiyatlı"
+          ],
+          "rich_description": "The Barber House, uygun fiyatlarla erkeklere yönelik saç kesimi, sakal tıraşı ve cilt bakımı sunar. Çocuk tıraşı da bulunan bu mekan, 45 dakikalık randevularla detaylı bir bakım imkanı sağlar. Müşteriler yüz yüze hizmetle kendilerini rahat hissedebilirler.",
+          "distance_km": null
+        },
+        {
+          "id": 88,
+          "title": "Men's grooming güngör Akıncı barber business",
+          "type_normalized": "Berber",
+          "rating": 4.9,
+          "weighted_rating": 4.858302128839886,
+          "price_min": 202,
+          "price_max": 297,
+          "address": "İzmit/Kocaeli, Türkiye",
+          "phone": "+90 532 662 53 81",
+          "online_available": false,
+          "gender": "male",
+          "services": [
+            "yüz maskesi",
+            "sakal şekillendirme",
+            "sakal tıraşı"
+          ],
+          "tags": [
+            "hafta sonu açık",
+            "yüksek puanlı"
+          ],
+          "rich_description": "Men's grooming Güngör Akıncı, erkekler için sakal şekillendirme ve tıraşı hizmetlerinde öne çıkıyor. Yüz maskesi uygulamaları ile cildinizi canlandırırken, profesyonel dokunuşlarla tarzınızı yenilemenize yardımcı oluyor. Hizmetler yaklaşık yarım saatte tamamlanıyor ve yüz yüze ilgi gösteriliyor.",
+          "distance_km": null
+        },
+        {
+          "id": 97,
+          "title": "Berber UNE",
+          "type_normalized": "Berber",
+          "rating": 5.0,
+          "weighted_rating": 4.7570484309364955,
+          "price_min": 247,
+          "price_max": 307,
+          "address": "İzmit/Kocaeli, Türkiye",
+          "phone": "+90 544 953 91 39",
+          "online_available": false,
+          "gender": "male",
+          "services": [
+            "sakal şekillendirme",
+            "saç kesimi",
+            "çocuk tıraşı",
+            "sakal tıraşı",
+            "cilt bakımı",
+            "kaş düzeltme"
+          ],
+          "tags": [
+            "hafta sonu açık"
+          ],
+          "rich_description": "Berber UNE, kısa sürede etkili sonuçlar almak isteyen erkekler için uygun bir tercih. Sakal tıraşı, şekillendirme ve kaş düzeltme gibi hizmetler 20 dakikada tamamlanıyor. Çocuk tıraşı da sunan bu mekan, kişiye özel yüz yüze hizmet anlayışıyla öne çıkıyor.",
+          "distance_km": null
+        }
+      ]
+    }
+  ],
+  "intent_diagnostics": [
+    {
+      "query": "LİVA BERBER'den randevu almak istiyorum",
+      "parsed_intent": {
+        "semantic_query": "LİVA BERBER'den randevu almak istiyorum",
+        "min_price": null,
+        "max_price": null,
+        "price_preference": null,
+        "rating_preference": null,
+        "gender": null,
+        "category": "Berber",
+        "online_only": false,
+        "weekend_open_only": false,
+        "day_of_week": null,
+        "time_of_day": null
+      }
+    }
+  ]
+}

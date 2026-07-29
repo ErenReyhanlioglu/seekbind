@@ -1,0 +1,159 @@
+{
+  "label": "edge_03_nonexistent_business",
+  "timestamp": "2026-07-29T20-00-56",
+  "scenarios": [
+    {
+      "title": "Özel sorgu: XYZ Şahane Kuaför'den randevu almak istiyorum",
+      "query": "XYZ Şahane Kuaför'den randevu almak istiyorum",
+      "total": 20,
+      "recommendation": "XYZ Şahane Kuaför'den randevu almak istediğinizi belirttiniz. Bu noktada, İzmit'te bulunan birkaç başka kuaför seçeneği ile ilgilenmenizi öneririm. Örneğin, My Kuaför, geniş hizmet yelpazesi ve profesyonel yaklaşımı ile dikkat çekiyor. Saç boyama ve özel gün saç tasarımları konusunda oldukça başarılılar. Ayrıca, Kuaför Kübra Aydın da saç bakım kürleri ve röfle/balayaj uygulamaları ile öne çıkıyor. Her iki işletme de samimi bir ortam sunarak ihtiyaçlarınıza uygun hizmetleri sağlayabilir.",
+      "top_results": [
+        {
+          "id": 80,
+          "title": "my kuaför",
+          "type_normalized": "Kuaför",
+          "rating": 4.4,
+          "weighted_rating": 4.483153763030765,
+          "price_min": 408,
+          "price_max": 1082,
+          "address": "İzmit/Kocaeli, Türkiye",
+          "phone": "+90 262 311 35 95",
+          "online_available": false,
+          "gender": "unisex",
+          "services": [
+            "saç boyama",
+            "saç düzleştirme",
+            "röfle/balayaj",
+            "gelin saçı",
+            "keratin bakımı"
+          ],
+          "tags": [
+            "hafta sonu açık"
+          ],
+          "rich_description": "My Kuaför, saçınızın rengini değiştirmekten özel gün saç tasarımlarına kadar geniş bir hizmet yelpazesi sunar. Keratin bakımı ve saç düzleştirme seçenekleri ile saçlarınıza parlaklık ve canlılık kazandırabilirsiniz. Her yaştan ve cinsiyetten müşterilere yönelik sıcak bir ortamda profesyonel dokunuşlar yapılır.",
+          "distance_km": null
+        },
+        {
+          "id": 77,
+          "title": "Mehmet Tatlı Kuaför",
+          "type_normalized": "Kuaför",
+          "rating": 3.4,
+          "weighted_rating": 3.96219024122807,
+          "price_min": 678,
+          "price_max": 857,
+          "address": "İzmit, Türkiye",
+          "phone": "+90 262 335 27 05",
+          "online_available": false,
+          "gender": "female",
+          "services": [
+            "saç boyama",
+            "saç kesimi",
+            "saç bakım kürü",
+            "saç uzatma"
+          ],
+          "tags": [
+            "hafta sonu açık"
+          ],
+          "rich_description": "Mehmet Tatlı Kuaför, kadınlar için saç boyama ve kesim hizmetlerinin yanı sıra saç bakım kürleriyle de ilgileniyor. Saçları güçlendirmeye yönelik uygulamaları ile dikkat çekiyor. Kısa sürede gerçekleştirilen randevularla müşterilerin zamanına değer veriliyor.",
+          "distance_km": null
+        },
+        {
+          "id": 73,
+          "title": "Kuaför Kübra Aydin",
+          "type_normalized": "Kuaför",
+          "rating": 4.5,
+          "weighted_rating": 4.570962613958477,
+          "price_min": 660,
+          "price_max": 922,
+          "address": "İzmit/Kocaeli, Türkiye",
+          "phone": "+90 532 764 95 43",
+          "online_available": false,
+          "gender": "unisex",
+          "services": [
+            "saç bakım kürü",
+            "fön",
+            "röfle/balayaj",
+            "keratin bakımı",
+            "saç boyama"
+          ],
+          "tags": [
+            "hafta sonu açık"
+          ],
+          "rich_description": "Kuaför Kübra Aydın, herkese açık bir kuaför salonu olarak saç bakım kürleri, keratin bakımı ve saç boyama alanlarında hizmet veriyor. Ayrıca röfle ve balayaj uygulamalarıyla saçlarınıza renk katabilir, fön işlemiyle de saçlarınızı şekillendirebilirsiniz. Profesyonel yaklaşımla saçlarınıza özen gösterilir.",
+          "distance_km": null
+        },
+        {
+          "id": 78,
+          "title": "Yasemin Uzuner Kuaför",
+          "type_normalized": "Kuaför",
+          "rating": 4.3,
+          "weighted_rating": 4.706170391732757,
+          "price_min": 744,
+          "price_max": 1152,
+          "address": "İzmit/Kocaeli, Türkiye",
+          "phone": "+90 545 846 97 68",
+          "online_available": false,
+          "gender": "female",
+          "services": [
+            "röfle/balayaj",
+            "çocuk saç kesimi",
+            "saç boyama",
+            "saç kesimi"
+          ],
+          "tags": [
+            "hafta sonu açık",
+            "premium"
+          ],
+          "rich_description": "Yasemin Uzuner Kuaför, uzun süren randevularıyla detaylı saç boyama ve röfle/balayaj işlemleri yapıyor. Çocuk saç kesimi de bulunan bu işletme, kadın müşteriler için kapsamlı saç kesim hizmetleri sağlıyor. Saç stilinde değişiklik yapmak isteyenler için uygun bir adres.",
+          "distance_km": null
+        },
+        {
+          "id": 70,
+          "title": "Mustafa Turan Bay Bayan Kuaför Yahya Kaptan İzmit Kocaeli",
+          "type_normalized": "Kuaför",
+          "rating": 4.9,
+          "weighted_rating": 4.865067677471825,
+          "price_min": 994,
+          "price_max": 1196,
+          "address": "İzmit/Kocaeli, Türkiye",
+          "phone": "+90 533 617 26 51",
+          "online_available": false,
+          "gender": "unisex",
+          "services": [
+            "saç boyama",
+            "gelin saçı",
+            "röfle/balayaj",
+            "saç bakım kürü",
+            "fön",
+            "keratin bakımı"
+          ],
+          "tags": [
+            "hafta sonu açık",
+            "yüksek puanlı",
+            "premium"
+          ],
+          "rich_description": "Mustafa Turan Kuaför, İzmit Yahya Kaptan'da hem erkek hem de kadın müşterilere hitap eden bir salon. Saç boyama, röfle ve balayaj gibi renk uygulamaları yanında keratin bakımı ve saç bakım kürleri de sunuluyor. Fön hizmetiyle saçlarınızda istediğiniz hacmi ve şekli yakalamanız mümkün.",
+          "distance_km": null
+        }
+      ]
+    }
+  ],
+  "intent_diagnostics": [
+    {
+      "query": "XYZ Şahane Kuaför'den randevu almak istiyorum",
+      "parsed_intent": {
+        "semantic_query": "XYZ Şahane Kuaför'den randevu almak istiyorum",
+        "min_price": null,
+        "max_price": null,
+        "price_preference": null,
+        "rating_preference": null,
+        "gender": null,
+        "category": "Kuaför",
+        "online_only": false,
+        "weekend_open_only": false,
+        "day_of_week": null,
+        "time_of_day": null
+      }
+    }
+  ]
+}
