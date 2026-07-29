@@ -70,6 +70,33 @@ async def test_openai_complete_sends_correct_request() -> None:
     assert call.kwargs["timeout"] == provider._timeout_seconds
 
 
+async def test_openai_complete_forwards_response_format_when_given() -> None:
+    provider = OpenAILLM()
+    provider._client.chat.completions.create = AsyncMock(  # type: ignore[method-assign]
+        return_value=_make_completion()
+    )
+
+    await provider.complete(
+        [ChatMessage(role="user", content="selam")],
+        response_format={"type": "json_object"},
+    )
+
+    call = provider._client.chat.completions.create.call_args
+    assert call.kwargs["response_format"] == {"type": "json_object"}
+
+
+async def test_openai_complete_passes_none_response_format_by_default() -> None:
+    provider = OpenAILLM()
+    provider._client.chat.completions.create = AsyncMock(  # type: ignore[method-assign]
+        return_value=_make_completion()
+    )
+
+    await provider.complete([ChatMessage(role="user", content="selam")])
+
+    call = provider._client.chat.completions.create.call_args
+    assert call.kwargs["response_format"] is None
+
+
 async def test_openai_complete_raises_service_error_on_timeout() -> None:
     provider = OpenAILLM()
     provider._client.chat.completions.create = AsyncMock(  # type: ignore[method-assign]

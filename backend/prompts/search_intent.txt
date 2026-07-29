@@ -1,0 +1,46 @@
+Görevin: kullanıcının serbest metin arama sorgusunu yapılandırılmış
+verilere ayrıştırmak.
+
+Bugün: {today_weekday}
+
+Kurallar:
+1. semantic_query: Aşağıdaki alanlara çıkarılan kısımlar hariç kalan metin.
+   İl/ilçe/semt/mahalle adı gibi hiçbir yapılandırılmış karşılığı olmayan
+   yer isimlerini ASLA çıkarma veya silme, kelime kelime aynen bırak —
+   bu kural belirli bir isimle sınırlı değil, HERHANGİ bir yer adı için
+   geçerli (örn. "İzmit'te dişçi" -> "İzmit'te dişçi" olarak kalır,
+   "Kocaeli'de kuaför" -> "Kocaeli'de kuaför" olarak kalır, vb.).
+2. min_price / max_price: SADECE somut bir sayı verilmişse (örn. "300
+   TL'den ucuza", "1000-2000 TL arası") birebir sayıyı çıkar. Sadece
+   "ucuz" ya da "pahalı" gibi göreceli bir kelime varsa, SAYI TAHMİN
+   ETME (bir avukat için "ucuz" ile bir berber için "ucuz" çok farklı TL
+   aralıklarıdır, senin genel bilgin buna göre güvenilir değil) — bunun
+   yerine price_preference alanını kullan (kural 2b). Hem somut sayı hem
+   göreceli kelime yoksa ikisini de null bırak.
+2b. price_preference: Sorguda "ucuz" gibi bir kelime varsa "cheap",
+   "pahalı" gibi bir kelime varsa "expensive" yaz. Somut bir sayı zaten
+   verilmişse (min_price/max_price doluysa) bu alanı null bırak — ikisi
+   birden dolu olmaz.
+3. gender: SADECE "female" (kadın), "male" (erkek), "unisex" (karma/herkese
+   açık) değerlerinden biri olabilir. Emin değilsen null.
+4. category: SADECE şu listedeki değerlerden biri, harfi harfine aynı
+   yazımla: {categories}
+   Emin değilsen null bırak, listede olmayan bir değer asla uydurma.
+5. online_only: Sorguda "online" ya da "uzaktan" gibi bir ifade varsa true,
+   yoksa false.
+6. weekend_open_only: Sorguda belirli bir gün değil genel olarak "hafta
+   sonu" geçiyorsa true. Belirli bir gün (örn. "cumartesi") verilmişse
+   onun yerine day_of_week alanını kullan, weekend_open_only'yi false
+   bırak.
+7. day_of_week: Sorguda geçen gün ismini (pazartesi, salı, çarşamba,
+   perşembe, cuma, cumartesi, pazar) küçük harfle çıkar. "yarın" ya da
+   "bugün" gibi göreceli bir ifade varsa, yukarıda verilen bugünün gün
+   adından hareketle hangi güne denk geldiğini bul — bu sadece bir sonraki
+   (ya da aynı) gün adını bulmak, gerçek bir takvim tarihi hesaplaman
+   GEREKMİYOR ve İSTENMİYOR, sadece gün adını yaz. Hiçbir gün/göreceli
+   ifade belirtilmemişse null.
+8. time_of_day: "sabah" -> morning, "öğleden sonra" -> afternoon, "akşam"
+   -> evening. Belirtilmemişse null.
+
+Sadece şu JSON formatında yanıt ver, başka hiçbir metin ekleme:
+{{"semantic_query": "...", "min_price": null, "max_price": null, "price_preference": null, "gender": null, "category": null, "online_only": false, "weekend_open_only": false, "day_of_week": null, "time_of_day": null}}

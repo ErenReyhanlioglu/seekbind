@@ -69,8 +69,13 @@ class LLMProvider(Protocol):
         *,
         temperature: float = 0.7,
         max_tokens: int | None = None,
+        response_format: dict[str, str] | None = None,
     ) -> LLMResponse:
-        """Verilen mesaj listesinden bir tamamlama üretir."""
+        """Verilen mesaj listesinden bir tamamlama üretir.
+
+        `response_format={"type": "json_object"}` verilirse çıktı geçerli
+        JSON olmaya zorlanır (bkz. intent parsing, `backend.services.rag`).
+        """
         ...
 
     async def close(self) -> None:
@@ -85,6 +90,7 @@ async def _run_completion(
     messages: list[ChatMessage],
     temperature: float,
     max_tokens: int | None,
+    response_format: dict[str, str] | None,
     timeout_seconds: int,
 ) -> LLMResponse:
     """İki sağlayıcının da paylaştığı istek/hata-eşleme mantığı."""
@@ -95,6 +101,7 @@ async def _run_completion(
             messages=payload,  # type: ignore[arg-type]
             temperature=temperature,
             max_tokens=max_tokens,
+            response_format=response_format,  # type: ignore[arg-type]
             timeout=timeout_seconds,
         )
     # Sıralama önemli: APITimeoutError, APIConnectionError'ın; o da
@@ -142,10 +149,18 @@ class OpenAILLM:
         *,
         temperature: float = 0.7,
         max_tokens: int | None = None,
+        response_format: dict[str, str] | None = None,
     ) -> LLMResponse:
         async with self._semaphore:
             return await _run_completion(
-                self._client, self._model, self.name, messages, temperature, max_tokens, self._timeout_seconds
+                self._client,
+                self._model,
+                self.name,
+                messages,
+                temperature,
+                max_tokens,
+                response_format,
+                self._timeout_seconds,
             )
 
     async def close(self) -> None:
@@ -184,10 +199,18 @@ class OllamaLLM:
         *,
         temperature: float = 0.7,
         max_tokens: int | None = None,
+        response_format: dict[str, str] | None = None,
     ) -> LLMResponse:
         async with self._semaphore:
             return await _run_completion(
-                self._client, self._model, self.name, messages, temperature, max_tokens, self._timeout_seconds
+                self._client,
+                self._model,
+                self.name,
+                messages,
+                temperature,
+                max_tokens,
+                response_format,
+                self._timeout_seconds,
             )
 
     async def close(self) -> None:
