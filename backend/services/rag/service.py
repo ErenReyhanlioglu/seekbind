@@ -47,7 +47,7 @@ RECOMMENDATION_FALLBACK_MESSAGE: str = "Aşağıda arama sonuçlarını bulabili
 
 
 async def _resolve_search_query_and_filters(
-    llm_provider: LLMProvider, raw_query: str, today: date
+    llm_provider: LLMProvider, raw_query: str, today: date, session: AsyncSession
 ) -> tuple[str, SearchFilters, DateAvailabilityFilter | None]:
     """Intent parsing dener, başarısız olursa ham sorgu + boş filtreye düşer."""
     try:
@@ -55,7 +55,8 @@ async def _resolve_search_query_and_filters(
     except IntentParsingError as e:
         logger.warning("Intent parsing başarısız, salt semantik aramaya düşülüyor: %s", e)
         return raw_query, SearchFilters(), None
-    return intent.semantic_query, build_search_filters(intent), build_availability_filter(intent, today)
+    filters = await build_search_filters(intent, session)
+    return intent.semantic_query, filters, build_availability_filter(intent, today)
 
 
 async def _generate_recommendation_with_fallback(
@@ -91,7 +92,9 @@ async def get_recommendation(
     kendi gövdesinde çağırmalı) — fonksiyon imzasında `= date.today()` gibi
     bir varsayılan, sunucu ne zaman başladıysa o ana donardı.
     """
-    search_query, filters, availability = await _resolve_search_query_and_filters(llm_provider, raw_query, today)
+    search_query, filters, availability = await _resolve_search_query_and_filters(
+        llm_provider, raw_query, today, session
+    )
 
     search_response = await search_providers(
         session=session,

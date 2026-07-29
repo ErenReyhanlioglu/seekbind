@@ -1,8 +1,11 @@
 """backend/services/rag/intent.py için birim testler."""
 
 from datetime import date
+from typing import cast
+from unittest.mock import AsyncMock
 
 import pytest
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.services.llm import ChatMessage, LLMResponse, LLMServiceError
 from backend.services.rag.intent import (
@@ -110,6 +113,25 @@ async def test_parse_intent_raises_intent_parsing_error_when_llm_call_fails() ->
         await parse_intent(provider, "dişçi", _TUESDAY)
 
 
+async def test_parse_intent_drops_invalid_price_preference_but_keeps_other_fields() -> None:
+    provider = _FakeLLMProvider(
+        content='{"semantic_query": "dişçi", "price_preference": "biraz_ucuz", "category": "Diş Kliniği"}'
+    )
+
+    intent = await parse_intent(provider, "dişçi", _TUESDAY)
+
+    assert intent.price_preference is None
+    assert intent.category == "Diş Kliniği"
+
+
+async def test_parse_intent_extracts_valid_price_preference() -> None:
+    provider = _FakeLLMProvider(content='{"semantic_query": "ucuz dişçi", "price_preference": "cheap"}')
+
+    intent = await parse_intent(provider, "ucuz dişçi", _TUESDAY)
+
+    assert intent.price_preference == "cheap"
+
+
 async def test_parse_intent_drops_invalid_category_but_keeps_other_fields() -> None:
     provider = _FakeLLMProvider(
         content='{"semantic_query": "dişçi", "category": "Uydurma Kategori", "min_price": 100}'
@@ -146,7 +168,7 @@ async def test_parse_intent_drops_unrecognized_day_of_week() -> None:
     assert intent.day_of_week is None
 
 
-def test_build_search_filters_maps_all_fields() -> None:
+async def test_build_search_filters_maps_all_fields() -> None:
     intent = ParsedIntent(
         semantic_query="dişçi",
         min_price=100,
@@ -156,8 +178,11 @@ def test_build_search_filters_maps_all_fields() -> None:
         online_only=True,
         weekend_open_only=True,
     )
+    # min/max_price zaten dolu olduğu için resolve_price_threshold hiç
+    # çağrılmaz, session'a hiç dokunulmaz — gerçek bir session vermeye gerek yok
+    unused_session = cast(AsyncSession, object())
 
-    filters = build_search_filters(intent)
+    filters = await build_search_filters(intent, unused_session)
 
     assert filters.min_price == 100
     assert filters.max_price == 500
@@ -165,6 +190,49 @@ def test_build_search_filters_maps_all_fields() -> None:
     assert filters.category == "Diş Kliniği"
     assert filters.online_only is True
     assert filters.weekend_open_only is True
+
+
+async def test_build_search_filters_resolves_price_from_preference_when_no_explicit_number(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """min_price/max_price yoksa ama price_preference varsa,
+    resolve_price_threshold() çağrılıp sonucu kullanılmalı."""
+    intent = ParsedIntent(semantic_query="ucuz dişçi", category="Diş Kliniği", price_preference="cheap")
+
+    async def fake_resolve_price_threshold(session, category, preference):  # noqa: ANN001
+        assert category == "Diş Kliniği"
+        assert preference == "cheap"
+        return None, 900
+
+    monkeypatch.setattr("backend.services.rag.intent.resolve_price_threshold", fake_resolve_price_threshold)
+
+    filters = await build_search_filters(intent, cast(AsyncSession, object()))
+
+    assert filters.min_price is None
+    assert filters.max_price == 900
+
+
+async def test_build_search_filters_does_not_resolve_price_when_explicit_number_given(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """min_price/max_price zaten doluysa, price_preference olsa bile
+    resolve_price_threshold() hiç çağrılmamalı (LLM'in somut sayısı kazanır)."""
+    intent = ParsedIntent(
+        semantic_query="300 TL'den ucuz dişçi", category="Diş Kliniği", max_price=300, price_preference="cheap"
+    )
+    called = False
+
+    async def fake_resolve_price_threshold(session, category, preference):  # noqa: ANN001
+        nonlocal called
+        called = True
+        return None, 900
+
+    monkeypatch.setattr("backend.services.rag.intent.resolve_price_threshold", fake_resolve_price_threshold)
+
+    filters = await build_search_filters(intent, cast(AsyncSession, object()))
+
+    assert called is False
+    assert filters.max_price == 300
 
 
 def test_build_availability_filter_returns_none_when_day_of_week_absent() -> None:

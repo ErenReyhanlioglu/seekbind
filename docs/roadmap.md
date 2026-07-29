@@ -26,7 +26,7 @@ Durum işaretleri: ✅ tamamlandı · ⏳ sırada · ⬜ planlı
 
 ## Faz 4 — Arama & AI Pipeline
 
-- ✅ `feature/search-service` — semantic + hybrid search (BM25 + vektör); kesin filtreler (konum/gün/fiyat) Qdrant payload filtering ile vektör aramasından önce uygulanacak
+- ✅ `feature/search-service` — semantic + hybrid search (BM25 + vektör); kesin filtreler (konum/gün/fiyat) Qdrant payload filtering ile vektör aramasından önce uygulanacak. Bilinen küçük bir performans fırsatı (henüz yapılmadı): `search_providers()`'daki `vector_search()` ile `fetch_filtered_business_ids()` (ikisi de Qdrant çağrısı, birbirinin çıktısına bağımlı değil) şu an sıralı çalışıyor, `asyncio.gather` ile paralelleştirilebilir — acil değil, LLM çağrıları (1-3sn) yanında marjinal bir kazanım
 - ✅ `feature/reranker` — cross-encoder reranking (Jina AI hosted rerank API, `jina-reranker-v3` — yerel bir model yerine, gerekçe [ADR-0013](adr/0013-reranker-provider-selection.md)'te)
 - ✅ `feature/llm-service` — GPT-4o-mini/Qwen3/Turkish-LLM seçim mantığı (runtime); GPT-4o-mini bilinçli bir seçim — bütçe ve evaluator bağımsızlığı gerekçesiyle, bkz. [ADR-0008](adr/0008-llm-comparison-phase-4.md). Minimal Langfuse izleme (`core/monitoring.py` + `langfuse.openai` sarmalayıcı) bu branch'e dahil edildi — otomatik fallback yok, kapsam bilinçli olarak dar tutuldu
 - ⏳ `feature/rag-pipeline` — RAG orkestrasyon (intent parsing + öneri üretimi — projenin asıl LLM testi)

@@ -10,6 +10,7 @@ from backend.services.rag.intent import (
     parse_intent,
     resolve_day_of_week,
 )
+from backend.services.rag.pricing import PricePreference, resolve_price_threshold
 from backend.services.rag.recommendation import RecommendationGenerationError, generate_recommendation
 from backend.services.rag.service import (
     EMPTY_RESULTS_MESSAGE,
@@ -24,6 +25,7 @@ __all__ = [
     "DayOfWeek",
     "IntentParsingError",
     "ParsedIntent",
+    "PricePreference",
     "RecommendationGenerationError",
     "build_availability_filter",
     "build_search_filters",
@@ -31,4 +33,5 @@ __all__ = [
     "get_recommendation",
     "parse_intent",
     "resolve_day_of_week",
+    "resolve_price_threshold",
 ]

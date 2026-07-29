@@ -1,7 +1,7 @@
 # ADR-0011: Kesin filtre / semantik ayrımı
 
 **Durum:** Kısmen uygulandı
-**Tarih:** 2026-07-24
+**Tarih:** 2026-07-24 (karar) · 2026-07-29 (ayrıştırma kısmı büyük ölçüde tamamlandı, konum hariç)
 
 ## Bağlam
 
@@ -23,9 +23,17 @@ filtreler Qdrant'ın payload filtering'iyle uygulanacak.
 
 Qdrant filtering kısmı (`SearchFilters`: fiyat, konum, gün, cinsiyet,
 online) `feature/search-service`'te tamamlandı. Sorgu metninden
-otomatik ayrıştırma (LLM intent parsing) henüz yapılmadı —
-`feature/reranker` testlerinde bu boşluk somut olarak görüldü:
-"ucuz diş kliniği" sorgusunda "ucuz" hem yapılandırılmış filtre
-olarak hem serbest metin olarak kaldığında (referans noktası olmadan)
-zayıf/yanıltıcı semantik sinyal verdi. Ayrıştırma kısmı
-`feature/rag-pipeline`'ın kapsamında.
+otomatik ayrıştırma (LLM intent parsing), `feature/rag-pipeline`'da
+(`backend/services/rag/intent.py`) tamamlandı — kategori, fiyat
+(fiyat eşiği hesaplamasının detayı için bkz. [ADR-0014](0014-price-threshold-resolution.md)),
+cinsiyet, online, hafta sonu, gün/saat müsaitliği ayrıştırılıyor ve
+semantik kısım (`semantic_query`) yer adları dahil korunarak embedding
+aramasına gidiyor.
+
+**Eksik kalan tek parça: konum (`NearFilter`).** "Yakınımda" gibi
+ifadeler için gerçek koordinat çıkarımı yapılmıyor — geocoding/cihaz
+konumu altyapısı yok (frontend de henüz yok, Faz 7). Bu, unutulmuş
+değil bilinçli bir sınır; roadmap'te de şu an bunu ele alacak bir
+branch tanımlı değil. `NearFilter` hâlâ sadece hazır bir
+(lat, lon, radius) üçlüsü kabul ediyor, LLM'in bunu doldurması için
+bir yol yok.

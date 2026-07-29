@@ -15,7 +15,10 @@ from typing import Literal, get_args
 
 from pydantic import BaseModel, Field, ValidationError, model_validator
 
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from backend.services.llm import ChatMessage, LLMProvider, LLMServiceError
+from backend.services.rag.pricing import PricePreference, resolve_price_threshold
 from backend.services.rag.prompts import SEARCH_INTENT_PROMPT_PATH, SYSTEM_PROMPT_PATH, load_prompt
 from backend.services.search import DateAvailabilityFilter, SearchFilters, normalize_turkish_text
 from backend.services.search.availability import TimeOfDay
@@ -54,6 +57,11 @@ class ParsedIntent(BaseModel):
     semantic_query: str = Field(min_length=1)
     min_price: int | None = None
     max_price: int | None = None
+    # Somut bir sayı verilmemiş ama "ucuz"/"pahalı" gibi göreceli bir kelime
+    # varsa LLM sadece bu sinyali verir — gerçek eşik LLM'in tahminine değil
+    # resolve_price_threshold() ile gerçek DB verisine dayanır (bkz. ADR-0011
+    # notu, smoke test'te LLM'in fiyat tahmininin güvenilmez çıktığı bulundu).
+    price_preference: PricePreference | None = None
     gender: Literal["female", "male", "unisex"] | None = None
     category: str | None = None
     online_only: bool = False
@@ -69,6 +77,11 @@ class ParsedIntent(BaseModel):
         if not isinstance(data, dict):
             return data
         data = dict(data)
+
+        price_preference = data.get("price_preference")
+        if price_preference not in ("cheap", "expensive", None):
+            logger.warning("Geçersiz price_preference değeri düşürüldü: %r", price_preference)
+            data["price_preference"] = None
 
         gender = data.get("gender")
         if gender not in ("female", "male", "unisex", None):
@@ -109,11 +122,21 @@ def resolve_day_of_week(day_of_week: DayOfWeek, today: date) -> date:
     return today + timedelta(days=days_ahead)
 
 
-def build_search_filters(intent: ParsedIntent) -> SearchFilters:
-    """ParsedIntent'ten SearchFilters üretir — düz alan eşlemesi."""
+async def build_search_filters(intent: ParsedIntent, session: AsyncSession) -> SearchFilters:
+    """ParsedIntent'ten SearchFilters üretir.
+
+    LLM somut bir sayı vermişse (`min_price`/`max_price` dolu) onlar aynen
+    kullanılır — DB'ye gidilmez. Sadece göreceli bir tercih (`price_preference`)
+    varsa VE sayı yoksa, gerçek eşik `resolve_price_threshold()` ile o
+    kategorinin gerçek fiyat dağılımından hesaplanır.
+    """
+    min_price, max_price = intent.min_price, intent.max_price
+    if min_price is None and max_price is None and intent.price_preference is not None:
+        min_price, max_price = await resolve_price_threshold(session, intent.category, intent.price_preference)
+
     return SearchFilters(
-        min_price=intent.min_price,
-        max_price=intent.max_price,
+        min_price=min_price,
+        max_price=max_price,
         gender=intent.gender,
         category=intent.category,
         online_only=intent.online_only,

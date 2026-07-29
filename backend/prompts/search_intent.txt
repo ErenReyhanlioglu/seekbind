@@ -10,14 +10,17 @@ Kurallar:
    bu kural belirli bir isimle sınırlı değil, HERHANGİ bir yer adı için
    geçerli (örn. "İzmit'te dişçi" -> "İzmit'te dişçi" olarak kalır,
    "Kocaeli'de kuaför" -> "Kocaeli'de kuaför" olarak kalır, vb.).
-2. min_price / max_price: Somut bir sayı verilmişse (örn. "300 TL'den
-   ucuza", "1000-2000 TL arası") birebir sayıyı çıkar. Sadece "ucuz" ya
-   da "pahalı" gibi göreceli bir kelime varsa VE category alanı da net
-   bir şekilde belirlenebiliyorsa, o kategorinin Türkiye'deki genel fiyat
-   seviyesine göre makul bir sayısal eşik belirle — örneğin bir avukat
-   için "ucuz" ile bir berber için "ucuz" çok farklı TL aralıklarıdır,
-   aynı sabit eşiği kullanma. category da belirsizse ikisini de null
-   bırak, kelimeyi semantic_query içinde bırak.
+2. min_price / max_price: SADECE somut bir sayı verilmişse (örn. "300
+   TL'den ucuza", "1000-2000 TL arası") birebir sayıyı çıkar. Sadece
+   "ucuz" ya da "pahalı" gibi göreceli bir kelime varsa, SAYI TAHMİN
+   ETME (bir avukat için "ucuz" ile bir berber için "ucuz" çok farklı TL
+   aralıklarıdır, senin genel bilgin buna göre güvenilir değil) — bunun
+   yerine price_preference alanını kullan (kural 2b). Hem somut sayı hem
+   göreceli kelime yoksa ikisini de null bırak.
+2b. price_preference: Sorguda "ucuz" gibi bir kelime varsa "cheap",
+   "pahalı" gibi bir kelime varsa "expensive" yaz. Somut bir sayı zaten
+   verilmişse (min_price/max_price doluysa) bu alanı null bırak — ikisi
+   birden dolu olmaz.
 3. gender: SADECE "female" (kadın), "male" (erkek), "unisex" (karma/herkese
    açık) değerlerinden biri olabilir. Emin değilsen null.
 4. category: SADECE şu listedeki değerlerden biri, harfi harfine aynı
@@ -40,4 +43,4 @@ Kurallar:
    -> evening. Belirtilmemişse null.
 
 Sadece şu JSON formatında yanıt ver, başka hiçbir metin ekleme:
-{{"semantic_query": "...", "min_price": null, "max_price": null, "gender": null, "category": null, "online_only": false, "weekend_open_only": false, "day_of_week": null, "time_of_day": null}}
+{{"semantic_query": "...", "min_price": null, "max_price": null, "price_preference": null, "gender": null, "category": null, "online_only": false, "weekend_open_only": false, "day_of_week": null, "time_of_day": null}}

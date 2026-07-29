@@ -17,5 +17,14 @@ RECOMMENDATION_PROMPT_PATH = PROMPT_DIR / "recommendation.txt"
 
 
 def load_prompt(path: Path) -> str:
-    """Bir prompt dosyasını olduğu gibi (şablon yer tutucularıyla) okur."""
+    """Bir prompt dosyasını olduğu gibi (şablon yer tutucularıyla) okur.
+
+    Bilerek `lru_cache` yok — prompt dosyaları hâlâ aktif olarak
+    değiştiriliyor, cache eklenirse bir düzenlemenin etkili olması için
+    uygulamanın yeniden başlatılması gerekirdi (get_settings()'in .env için
+    yaptığı gibi). Ayrıca ölçülmüş bir darboğaz değil (birkaç KB'lık düz
+    metin, muhtemelen zaten OS disk cache'inden dönüyor) — gerçek maliyet
+    LLM çağrılarında (1-3sn). Prompt'lar netleşince ya da gerçek bir
+    performans sorunu ölçülürse eklenebilir.
+    """
     return path.read_text(encoding="utf-8")

@@ -28,6 +28,7 @@ tarafından supersede edildi)
 | [0008](0008-llm-comparison-phase-4.md) | Runtime LLM karşılaştırması (Faz 4) | Planlandı | 2026-07-28 |
 | [0009](0009-ragas-evaluator-model.md) | RAGAS evaluator modeli | Kabul edildi | 2026-07-28 |
 | [0010](0010-hybrid-search-with-rrf.md) | Hybrid search (BM25 + vektör, RRF) | Kabul edildi | 2026-07-24 |
-| [0011](0011-hard-filter-vs-semantic-separation.md) | Kesin filtre / semantik ayrımı | Kısmen uygulandı | 2026-07-24 |
+| [0011](0011-hard-filter-vs-semantic-separation.md) | Kesin filtre / semantik ayrımı | Kısmen uygulandı | 2026-07-29 |
 | [0012](0012-synthetic-description-mode-collapse-mitigation.md) | Sentetik açıklama mode collapse önlemi | Kabul edildi | 2026-07-24 |
 | [0013](0013-reranker-provider-selection.md) | Reranker sağlayıcısı seçimi (Jina AI) | Kabul edildi | 2026-07-28 |
+| [0014](0014-price-threshold-resolution.md) | Fiyat eşiği hesaplama (LLM tahmini yerine gerçek DB verisi) | Kabul edildi | 2026-07-29 |
