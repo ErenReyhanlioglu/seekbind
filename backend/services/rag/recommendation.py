@@ -7,6 +7,7 @@ from backend.services.search import RatingPreference
 
 RECOMMENDATION_RESULT_LIMIT: int = 5  # öneri prompt'una en fazla bu kadar işletme konur (token/maliyet)
 _RECOMMENDATION_TEMPERATURE: float = 0.7
+_LANGFUSE_STEP_NAME: str = "recommendation_generation"
 
 # rating_preference yoksa sıra her zamanki gibi alaka (RRF/reranker) sırası.
 _RELEVANCE_ORDER_CONTEXT: str = (
@@ -100,7 +101,12 @@ async def generate_recommendation(
     ]
 
     try:
-        response = await llm_provider.complete(messages, temperature=_RECOMMENDATION_TEMPERATURE)
+        response = await llm_provider.complete(
+            messages,
+            temperature=_RECOMMENDATION_TEMPERATURE,
+            langfuse_name=_LANGFUSE_STEP_NAME,
+            langfuse_metadata={"result_count": len(top_results), "rating_preference": rating_preference},
+        )
     except LLMServiceError as e:
         raise RecommendationGenerationError("Öneri üretimi LLM çağrısı başarısız") from e
     return response.content

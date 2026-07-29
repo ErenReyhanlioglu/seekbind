@@ -11,14 +11,22 @@ değiştirmeden çağırma, (3) sonuçlardan LLM ile doğal dilde öneri üretme
 bir mesaja düşülür, arama sonuçları yine de döner (bkz.
 `_generate_recommendation_with_fallback`).
 
+`get_recommendation()`, `@observe()` ile tek bir Langfuse trace'i olarak
+izlenir — içindeki 2 LLM çağrısı (intent parsing + öneri üretimi,
+`langfuse.openai.AsyncOpenAI` sarmalayıcısıyla otomatik izlenir) bu trace'in
+altına, `observe`'ün contextvar tabanlı gözlem yığını sayesinde otomatik
+nest olur (manuel `trace_id` taşımaya gerek yok). İsteğin tamamına ait özet
+(ayrıştırılan filtreler, fallback'ler, sonuç sayısı) `_record_trace` ile
+trace metadata'sına yazılır.
+
 Sağlayıcılar arası otomatik fallback (OpenAI hata verirse Ollama'ya geçme)
-ve Langfuse çok-adımlı trace gruplama bilinçli olarak burada değil — bkz.
-docs/roadmap.md `feature/fallback-mechanism` / `feature/langfuse-integration`.
+bilinçli olarak burada değil — bkz. docs/roadmap.md `feature/fallback-mechanism`.
 """
 
 import logging
 from datetime import date
 
+from langfuse.decorators import langfuse_context, observe
 from qdrant_client import AsyncQdrantClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -45,19 +53,25 @@ logger = logging.getLogger(__name__)
 
 EMPTY_RESULTS_MESSAGE: str = "Aramanıza uygun bir işletme bulamadım, farklı bir arama deneyebilirsin."
 RECOMMENDATION_FALLBACK_MESSAGE: str = "Aşağıda arama sonuçlarını bulabilirsin."
+_LANGFUSE_TRACE_NAME: str = "recommend"
 
 
 async def _resolve_search_query_and_filters(
     llm_provider: LLMProvider, raw_query: str, today: date, session: AsyncSession
-) -> tuple[str, SearchFilters, DateAvailabilityFilter | None, RatingPreference | None]:
-    """Intent parsing dener, başarısız olursa ham sorgu + boş filtreye düşer."""
+) -> tuple[str, SearchFilters, DateAvailabilityFilter | None, RatingPreference | None, bool]:
+    """Intent parsing dener, başarısız olursa ham sorgu + boş filtreye düşer.
+
+    Son eleman (`bool`), intent parsing'in fallback'e düşüp düşmediğini
+    belirtir — `get_recommendation` bunu Langfuse trace metadata'sına yazar.
+    """
     try:
         intent = await parse_intent(llm_provider, raw_query, today)
     except IntentParsingError as e:
         logger.warning("Intent parsing başarısız, salt semantik aramaya düşülüyor: %s", e)
-        return raw_query, SearchFilters(), None, None
+        return raw_query, SearchFilters(), None, None, True
     filters = await build_search_filters(intent, session)
-    return intent.semantic_query, filters, build_availability_filter(intent, today), intent.rating_preference
+    availability = build_availability_filter(intent, today)
+    return intent.semantic_query, filters, availability, intent.rating_preference, False
 
 
 async def _generate_recommendation_with_fallback(
@@ -65,15 +79,110 @@ async def _generate_recommendation_with_fallback(
     raw_query: str,
     results: list[ProviderResult],
     rating_preference: RatingPreference | None,
-) -> str:
-    """Öneri üretimi başarısız olursa sabit bir mesaja düşer, sonuçlar yine de döner."""
+) -> tuple[str, bool]:
+    """Öneri üretimi başarısız olursa sabit bir mesaja düşer, sonuçlar yine de döner.
+
+    Son eleman (`bool`), öneri üretiminin fallback'e düşüp düşmediğini belirtir.
+    """
     try:
-        return await generate_recommendation(llm_provider, raw_query, results, rating_preference)
+        text = await generate_recommendation(llm_provider, raw_query, results, rating_preference)
+        return text, False
     except RecommendationGenerationError as e:
         logger.warning("Öneri üretimi başarısız, sabit mesaja düşülüyor: %s", e)
-        return RECOMMENDATION_FALLBACK_MESSAGE
+        return RECOMMENDATION_FALLBACK_MESSAGE, True
 
 
+def _build_trace_metadata(
+    *,
+    search_query: str,
+    filters: SearchFilters,
+    availability: DateAvailabilityFilter | None,
+    rating_preference: RatingPreference | None,
+    intent_fallback: bool,
+    recommendation_fallback: bool,
+    result_count: int,
+    total: int,
+    limit: int,
+    offset: int,
+) -> dict[str, object]:
+    """Tüm `/recommend` isteğinin özetini Langfuse trace metadata'sına döker.
+
+    `intent.py`/`recommendation.py`'nin kendi LLM çağrı metadata'sı sadece o
+    adıma özgüyken, bu istek genelinde neyin ayrıştığını/döndüğünü tek
+    yerde toplar.
+    """
+    return {
+        "search_query": search_query,
+        "category": filters.category,
+        "min_price": filters.min_price,
+        "max_price": filters.max_price,
+        "gender": filters.gender,
+        "online_only": filters.online_only,
+        "weekend_open_only": filters.weekend_open_only,
+        "rating_preference": rating_preference,
+        "availability_date": availability.date.isoformat() if availability else None,
+        "availability_time_of_day": availability.time_of_day if availability else None,
+        "intent_parsing_fallback": intent_fallback,
+        "recommendation_fallback": recommendation_fallback,
+        "result_count": result_count,
+        "total": total,
+        "limit": limit,
+        "offset": offset,
+    }
+
+
+def _build_trace_tags(*, intent_fallback: bool, recommendation_fallback: bool, empty_results: bool) -> list[str]:
+    """Langfuse arayüzünde filtrelemeyi kolaylaştıran etiketler üretir."""
+    tags = [_LANGFUSE_TRACE_NAME]
+    if intent_fallback:
+        tags.append("intent_fallback")
+    if recommendation_fallback:
+        tags.append("recommendation_fallback")
+    if empty_results:
+        tags.append("empty_results")
+    return tags
+
+
+def _record_trace(
+    *,
+    raw_query: str,
+    output: str,
+    search_query: str,
+    filters: SearchFilters,
+    availability: DateAvailabilityFilter | None,
+    rating_preference: RatingPreference | None,
+    intent_fallback: bool,
+    recommendation_fallback: bool,
+    result_count: int,
+    total: int,
+    limit: int,
+    offset: int,
+) -> None:
+    """İsteğin özetini aktif Langfuse trace'ine yazar (bkz. get_recommendation)."""
+    langfuse_context.update_current_trace(
+        input=raw_query,
+        output=output,
+        tags=_build_trace_tags(
+            intent_fallback=intent_fallback,
+            recommendation_fallback=recommendation_fallback,
+            empty_results=result_count == 0,
+        ),
+        metadata=_build_trace_metadata(
+            search_query=search_query,
+            filters=filters,
+            availability=availability,
+            rating_preference=rating_preference,
+            intent_fallback=intent_fallback,
+            recommendation_fallback=recommendation_fallback,
+            result_count=result_count,
+            total=total,
+            limit=limit,
+            offset=offset,
+        ),
+    )
+
+
+@observe(name=_LANGFUSE_TRACE_NAME, capture_input=False, capture_output=False)
 async def get_recommendation(
     session: AsyncSession,
     qdrant_client: AsyncQdrantClient,
@@ -95,9 +204,14 @@ async def get_recommendation(
     `today` hiçbir zaman varsayılan değer almamalı (çağıran, `date.today()`'i
     kendi gövdesinde çağırmalı) — fonksiyon imzasında `= date.today()` gibi
     bir varsayılan, sunucu ne zaman başladıysa o ana donardı.
+
+    `capture_input=False, capture_output=False`: bu fonksiyonun argümanları
+    (`session`, `qdrant_client` gibi servis nesneleri) otomatik JSON'a
+    çevrilmeye çalışılırsa dağınık/gereksiz veri üretir — trace'e ne
+    yazılacağı bilinçli olarak `_record_trace` ile elle seçilir.
     """
-    search_query, filters, availability, rating_preference = await _resolve_search_query_and_filters(
-        llm_provider, raw_query, today, session
+    search_query, filters, availability, rating_preference, intent_fallback = (
+        await _resolve_search_query_and_filters(llm_provider, raw_query, today, session)
     )
 
     search_response = await search_providers(
@@ -115,10 +229,38 @@ async def get_recommendation(
     )
 
     if not search_response.results:
+        _record_trace(
+            raw_query=raw_query,
+            output=EMPTY_RESULTS_MESSAGE,
+            search_query=search_query,
+            filters=filters,
+            availability=availability,
+            rating_preference=rating_preference,
+            intent_fallback=intent_fallback,
+            recommendation_fallback=False,
+            result_count=0,
+            total=0,
+            limit=limit,
+            offset=offset,
+        )
         return RecommendationResponse(recommendation=EMPTY_RESULTS_MESSAGE, results=[], total=0)
 
-    recommendation_text = await _generate_recommendation_with_fallback(
+    recommendation_text, recommendation_fallback = await _generate_recommendation_with_fallback(
         llm_provider, raw_query, search_response.results, rating_preference
+    )
+    _record_trace(
+        raw_query=raw_query,
+        output=recommendation_text,
+        search_query=search_query,
+        filters=filters,
+        availability=availability,
+        rating_preference=rating_preference,
+        intent_fallback=intent_fallback,
+        recommendation_fallback=recommendation_fallback,
+        result_count=len(search_response.results),
+        total=search_response.total,
+        limit=limit,
+        offset=offset,
     )
     return RecommendationResponse(
         recommendation=recommendation_text,
