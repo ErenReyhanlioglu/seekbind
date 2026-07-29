@@ -1,14 +1,25 @@
 """backend/services/search/bm25.py için birim testler."""
 
 import asyncio
+from types import SimpleNamespace
 from typing import cast
+from unittest.mock import AsyncMock
 
 import pytest
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
+import backend.services.search.bm25 as bm25_module
 from backend.db.models import Business
-from backend.services.search.bm25 import BM25Index, build_corpus, build_lexical_text, periodic_refresh_loop
+from backend.services.search.bm25 import (
+    BM25Index,
+    build_corpus,
+    build_lexical_text,
+    compute_fingerprint,
+    fetch_active_businesses,
+    get_bm25_index,
+    periodic_refresh_loop,
+)
 
 
 def _make_business(
@@ -152,6 +163,63 @@ def test_bm25_index_search_returns_empty_list_for_empty_query_tokens() -> None:
     index.build(businesses, fingerprint=(1, None))
 
     assert index.search("!!!", top_k=10) == []
+
+
+async def test_fetch_active_businesses_returns_scalars_as_list() -> None:
+    session = AsyncMock()
+    active_business = _make_business(business_id=1)
+    session.execute.return_value = SimpleNamespace(scalars=lambda: SimpleNamespace(all=lambda: [active_business]))
+
+    result = await fetch_active_businesses(session)
+
+    assert result == [active_business]
+
+
+async def test_compute_fingerprint_returns_count_and_max_updated_at() -> None:
+    session = AsyncMock()
+    session.execute.return_value = SimpleNamespace(one=lambda: (5, None))
+
+    result = await compute_fingerprint(session)
+
+    assert result == (5, None)
+
+
+async def test_refresh_if_stale_skips_rebuild_when_fingerprint_unchanged(monkeypatch) -> None:
+    index = BM25Index()
+    index.build([], fingerprint=(3, None))
+    monkeypatch.setattr(bm25_module, "compute_fingerprint", AsyncMock(return_value=(3, None)))
+    fetch_mock = AsyncMock()
+    monkeypatch.setattr(bm25_module, "fetch_active_businesses", fetch_mock)
+
+    changed = await index.refresh_if_stale(AsyncMock())
+
+    assert changed is False
+    fetch_mock.assert_not_called()
+
+
+async def test_refresh_if_stale_rebuilds_when_fingerprint_changed(monkeypatch) -> None:
+    index = BM25Index()
+    index.build([], fingerprint=(1, None))
+    new_business = _make_business(business_id=99)
+    monkeypatch.setattr(bm25_module, "compute_fingerprint", AsyncMock(return_value=(2, None)))
+    monkeypatch.setattr(bm25_module, "fetch_active_businesses", AsyncMock(return_value=[new_business]))
+
+    changed = await index.refresh_if_stale(AsyncMock())
+
+    assert changed is True
+    assert index._snapshot.business_ids == [99]
+    assert index._snapshot.fingerprint == (2, None)
+
+
+def test_get_bm25_index_returns_same_instance_on_repeated_calls() -> None:
+    """lru_cache singleton davranışı — bkz. CLAUDE.md 'pahalı client'ları
+    singleton tut' kuralı, aynı prensip BM25Index için de geçerli."""
+    get_bm25_index.cache_clear()
+
+    try:
+        assert get_bm25_index() is get_bm25_index()
+    finally:
+        get_bm25_index.cache_clear()
 
 
 class _FakeSessionCtx:

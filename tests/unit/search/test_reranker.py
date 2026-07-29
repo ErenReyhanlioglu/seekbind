@@ -6,7 +6,7 @@ from unittest.mock import AsyncMock
 import httpx
 import pytest
 
-from backend.services.search.reranker import JinaReranker, RerankerServiceError
+from backend.services.search.reranker import JinaReranker, RerankerServiceError, get_reranker_provider
 
 
 def _make_response(payload: dict, status_code: int = 200) -> SimpleNamespace:
@@ -79,3 +79,31 @@ async def test_rerank_raises_service_error_on_http_status_error() -> None:
 
     with pytest.raises(RerankerServiceError):
         await reranker.rerank("diş kliniği", ["metin a"], top_n=5)
+
+
+async def test_close_closes_underlying_http_client() -> None:
+    reranker = JinaReranker()
+    reranker._client.aclose = AsyncMock()  # type: ignore[method-assign]
+
+    await reranker.close()
+
+    reranker._client.aclose.assert_awaited_once()
+
+
+def test_get_reranker_provider_returns_jina_reranker_instance() -> None:
+    get_reranker_provider.cache_clear()
+
+    try:
+        provider = get_reranker_provider()
+        assert isinstance(provider, JinaReranker)
+    finally:
+        get_reranker_provider.cache_clear()
+
+
+def test_get_reranker_provider_returns_same_instance_on_repeated_calls() -> None:
+    get_reranker_provider.cache_clear()
+
+    try:
+        assert get_reranker_provider() is get_reranker_provider()
+    finally:
+        get_reranker_provider.cache_clear()
