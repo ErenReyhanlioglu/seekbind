@@ -17,6 +17,8 @@ class _FakeLLMProvider:
         self._error = error
         self.last_response_format: dict[str, str] | None = None
         self.last_messages: list[ChatMessage] | None = None
+        self.last_langfuse_name: str | None = None
+        self.last_langfuse_metadata: dict[str, object] | None = None
 
     async def complete(
         self,
@@ -25,9 +27,13 @@ class _FakeLLMProvider:
         temperature: float = 0.7,
         max_tokens: int | None = None,
         response_format: dict[str, str] | None = None,
+        langfuse_name: str | None = None,
+        langfuse_metadata: dict[str, object] | None = None,
     ) -> LLMResponse:
         self.last_response_format = response_format
         self.last_messages = messages
+        self.last_langfuse_name = langfuse_name
+        self.last_langfuse_metadata = langfuse_metadata
         if self._error is not None:
             raise self._error
         return LLMResponse(
@@ -69,6 +75,20 @@ async def test_generate_recommendation_returns_llm_text_on_success() -> None:
     text = await generate_recommendation(provider, "ucuz dişçi", [_make_result(1)])
 
     assert text == "Size en uygun diş kliniğini önerebilirim."
+
+
+async def test_generate_recommendation_sends_langfuse_name_and_metadata() -> None:
+    """Bu adım Langfuse'ta 'recommendation_generation' adıyla ve sonuç
+    sayısı/rating_preference gibi zengin metadata'yla görünmeli (bkz.
+    feature/langfuse-integration)."""
+    provider = _FakeLLMProvider(content="öneri metni")
+
+    await generate_recommendation(
+        provider, "en kötü dişçi", [_make_result(1), _make_result(2)], rating_preference="low"
+    )
+
+    assert provider.last_langfuse_name == "recommendation_generation"
+    assert provider.last_langfuse_metadata == {"result_count": 2, "rating_preference": "low"}
 
 
 async def test_generate_recommendation_does_not_request_json_response_format() -> None:

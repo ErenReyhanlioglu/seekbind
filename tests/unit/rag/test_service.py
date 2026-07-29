@@ -9,6 +9,7 @@ değiştirilip get_recommendation'ın orkestrasyon mantığı test ediliyor.
 
 from datetime import date
 from typing import cast
+from unittest.mock import MagicMock
 
 from qdrant_client import AsyncQdrantClient
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -17,8 +18,14 @@ import backend.services.rag.service as rag_service
 from backend.api.schemas import ProviderResult, SearchResponse
 from backend.services.embedding import EmbeddingProvider
 from backend.services.llm import ChatMessage, LLMResponse
-from backend.services.rag.service import EMPTY_RESULTS_MESSAGE, RECOMMENDATION_FALLBACK_MESSAGE, get_recommendation
-from backend.services.search import BM25Index, RerankerProvider
+from backend.services.rag.service import (
+    EMPTY_RESULTS_MESSAGE,
+    RECOMMENDATION_FALLBACK_MESSAGE,
+    _build_trace_metadata,
+    _build_trace_tags,
+    get_recommendation,
+)
+from backend.services.search import BM25Index, DateAvailabilityFilter, RerankerProvider, SearchFilters
 
 _TODAY = date(2026, 7, 28)
 
@@ -50,6 +57,8 @@ class _FakeLLMProvider:
         temperature: float = 0.7,
         max_tokens: int | None = None,
         response_format: dict[str, str] | None = None,
+        langfuse_name: str | None = None,
+        langfuse_metadata: dict[str, object] | None = None,
     ) -> LLMResponse:
         content = self._responses[self.call_count]
         self.call_count += 1
@@ -240,14 +249,22 @@ async def test_get_recommendation_falls_back_to_templated_message_when_recommend
     # RecommendationGenerationError'ı üzerinden değil, LLM çağrısının
     # başarısız olmasıyla simüle ediyoruz.
     class _FailingSecondCallLLM(_FakeLLMProvider):
-        async def complete(self, messages, *, temperature=0.7, max_tokens=None, response_format=None):
+        async def complete(
+            self, messages, *, temperature=0.7, max_tokens=None, response_format=None,
+            langfuse_name=None, langfuse_metadata=None,
+        ):
             if self.call_count == 1:
                 from backend.services.llm import LLMServiceError
 
                 self.call_count += 1
                 raise LLMServiceError("öneri üretimi başarısız")
             return await super().complete(
-                messages, temperature=temperature, max_tokens=max_tokens, response_format=response_format
+                messages,
+                temperature=temperature,
+                max_tokens=max_tokens,
+                response_format=response_format,
+                langfuse_name=langfuse_name,
+                langfuse_metadata=langfuse_metadata,
             )
 
     llm = _FailingSecondCallLLM([_VALID_INTENT_JSON])
@@ -315,3 +332,145 @@ async def test_get_recommendation_passes_limit_and_offset_through_to_search_prov
 
     assert captured["limit"] == 5
     assert captured["offset"] == 15
+
+
+def test_build_trace_metadata_includes_all_filter_fields() -> None:
+    filters = SearchFilters(min_price=100, max_price=500, gender="unisex", category="Diş Kliniği", online_only=True)
+    availability = DateAvailabilityFilter(date=date(2026, 8, 1), time_of_day="morning")
+
+    metadata = _build_trace_metadata(
+        search_query="dişçi",
+        filters=filters,
+        availability=availability,
+        rating_preference="low",
+        intent_fallback=False,
+        recommendation_fallback=True,
+        result_count=3,
+        total=10,
+        limit=10,
+        offset=0,
+    )
+
+    assert metadata["search_query"] == "dişçi"
+    assert metadata["category"] == "Diş Kliniği"
+    assert metadata["min_price"] == 100
+    assert metadata["max_price"] == 500
+    assert metadata["gender"] == "unisex"
+    assert metadata["online_only"] is True
+    assert metadata["rating_preference"] == "low"
+    assert metadata["availability_date"] == "2026-08-01"
+    assert metadata["availability_time_of_day"] == "morning"
+    assert metadata["intent_parsing_fallback"] is False
+    assert metadata["recommendation_fallback"] is True
+    assert metadata["result_count"] == 3
+    assert metadata["total"] == 10
+
+
+def test_build_trace_metadata_handles_missing_availability() -> None:
+    metadata = _build_trace_metadata(
+        search_query="dişçi",
+        filters=SearchFilters(),
+        availability=None,
+        rating_preference=None,
+        intent_fallback=False,
+        recommendation_fallback=False,
+        result_count=0,
+        total=0,
+        limit=10,
+        offset=0,
+    )
+
+    assert metadata["availability_date"] is None
+    assert metadata["availability_time_of_day"] is None
+
+
+def test_build_trace_tags_includes_base_tag_only_when_nothing_failed() -> None:
+    tags = _build_trace_tags(intent_fallback=False, recommendation_fallback=False, empty_results=False)
+
+    assert tags == ["recommend"]
+
+
+def test_build_trace_tags_adds_fallback_and_empty_results_tags() -> None:
+    tags = _build_trace_tags(intent_fallback=True, recommendation_fallback=True, empty_results=True)
+
+    assert set(tags) == {"recommend", "intent_fallback", "recommendation_fallback", "empty_results"}
+
+
+async def test_get_recommendation_records_trace_on_success(monkeypatch) -> None:
+    async def fake_search_providers(**kwargs):
+        return SearchResponse(results=[_make_result(1)], total=1)
+
+    monkeypatch.setattr(rag_service, "search_providers", fake_search_providers)
+    update_trace = MagicMock()
+    monkeypatch.setattr(rag_service.langfuse_context, "update_current_trace", update_trace)
+    llm = _FakeLLMProvider([_VALID_INTENT_JSON, "öneri metni"])
+
+    await get_recommendation(
+        session=_SESSION,
+        qdrant_client=_QDRANT_CLIENT,
+        bm25_index=_BM25_INDEX,
+        embedding_provider=_EMBEDDING_PROVIDER,
+        reranker_provider=_RERANKER_PROVIDER,
+        llm_provider=llm,
+        raw_query="ucuz dişçi",
+        today=_TODAY,
+    )
+
+    update_trace.assert_called_once()
+    call_kwargs = update_trace.call_args.kwargs
+    assert call_kwargs["input"] == "ucuz dişçi"
+    assert call_kwargs["output"] == "öneri metni"
+    assert call_kwargs["tags"] == ["recommend"]
+    assert call_kwargs["metadata"]["result_count"] == 1
+    assert call_kwargs["metadata"]["intent_parsing_fallback"] is False
+    assert call_kwargs["metadata"]["recommendation_fallback"] is False
+
+
+async def test_get_recommendation_records_intent_fallback_tag_on_malformed_json(monkeypatch) -> None:
+    async def fake_search_providers(**kwargs):
+        return SearchResponse(results=[_make_result(1)], total=1)
+
+    monkeypatch.setattr(rag_service, "search_providers", fake_search_providers)
+    update_trace = MagicMock()
+    monkeypatch.setattr(rag_service.langfuse_context, "update_current_trace", update_trace)
+    llm = _FakeLLMProvider([_MALFORMED_JSON, "öneri metni"])
+
+    await get_recommendation(
+        session=_SESSION,
+        qdrant_client=_QDRANT_CLIENT,
+        bm25_index=_BM25_INDEX,
+        embedding_provider=_EMBEDDING_PROVIDER,
+        reranker_provider=_RERANKER_PROVIDER,
+        llm_provider=llm,
+        raw_query="ucuz dişçi",
+        today=_TODAY,
+    )
+
+    call_kwargs = update_trace.call_args.kwargs
+    assert "intent_fallback" in call_kwargs["tags"]
+    assert call_kwargs["metadata"]["intent_parsing_fallback"] is True
+
+
+async def test_get_recommendation_records_empty_results_tag_when_no_results(monkeypatch) -> None:
+    async def fake_search_providers(**kwargs):
+        return SearchResponse(results=[], total=0)
+
+    monkeypatch.setattr(rag_service, "search_providers", fake_search_providers)
+    update_trace = MagicMock()
+    monkeypatch.setattr(rag_service.langfuse_context, "update_current_trace", update_trace)
+    llm = _FakeLLMProvider([_VALID_INTENT_JSON])
+
+    await get_recommendation(
+        session=_SESSION,
+        qdrant_client=_QDRANT_CLIENT,
+        bm25_index=_BM25_INDEX,
+        embedding_provider=_EMBEDDING_PROVIDER,
+        reranker_provider=_RERANKER_PROVIDER,
+        llm_provider=llm,
+        raw_query="ucuz dişçi",
+        today=_TODAY,
+    )
+
+    call_kwargs = update_trace.call_args.kwargs
+    assert "empty_results" in call_kwargs["tags"]
+    assert call_kwargs["output"] == EMPTY_RESULTS_MESSAGE

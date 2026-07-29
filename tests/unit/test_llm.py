@@ -85,6 +85,40 @@ async def test_openai_complete_forwards_response_format_when_given() -> None:
     assert call.kwargs["response_format"] == {"type": "json_object"}
 
 
+async def test_openai_complete_forwards_langfuse_name_and_metadata_when_given() -> None:
+    """langfuse_name/langfuse_metadata, langfuse.openai.AsyncOpenAI'ın kendi
+    sarmalayıcısına name=/metadata= olarak iletilmeli (bkz.
+    feature/langfuse-integration) — bu sayede her adım Langfuse'ta ayrı bir
+    isimle ve zengin metadata'yla görünür."""
+    provider = OpenAILLM()
+    provider._client.chat.completions.create = AsyncMock(  # type: ignore[method-assign]
+        return_value=_make_completion()
+    )
+
+    await provider.complete(
+        [ChatMessage(role="user", content="selam")],
+        langfuse_name="intent_parsing",
+        langfuse_metadata={"raw_query": "ucuz dişçi"},
+    )
+
+    call = provider._client.chat.completions.create.call_args
+    assert call.kwargs["name"] == "intent_parsing"
+    assert call.kwargs["metadata"] == {"raw_query": "ucuz dişçi"}
+
+
+async def test_openai_complete_passes_none_langfuse_fields_by_default() -> None:
+    provider = OpenAILLM()
+    provider._client.chat.completions.create = AsyncMock(  # type: ignore[method-assign]
+        return_value=_make_completion()
+    )
+
+    await provider.complete([ChatMessage(role="user", content="selam")])
+
+    call = provider._client.chat.completions.create.call_args
+    assert call.kwargs["name"] is None
+    assert call.kwargs["metadata"] is None
+
+
 async def test_openai_complete_passes_none_response_format_by_default() -> None:
     provider = OpenAILLM()
     provider._client.chat.completions.create = AsyncMock(  # type: ignore[method-assign]

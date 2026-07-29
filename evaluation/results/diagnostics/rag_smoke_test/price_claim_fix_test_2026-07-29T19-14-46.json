@@ -1,0 +1,157 @@
+{
+  "label": "price_claim_fix_test",
+  "timestamp": "2026-07-29T19-14-46",
+  "scenarios": [
+    {
+      "title": "Özel sorgu: İzmit'te ucuz dişçi",
+      "query": "İzmit'te ucuz dişçi",
+      "total": 5,
+      "recommendation": "İzmit'te uygun fiyatlı dişçi arıyorsanız, Diş Hekimi Tarık Can Kara, iyi bir seçenek olabilir. Geniş kapsamlı hizmetleriyle özellikle çocuk diş hekimliği konusunda uzmanlaşmış bir klinik olarak dikkat çekiyor. Ayrıca, randevuların süresi genellikle 45 dakika olup, her yaştan hastaya hizmet veriyor. Diğer bir alternatif ise Özel Kocaeli Diş Polikliniği; burada da çeşitli diş sağlığı hizmetleri sunuluyor ve fiyat aralığı oldukça makul. ",
+      "top_results": [
+        {
+          "id": 5,
+          "title": "DentAtlas Ağız Ve Diş Sağlığı Polikliniği",
+          "type_normalized": "Diş Kliniği",
+          "rating": 4.8,
+          "weighted_rating": 4.791170730725897,
+          "price_min": 950,
+          "price_max": 6033,
+          "address": "İnönü Cd. No:131",
+          "phone": "+90 4448397",
+          "online_available": false,
+          "gender": "unisex",
+          "services": [
+            "diş temizliği (detertraj)",
+            "diş beyazlatma",
+            "zirkonyum kaplama",
+            "implant",
+            "ortodonti (tel tedavisi)",
+            "gülüş tasarımı"
+          ],
+          "tags": [],
+          "rich_description": "DentAtlas Ağız ve Diş Sağlığı Polikliniği, İzmit'te uzun süren seanslarda diş temizliği, ortodonti ve gülüş tasarımı gibi hizmetler vermektedir. Zirkonyum kaplamalar ile estetik çözümler sunarken, implant tedavileriyle eksik dişlerinizi tamamlamayı hedefler. Kapsamlı tedavi seçenekleriyle ağız sağlığınızı bütünsel olarak destekleyen bir merkezdir.",
+          "distance_km": null
+        },
+        {
+          "id": 7,
+          "title": "Diş Hekimi Tarık Can Kara , İzmit/Kocaeli",
+          "type_normalized": "Diş Kliniği",
+          "rating": 5.0,
+          "weighted_rating": 4.806184703331362,
+          "price_min": 753,
+          "price_max": 2392,
+          "address": null,
+          "phone": "+90 531 343 73 05",
+          "online_available": false,
+          "gender": "unisex",
+          "services": [
+            "diş çekimi",
+            "pedodonti (çocuk diş hekimliği)",
+            "protez"
+          ],
+          "tags": [
+            "hafta sonu açık",
+            "yüksek puanlı",
+            "uygun fiyatlı"
+          ],
+          "rich_description": "Diş Hekimi Tarık Can Kara, İzmit'te aileden bireylere geniş kapsamlı diş sağlığı hizmetleri sunuyor. Çocuk diş hekimliği alanında uzman olan klinik, aynı zamanda diş çekimi ve protez tedavileriyle de destek sağlıyor. Randevular yaklaşık 45 dakika sürüyor ve her yaştan hasta kabul ediliyor.",
+          "distance_km": null
+        },
+        {
+          "id": 11,
+          "title": "Uzman Diş Grup - İmplant - Gömülü Diş - Ortodonti - Pedodonti - Gülüş Tasarımı - Kocaeli Diş Kliniği",
+          "type_normalized": "Diş Kliniği",
+          "rating": 4.8,
+          "weighted_rating": 4.795698814074292,
+          "price_min": 1741,
+          "price_max": 7423,
+          "address": "Nazerinn İş Merkezi, Şht. Ali İhsan Çakmak Sk. No:46/B",
+          "phone": "+90 262 332 35 45",
+          "online_available": false,
+          "gender": "unisex",
+          "services": [
+            "kanal tedavisi",
+            "gülüş tasarımı",
+            "diş dolgusu",
+            "protez",
+            "implant",
+            "diş çekimi"
+          ],
+          "tags": [
+            "hafta sonu açık"
+          ],
+          "rich_description": "Uzman Diş Grup, Kocaeli'de geniş kapsamlı diş sağlığı çözümleriyle dikkat çekiyor. Kanal tedavisi, implant ve protez gibi temel uygulamaların yanı sıra gülüş tasarımı hizmetleri de bulunuyor. Tedavi süreçleri yaklaşık 90 dakika sürmekte ve her yaş grubuna hitap etmektedir.",
+          "distance_km": null
+        },
+        {
+          "id": 8,
+          "title": "Özel Kocaeli Diş Polikliniği",
+          "type_normalized": "Diş Kliniği",
+          "rating": 4.3,
+          "weighted_rating": 4.488856296792937,
+          "price_min": 576,
+          "price_max": 5779,
+          "address": "Mehmetalipaşa mahallesi bağdat caddesi, Erkan Sk. 20/A",
+          "phone": "+90 549 911 41 41",
+          "online_available": false,
+          "gender": "unisex",
+          "services": [
+            "implant",
+            "ortodonti (tel tedavisi)",
+            "diş dolgusu",
+            "diş temizliği (detertraj)",
+            "lamina (veneer)"
+          ],
+          "tags": [],
+          "rich_description": "Özel Kocaeli Diş Polikliniği, implanttan tel tedavisine kadar çeşitli çözümler sunarak ağız sağlığınızı destekliyor. Diş dolgusu, lamina ve profesyonel diş temizliği hizmetleriyle estetik ve sağlık bir arada. Kliniğin sunduğu tedaviler genel olarak bir saat içinde tamamlanıyor.",
+          "distance_km": null
+        },
+        {
+          "id": 19,
+          "title": "Özel Dentkartepe Ağız Ve Diş Sağlığı Polikliniği",
+          "type_normalized": "Diş Kliniği",
+          "rating": 4.9,
+          "weighted_rating": 4.852479453137348,
+          "price_min": 1634,
+          "price_max": 4885,
+          "address": "Gazi Mustafa Kemal Blv. No: 157/1",
+          "phone": "+90 262 323 55 00",
+          "online_available": false,
+          "gender": "unisex",
+          "services": [
+            "protez",
+            "pedodonti (çocuk diş hekimliği)",
+            "diş dolgusu",
+            "diş çekimi",
+            "diş temizliği (detertraj)",
+            "kanal tedavisi"
+          ],
+          "tags": [
+            "hafta sonu açık",
+            "yüksek puanlı"
+          ],
+          "rich_description": "Özel Dentkartepe Polikliniği, çocuk diş hekimliği hizmetlerinin yanı sıra protez, dolgu ve kanal tedavisi de sunuyor. Diş temizliği ve çekimi işlemlerinde geniş yaş grubuna hizmet veren klinik, yaklaşık bir buçuk saatlik randevularla detaylı kontrol imkanı sağlıyor. Hasta odaklı yaklaşımıyla bilinen işletme, aileler için uygun bir diş sağlığı merkezi konumunda.",
+          "distance_km": null
+        }
+      ]
+    }
+  ],
+  "intent_diagnostics": [
+    {
+      "query": "İzmit'te ucuz dişçi",
+      "parsed_intent": {
+        "semantic_query": "İzmit'te ucuz dişçi",
+        "min_price": null,
+        "max_price": null,
+        "price_preference": "cheap",
+        "rating_preference": null,
+        "gender": null,
+        "category": "Diş Kliniği",
+        "online_only": false,
+        "weekend_open_only": false,
+        "day_of_week": null,
+        "time_of_day": null
+      }
+    }
+  ]
+}

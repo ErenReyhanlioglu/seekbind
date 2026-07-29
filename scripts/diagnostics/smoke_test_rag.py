@@ -66,20 +66,45 @@ def _print_and_record_intent(query: str, intent: ParsedIntent) -> dict:
 
 
 def _print_and_record_recommendation(title: str, query: str, response) -> dict:  # noqa: ANN001
-    """RAG sonucunu terminale yazdırır, JSON'a kaydedilecek yapıyı döner."""
+    """RAG sonucunu terminale yazdırır, JSON'a kaydedilecek yapıyı döner.
+
+    `top_results`, ProviderResult'ın TÜM alanlarını içerir (sadece fiyat
+    değil) — öneri metnindeki bir iddianın (örn. bir hizmetin puanı/
+    açıklaması) gerçek veriyle örtüşüp örtüşmediğini JSON'a bakarak
+    doğrulayabilmek için, DB'ye ayrıca sorgu atmaya gerek kalmadan.
+    """
     print(f"\n=== {title} ===")
     print(f"  Sorgu: {query!r}")
     print(f"  Toplam aday: {response.total}")
     print(f"  Öneri metni: {response.recommendation[:300]}")
     for i, result in enumerate(response.results[:5], start=1):
-        print(f"    {i}. {result.title} ({result.type_normalized}) — {result.price_min}-{result.price_max}TL")
+        print(
+            f"    {i}. {result.title} ({result.type_normalized}) — "
+            f"{result.price_min}-{result.price_max}TL — puan: {result.weighted_rating}"
+        )
     return {
         "title": title,
         "query": query,
         "total": response.total,
         "recommendation": response.recommendation,
         "top_results": [
-            {"title": r.title, "type_normalized": r.type_normalized, "price_min": r.price_min, "price_max": r.price_max}
+            {
+                "id": r.id,
+                "title": r.title,
+                "type_normalized": r.type_normalized,
+                "rating": r.rating,
+                "weighted_rating": r.weighted_rating,
+                "price_min": r.price_min,
+                "price_max": r.price_max,
+                "address": r.address,
+                "phone": r.phone,
+                "online_available": r.online_available,
+                "gender": r.gender,
+                "services": r.services,
+                "tags": r.tags,
+                "rich_description": r.rich_description,
+                "distance_km": r.distance_km,
+            }
             for r in response.results[:5]
         ],
     }

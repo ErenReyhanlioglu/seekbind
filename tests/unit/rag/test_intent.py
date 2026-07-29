@@ -28,6 +28,8 @@ class _FakeLLMProvider:
         self._content = content
         self._error = error
         self.last_response_format: dict[str, str] | None = None
+        self.last_langfuse_name: str | None = None
+        self.last_langfuse_metadata: dict[str, object] | None = None
 
     async def complete(
         self,
@@ -36,8 +38,12 @@ class _FakeLLMProvider:
         temperature: float = 0.7,
         max_tokens: int | None = None,
         response_format: dict[str, str] | None = None,
+        langfuse_name: str | None = None,
+        langfuse_metadata: dict[str, object] | None = None,
     ) -> LLMResponse:
         self.last_response_format = response_format
+        self.last_langfuse_name = langfuse_name
+        self.last_langfuse_metadata = langfuse_metadata
         if self._error is not None:
             raise self._error
         return LLMResponse(
@@ -88,6 +94,8 @@ async def test_parse_intent_returns_parsed_intent_on_valid_json_response() -> No
     assert intent.semantic_query == "dişçi"
     assert intent.category == "Diş Kliniği"
     assert intent.max_price == 500
+    assert provider.last_langfuse_name == "intent_parsing"
+    assert provider.last_langfuse_metadata == {"raw_query": "salı sabahı ucuz dişçi"}
     assert intent.day_of_week == "salı"
     assert intent.time_of_day == "morning"
     assert provider.last_response_format == {"type": "json_object"}

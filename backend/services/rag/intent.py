@@ -39,6 +39,7 @@ _WEEKDAY_INDEX: dict[str, int] = {name: i for i, name in enumerate(_DAY_NAMES)}
 
 _JSON_RESPONSE_FORMAT: dict[str, str] = {"type": "json_object"}
 _INTENT_TEMPERATURE: float = 0.0  # yapılandırılmış çıkarım, yaratıcılık istemiyoruz
+_LANGFUSE_STEP_NAME: str = "intent_parsing"
 
 
 class IntentParsingError(Exception):
@@ -185,7 +186,11 @@ async def parse_intent(llm_provider: LLMProvider, raw_query: str, today: date) -
 
     try:
         response = await llm_provider.complete(
-            messages, temperature=_INTENT_TEMPERATURE, response_format=_JSON_RESPONSE_FORMAT
+            messages,
+            temperature=_INTENT_TEMPERATURE,
+            response_format=_JSON_RESPONSE_FORMAT,
+            langfuse_name=_LANGFUSE_STEP_NAME,
+            langfuse_metadata={"raw_query": raw_query},
         )
     except LLMServiceError as e:
         raise IntentParsingError("Intent parsing LLM çağrısı başarısız") from e

@@ -10,6 +10,12 @@ Kurallar:
   ya da detay uydurma
 - Reklam dili kullanma, bilgilendirici ve dürüst bir ton tut
 - Fiyat/puan gibi sayıları birebir tekrarlamak yerine doğal bir dille anlat
+- Fiyat aralığı (Fiyat aralığı: X-Y TL) İŞLETMENİN GENELİ için verilmiştir,
+  belirli bir hizmete özel değildir — hangi hizmetin bu aralığın hangi
+  ucuna denk geldiği bilinmiyor. Bu yüzden belirli bir hizmeti (örn.
+  implant, lamina gibi görece kapsamlı olanları) "uygun fiyatlı"/"ucuz"
+  diye nitelendirme; fiyattan bahsedeceksen işletmenin genelinden bahset,
+  tek bir hizmete bağlama
 
 İşletmeler:
 {businesses}

@@ -70,11 +70,20 @@ class LLMProvider(Protocol):
         temperature: float = 0.7,
         max_tokens: int | None = None,
         response_format: dict[str, str] | None = None,
+        langfuse_name: str | None = None,
+        langfuse_metadata: dict[str, object] | None = None,
     ) -> LLMResponse:
         """Verilen mesaj listesinden bir tamamlama üretir.
 
         `response_format={"type": "json_object"}` verilirse çıktı geçerli
         JSON olmaya zorlanır (bkz. intent parsing, `backend.services.rag`).
+
+        `langfuse_name`/`langfuse_metadata`, `feature/langfuse-integration`
+        kapsamında eklendi — bu adımın Langfuse'ta hangi isimle ve hangi
+        ek bilgiyle görüneceğini belirler. `langfuse.openai.AsyncOpenAI`
+        sarmalayıcısı bunları gerçek API'ye göndermeden önce kendi
+        tarafında tüketir (`OpenAiArgsExtractor`) — provider-agnostic,
+        Ollama'nın OpenAI-uyumlu endpoint'ine hiç ulaşmaz.
         """
         ...
 
@@ -92,6 +101,8 @@ async def _run_completion(
     max_tokens: int | None,
     response_format: dict[str, str] | None,
     timeout_seconds: int,
+    langfuse_name: str | None,
+    langfuse_metadata: dict[str, object] | None,
 ) -> LLMResponse:
     """İki sağlayıcının da paylaştığı istek/hata-eşleme mantığı."""
     payload = [{"role": m.role, "content": m.content} for m in messages]
@@ -103,6 +114,8 @@ async def _run_completion(
             max_tokens=max_tokens,
             response_format=response_format,  # type: ignore[arg-type]
             timeout=timeout_seconds,
+            name=langfuse_name,
+            metadata=langfuse_metadata,
         )
     # Sıralama önemli: APITimeoutError, APIConnectionError'ın; o da
     # APIError'ın alt sınıfı. Yanlış sırada olsa en spesifik durumlar hiç
@@ -150,6 +163,8 @@ class OpenAILLM:
         temperature: float = 0.7,
         max_tokens: int | None = None,
         response_format: dict[str, str] | None = None,
+        langfuse_name: str | None = None,
+        langfuse_metadata: dict[str, object] | None = None,
     ) -> LLMResponse:
         async with self._semaphore:
             return await _run_completion(
@@ -161,6 +176,8 @@ class OpenAILLM:
                 max_tokens,
                 response_format,
                 self._timeout_seconds,
+                langfuse_name,
+                langfuse_metadata,
             )
 
     async def close(self) -> None:
@@ -200,6 +217,8 @@ class OllamaLLM:
         temperature: float = 0.7,
         max_tokens: int | None = None,
         response_format: dict[str, str] | None = None,
+        langfuse_name: str | None = None,
+        langfuse_metadata: dict[str, object] | None = None,
     ) -> LLMResponse:
         async with self._semaphore:
             return await _run_completion(
@@ -211,6 +230,8 @@ class OllamaLLM:
                 max_tokens,
                 response_format,
                 self._timeout_seconds,
+                langfuse_name,
+                langfuse_metadata,
             )
 
     async def close(self) -> None:

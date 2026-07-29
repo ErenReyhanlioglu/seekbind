@@ -1,0 +1,62 @@
+{
+  "label": "langfuse_grouping_test",
+  "timestamp": "2026-07-29T19-00-19",
+  "scenarios": [
+    {
+      "title": "Özel sorgu: İzmit'te ucuz dişçi",
+      "query": "İzmit'te ucuz dişçi",
+      "total": 5,
+      "recommendation": "İzmit'te ucuz dişçi arayışınız için birkaç önerim var. İlk olarak, Diş Hekimi Tarık Can Kara, uygun fiyatlarla geniş bir hizmet yelpazesi sunuyor; çocuk diş hekimliği konusunda uzmanlaşmış olması da aileler için büyük bir avantaj. Ayrıca, Özel Kocaeli Diş Polikliniği de uygun fiyatlarla implant ve diş temizliği gibi hizmetler sunarak diş sağlığınızı destekliyor. Bu klinikler, hem kaliteli hizmet hem de uygun fiyat aralığıyla dikkatinizi çekebilir.",
+      "top_results": [
+        {
+          "title": "DentAtlas Ağız Ve Diş Sağlığı Polikliniği",
+          "type_normalized": "Diş Kliniği",
+          "price_min": 950,
+          "price_max": 6033
+        },
+        {
+          "title": "Diş Hekimi Tarık Can Kara , İzmit/Kocaeli",
+          "type_normalized": "Diş Kliniği",
+          "price_min": 753,
+          "price_max": 2392
+        },
+        {
+          "title": "Uzman Diş Grup - İmplant - Gömülü Diş - Ortodonti - Pedodonti - Gülüş Tasarımı - Kocaeli Diş Kliniği",
+          "type_normalized": "Diş Kliniği",
+          "price_min": 1741,
+          "price_max": 7423
+        },
+        {
+          "title": "Özel Kocaeli Diş Polikliniği",
+          "type_normalized": "Diş Kliniği",
+          "price_min": 576,
+          "price_max": 5779
+        },
+        {
+          "title": "Özel Dentkartepe Ağız Ve Diş Sağlığı Polikliniği",
+          "type_normalized": "Diş Kliniği",
+          "price_min": 1634,
+          "price_max": 4885
+        }
+      ]
+    }
+  ],
+  "intent_diagnostics": [
+    {
+      "query": "İzmit'te ucuz dişçi",
+      "parsed_intent": {
+        "semantic_query": "İzmit'te ucuz dişçi",
+        "min_price": null,
+        "max_price": null,
+        "price_preference": "cheap",
+        "rating_preference": null,
+        "gender": null,
+        "category": "Diş Kliniği",
+        "online_only": false,
+        "weekend_open_only": false,
+        "day_of_week": null,
+        "time_of_day": null
+      }
+    }
+  ]
+}
