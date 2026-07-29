@@ -1,12 +1,21 @@
 """backend/services/search/service.py için birim testler."""
 
+from datetime import date
 from types import SimpleNamespace
 from unittest.mock import AsyncMock
 
 from backend.db.models import Business
+from backend.services.search.availability import DateAvailabilityFilter
 from backend.services.search.bm25 import BM25Index
 from backend.services.search.filters import NearFilter, SearchFilters
-from backend.services.search.service import _sort_by_rating, _to_provider_result, search_providers
+from backend.services.search.reranker import RerankerServiceError
+from backend.services.search.service import (
+    _fetch_businesses_by_id,
+    _rerank_businesses,
+    _sort_by_rating,
+    _to_provider_result,
+    search_providers,
+)
 
 
 def _make_business(
@@ -75,6 +84,41 @@ def test_to_provider_result_leaves_distance_none_when_business_has_no_coordinate
     result = _to_provider_result(business, near)
 
     assert result.distance_km is None
+
+
+async def test_fetch_businesses_by_id_returns_empty_list_for_empty_input() -> None:
+    """Boş ID listesi için DB'ye hiç gidilmemeli."""
+    session = AsyncMock()
+
+    result = await _fetch_businesses_by_id(session, [])
+
+    assert result == []
+    session.execute.assert_not_called()
+
+
+async def test_rerank_businesses_returns_empty_list_for_empty_input() -> None:
+    result = await _rerank_businesses(_IdentityRerankerProvider(), "sorgu", [])
+
+    assert result == []
+
+
+class _FailingRerankerProvider:
+    """Reranker'ın zaman aşımı/API hatası gibi başarısızlık senaryolarını
+    taklit eder — CLAUDE.md'nin fallback ilkesi: arama çökmemeli."""
+
+    async def rerank(self, query: str, documents: list[str], top_n: int) -> list[tuple[int, float]]:
+        raise RerankerServiceError("zaman aşımı")
+
+    async def close(self) -> None:
+        pass
+
+
+async def test_rerank_businesses_falls_back_to_original_order_on_failure() -> None:
+    businesses = [_make_business(business_id=1), _make_business(business_id=2)]
+
+    result = await _rerank_businesses(_FailingRerankerProvider(), "sorgu", businesses)
+
+    assert [b.id for b in result] == [1, 2]
 
 
 def test_sort_by_rating_orders_descending_for_high_preference() -> None:
@@ -260,6 +304,40 @@ async def test_search_providers_applies_limit_and_offset(monkeypatch) -> None:
 
     assert response.total == 3
     assert len(response.results) == 1
+
+
+async def test_search_providers_filters_out_unavailable_businesses_when_availability_given(monkeypatch) -> None:
+    """İki fazlı müsaitlik kontrolünün ikinci fazı: RRF sonrası aday
+    havuzundan, verilen tarihte/saatte müsait olmayan işletmeler elenir
+    (bkz. availability.py docstring'i)."""
+
+    async def fake_vector_search(*args, **kwargs):
+        return [(1, 0.9), (2, 0.8)]
+
+    async def fake_fetch_available_business_ids(*args, **kwargs):
+        return {1}  # sadece business 1 müsait
+
+    monkeypatch.setattr("backend.services.search.service.vector_search", fake_vector_search)
+    monkeypatch.setattr(
+        "backend.services.search.service.fetch_available_business_ids", fake_fetch_available_business_ids
+    )
+
+    businesses = [_make_business(business_id=1), _make_business(business_id=2)]
+    session = _make_session_returning(businesses)
+
+    response = await search_providers(
+        session=session,
+        qdrant_client=AsyncMock(),
+        bm25_index=BM25Index(),
+        embedding_provider=_FakeEmbeddingProvider(),
+        reranker_provider=_IdentityRerankerProvider(),
+        query="diş",
+        filters=SearchFilters(),
+        availability=DateAvailabilityFilter(date=date(2026, 8, 12)),
+    )
+
+    result_ids = {result.id for result in response.results}
+    assert result_ids == {1}
 
 
 async def test_search_providers_sorts_by_rating_preference_after_reranking(monkeypatch) -> None:

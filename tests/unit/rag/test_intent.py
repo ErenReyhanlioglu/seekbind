@@ -5,6 +5,7 @@ from typing import cast
 from unittest.mock import AsyncMock
 
 import pytest
+from pydantic import ValidationError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.services.llm import ChatMessage, LLMResponse, LLMServiceError
@@ -120,6 +121,17 @@ async def test_parse_intent_raises_intent_parsing_error_when_json_is_not_an_obje
 
     with pytest.raises(IntentParsingError):
         await parse_intent(provider, "dişçi", _TUESDAY)
+
+
+def test_parsed_intent_model_validate_raises_validation_error_for_non_dict_input() -> None:
+    """`parse_intent()` dict-olmayan JSON'u zaten kendi kontrolüyle eliyor
+    (bkz. yukarıdaki test), ama `ParsedIntent`'in kendi `_coerce_invalid_enums`
+    validator'ı da bağımsız olarak savunmacı: dict olmayan bir girdi
+    (örn. doğrudan `model_validate` ile) hiçbir alanı işlemeye çalışmadan
+    veriyi olduğu gibi bırakır, pydantic'in kendi "dict bekleniyor" hatası
+    fırlatılır."""
+    with pytest.raises(ValidationError):
+        ParsedIntent.model_validate(["dişçi", "kuaför"])
 
 
 async def test_parse_intent_drops_invalid_time_of_day_but_keeps_other_fields() -> None:
