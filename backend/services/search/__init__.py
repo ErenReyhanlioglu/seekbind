@@ -37,7 +37,7 @@ from backend.services.search.reranker import (
     RerankerServiceError,
     get_reranker_provider,
 )
-from backend.services.search.service import search_providers
+from backend.services.search.service import RatingPreference, search_providers
 from backend.services.search.text import normalize_turkish_text, tokenize
 from backend.services.search.vector import fetch_filtered_business_ids, vector_search
 
@@ -45,6 +45,7 @@ __all__ = [
     "BM25Index",
     "DateAvailabilityFilter",
     "NearFilter",
+    "RatingPreference",
     "RerankerProvider",
     "RerankerServiceError",
     "SearchFilters",

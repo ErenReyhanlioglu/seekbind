@@ -115,6 +115,67 @@ async def test_get_recommendation_calls_search_providers_with_parsed_filters_on_
     assert captured["filters"].category == "Diş Kliniği"
 
 
+async def test_get_recommendation_passes_rating_preference_through_to_search_providers(monkeypatch) -> None:
+    """ADR-0015: intent'in rating_preference'ı search_providers()'a ayrı bir
+    parametre olarak ulaşmalı — SearchFilters'a değil, çünkü Qdrant'a
+    çevrilen bir şey değil, sadece post-rerank bir sıralama sinyali."""
+    captured: dict = {}
+
+    async def fake_search_providers(**kwargs):
+        captured.update(kwargs)
+        return SearchResponse(results=[_make_result(1)], total=1)
+
+    monkeypatch.setattr(rag_service, "search_providers", fake_search_providers)
+    llm = _FakeLLMProvider(
+        ['{"semantic_query": "dişçi", "rating_preference": "low"}', "öneri metni"]
+    )
+
+    await get_recommendation(
+        session=_SESSION,
+        qdrant_client=_QDRANT_CLIENT,
+        bm25_index=_BM25_INDEX,
+        embedding_provider=_EMBEDDING_PROVIDER,
+        reranker_provider=_RERANKER_PROVIDER,
+        llm_provider=llm,
+        raw_query="en kötü dişçi",
+        today=_TODAY,
+    )
+
+    assert captured["rating_preference"] == "low"
+
+
+async def test_get_recommendation_passes_rating_preference_to_recommendation_generation(monkeypatch) -> None:
+    """rating_preference sadece search_providers()'a değil, generate_recommendation()'a
+    da ulaşmalı — yoksa öneri metni, puana göre sıralanmış sonuçları alaka
+    sırasıymış gibi yorumlayıp düşük puanlı bir sonucu yüksekmiş gibi
+    övebiliyor (bkz. ADR-0015, gerçek smoke test'te gözlemlendi)."""
+    captured: dict = {}
+
+    async def fake_search_providers(**kwargs):
+        return SearchResponse(results=[_make_result(1)], total=1)
+
+    async def fake_generate_recommendation(llm_provider, raw_query, results, rating_preference=None):
+        captured["rating_preference"] = rating_preference
+        return "öneri metni"
+
+    monkeypatch.setattr(rag_service, "search_providers", fake_search_providers)
+    monkeypatch.setattr(rag_service, "generate_recommendation", fake_generate_recommendation)
+    llm = _FakeLLMProvider(['{"semantic_query": "dişçi", "rating_preference": "low"}'])
+
+    await get_recommendation(
+        session=_SESSION,
+        qdrant_client=_QDRANT_CLIENT,
+        bm25_index=_BM25_INDEX,
+        embedding_provider=_EMBEDDING_PROVIDER,
+        reranker_provider=_RERANKER_PROVIDER,
+        llm_provider=llm,
+        raw_query="en kötü dişçi",
+        today=_TODAY,
+    )
+
+    assert captured["rating_preference"] == "low"
+
+
 async def test_get_recommendation_falls_back_to_raw_query_and_empty_filters_on_malformed_json(monkeypatch) -> None:
     captured: dict = {}
 
@@ -139,6 +200,7 @@ async def test_get_recommendation_falls_back_to_raw_query_and_empty_filters_on_m
     assert captured["query"] == "ucuz dişçi"
     assert captured["filters"].category is None
     assert captured["availability"] is None
+    assert captured["rating_preference"] is None
 
 
 async def test_get_recommendation_skips_recommendation_call_when_search_results_empty(monkeypatch) -> None:

@@ -1,6 +1,6 @@
 # ADR-0015: Puan/kalite bazlı sıralama — mimari bir eksiklik
 
-**Durum:** Planlandı (sorun doğrulandı ve kayıt altına alındı, çözüm mimarisi henüz kararlaştırılmadı)
+**Durum:** Kabul edildi, uygulandı
 **Tarih:** 2026-07-29
 
 ## Bağlam
@@ -53,16 +53,88 @@ parsing + öneri üretimi) değil, arama servisinin kendisinin işi.
 
 ## Karar
 
-Henüz verilmedi. Çözüm mimarisi (örn. puanı RRF'ye üçüncü bir sinyal
-olarak eklemek mi, ayrı bir "puana göre sırala" modu mu, yoksa post-hoc
-bir yeniden sıralama/filtreleme mi) ayrı bir mini branch'te tasarlanıp
-kararlaştırılacak. Bu ADR, sorunun gerçek veriyle doğrulanmış olduğunu
-ve neden salt prompt değişikliğinin yeterli olmayacağını şimdiden kayıt
-altına almak için yazıldı — mimari değişiklik sonrası gerekirse prompt
-tarafına (örn. `recommendation.txt`'e puan uyuşmazlığı konusunda bir
-dürüstlük kuralı eklemek) tekrar dönülebilir, ama o tek başına kök
-nedeni çözmüyor.
+`rating_preference`, `price_preference` gibi bir eşik/filtre DEĞİL, ayrı
+bir **sıralama sinyali** olarak modellendi. Gerekçe: "ucuz"/"pahalı"
+dilbilimsel olarak bir eşik ifade eder (bir üst/alt sınırın dışını
+elemek istersin), ama "en iyi"/"en kötü" bir üstünlük/sıralama ifadesi —
+kimseyi elemeden hepsinin o sırada dizilmesini ister. İki alan bu yüzden
+kasıtlı olarak asimetrik.
+
+Somut tasarım:
+
+1. **Intent parsing** (`search_intent.txt`, `ParsedIntent.rating_preference`):
+   SADECE açık üstünlük ifadesi varsa ("en iyi", "en kötü", "en yüksek/
+   düşük puanlı") `"high"`/`"low"` doldurulur — `price_preference` ile
+   birebir aynı scoping disiplini, "iyi bir yer" gibi yumuşak ifadeler
+   için özel bir mekanizma eklenmedi (reranker zaten yüksek puanlıları
+   üstte tutma eğiliminde, ölçülmeden ek karmaşıklık eklenmedi).
+2. **Uygulama** (`search/service.py`): RRF/Qdrant'a HİÇ dokunulmadı.
+   `search_providers()`, cross-encoder reranker'dan SONRA, sayfalamadan
+   ÖNCE `_sort_by_rating()` ile son bir sıralama uyguluyor. `weighted_rating`
+   Qdrant payload'ına da eklenmedi — bir eşik/filtre olmadığı için gerek
+   yok.
+3. **NULL puan davranışı**: `weighted_rating` olmayan işletmeler, sıralama
+   yönü fark etmeksizin (hem "high" hem "low") listenin SONUNA ekleniyor.
+   Gerçek veride doğrulandı: bu rastgele eksik veri değil, yapısal —
+   "Noter" kategorisindeki 8 işletmenin tamamında hem `rating` hem
+   `reviews` boş (resmi/regüle bir kurum olduğu için muhtemelen hiç
+   Google yorumu almıyorlar). Puanı bilinmeyen bir işletme ne "en iyi"
+   ne "en kötü" olarak iddia edilemez.
+4. **`recommendation.txt`**: Gerçek smoke test'te ikinci bir sorun ortaya
+   çıktı — prompt, sonuç sırasının HER ZAMAN alaka sırası ("ilk işletme
+   en iyi eşleşmedir") olduğunu varsayıyordu. `rating_preference` aktifken
+   bu yanlış: LLM, düşük puanlı ama "ilk sırada" bir sonucu "en iyi
+   eşleşme" sanıp çelişkili biçimde övüyordu. Çözüm: `generate_recommendation()`
+   artık `rating_preference`'ı da alıyor, prompt'a sıranın NEDEN puana
+   göre olduğunu açıkça anlatan bir bağlam (`ordering_context`) ekliyor.
+
+### Değerlendirilen alternatifler
+
+- **`weighted_rating`'i Qdrant payload'ına ekleyip `price_preference`
+  gibi Range filtresiyle pre-filter uygulamak.** Reddedildi: rating bir
+  eşik değil sıralama isteği olduğu için filtrelemeye hiç gerek yok;
+  ayrıca 478 kaydın payload'ını geri doldurmak (embedding pipeline'ı
+  yeniden çalıştırmak) faydasız bir maliyet olurdu.
+- **Puanı RRF'ye üçüncü bir sinyal olarak eklemek.** Reddedildi: alaka
+  (relevance) ile kalite (rating) sinyallerini aynı füzyon skorunda
+  karıştırır — kullanıcı "en kötü" dediğinde alakalı AMA düşük puanlı
+  sonuçları istiyor, ikisinin harmanlanmış bir skoru bunu bozar.
+- **"Açlık" (starvation) riski göz önüne alınarak havuzu büyütmek.**
+  Gerçek veriyle kontrol edildi: `CANDIDATE_POOL_SIZE=40`, ama her
+  kategori ≤20 işletme (bkz. Sonuçlar) — tek kategorili sorgularda risk
+  pratikte yok, önlem gerekmedi. Kategori belirtilmeyen geniş sorgular
+  için risk teorik olarak var ama `availability` filtresinin zaten
+  kabul ettiği aynı, önceden var olan bir tradeoff (bkz. Bağlam).
 
 ## Sonuçlar
 
-—
+Gerçek DB verisiyle doğrulama (kategori başına işletme sayısı):
+tüm 27 kategoriden hiçbiri 20'yi geçmiyor (`CANDIDATE_POOL_SIZE=40`'ın
+altında) — bu yüzden reranker sonrası sıralamanın "açlık" riski, tek
+kategorili sorgularda pratikte sıfıra yakın.
+
+`weighted_rating` dağılımı (kategori bazlı `percentile_cont` ile
+kontrol edildi, bir eşik gerekmediği için kullanılmadı ama karar
+sürecine girdi oldu): genel min=3.52, max=4.99, ortalama=4.72,
+std=0.20 — kategoriler arası ortalama farkı ~0.45 puana kadar çıkıyor
+(Cilt Bakım Merkezi 4.86 - Yüzme Havuzu 4.40), fiyattaki 50x'lik farktan
+çok daha küçük ama yine de anlamlı.
+
+Gerçek smoke test, önce/sonra ("İzmit'te en kötü dişçi" sorgusu, 20
+Diş Kliniği adayı arasından):
+
+| | Önce (bu ADR'nin bulduğu bug) | Sonra |
+|---|---|---|
+| İlk sonuç | 4.9/5 (veri setindeki en yüksek puanlılardan biri) | 4.26/5 (gerçek en düşük puanlı) |
+| İlk 5 sonuç, gerçek en düşük 5 ile örtüşme | 0/5 | 5/5, birebir aynı sırada |
+| Öneri metni | "en düşük puana sahip dişçiler arasında..." (veriyle desteklenmeyen iddia) | "en düşük puanlı diş kliniği... puanı diğer kliniklere göre daha düşük olduğu için dikkatli olunması öneriliyor" (veriyle tutarlı) |
+
+"En iyi dişçi" sorgusu da ayrıca test edildi: ilk 5 sonuç, gerçek en
+yüksek puanlı 5 ile birebir aynı sırada örtüştü (4.976'dan başlayarak).
+
+Değişen dosyalar: `search/service.py` (`RatingPreference`, `_sort_by_rating`,
+`search_providers()` parametresi), `rag/intent.py` (`ParsedIntent.rating_preference`),
+`rag/service.py` (parametrenin hem arama hem öneri üretimine iletilmesi),
+`rag/recommendation.py` (`ordering_context`), `search_intent.txt`,
+`recommendation.txt`. 14 yeni birim testi eklendi (toplam 118), `pytest`
+ve `pyright` temiz.

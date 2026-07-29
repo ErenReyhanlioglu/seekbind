@@ -1,9 +1,6 @@
 Kullanıcının orijinal sorgusu: "{query}"
 
-Aşağıda arama sonucunda bulunan işletmeler, en uygun olandan başlayarak
-sırayla listelendi. Sıra önemlidir (ilk işletme en iyi eşleşmedir), ama
-hiçbir işletmeye sayısal bir uygunluk puanı verilmemiştir — sırayı sanki
-bir puan varmış gibi açıklamaya çalışma, sadece sırayı dikkate al.
+Aşağıda arama sonucunda bulunan işletmeler listelendi. {ordering_context}
 
 Görevin: kullanıcıya, bu sonuçlardan hangilerinin neden uygun olduğunu
 anlatan, 2-4 cümlelik doğal ve samimi bir Türkçe öneri metni yazmak.

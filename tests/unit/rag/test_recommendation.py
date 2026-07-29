@@ -109,6 +109,41 @@ async def test_generate_recommendation_omits_rating_line_when_weighted_rating_mi
     assert "Puan:" not in user_message
 
 
+async def test_generate_recommendation_uses_relevance_ordering_context_by_default() -> None:
+    provider = _FakeLLMProvider(content="öneri metni")
+
+    await generate_recommendation(provider, "dişçi", [_make_result(1)])
+
+    assert provider.last_messages is not None
+    user_message = provider.last_messages[-1].content
+    assert "en iyi eşleşmedir" in user_message
+
+
+async def test_generate_recommendation_uses_low_rating_ordering_context_when_preference_is_low() -> None:
+    """ADR-0015: rating_preference="low" iken prompt, sıranın alaka değil
+    puan bazlı olduğunu ve ilk işletmenin EN DÜŞÜK puanlı olduğunu açıkça
+    belirtmeli — yoksa LLM "ilk = en iyi eşleşme" varsayımıyla düşük puanlı
+    sonucu yüksekmiş gibi övüyor (gerçek smoke test'te gözlemlendi)."""
+    provider = _FakeLLMProvider(content="öneri metni")
+
+    await generate_recommendation(provider, "en kötü dişçi", [_make_result(1)], rating_preference="low")
+
+    assert provider.last_messages is not None
+    user_message = provider.last_messages[-1].content
+    assert "en düşük puanlıdır" in user_message
+    assert "en iyi eşleşmedir" not in user_message
+
+
+async def test_generate_recommendation_uses_high_rating_ordering_context_when_preference_is_high() -> None:
+    provider = _FakeLLMProvider(content="öneri metni")
+
+    await generate_recommendation(provider, "en iyi dişçi", [_make_result(1)], rating_preference="high")
+
+    assert provider.last_messages is not None
+    user_message = provider.last_messages[-1].content
+    assert "en yüksek puanlıdır" in user_message
+
+
 async def test_generate_recommendation_limits_businesses_sent_to_prompt() -> None:
     provider = _FakeLLMProvider(content="öneri metni")
     results = [_make_result(i, title=f"İşletme {i}") for i in range(1, 10)]

@@ -6,7 +6,7 @@ from unittest.mock import AsyncMock
 from backend.db.models import Business
 from backend.services.search.bm25 import BM25Index
 from backend.services.search.filters import NearFilter, SearchFilters
-from backend.services.search.service import _to_provider_result, search_providers
+from backend.services.search.service import _sort_by_rating, _to_provider_result, search_providers
 
 
 def _make_business(
@@ -17,13 +17,14 @@ def _make_business(
     keywords: list[str] | None = None,
     latitude: float | None = 40.77,
     longitude: float | None = 29.92,
+    weighted_rating: float | None = 4.3,
 ) -> Business:
     return Business(
         id=business_id,
         title=title,
         type_normalized="Diş Kliniği",
         rating=4.5,
-        weighted_rating=4.3,
+        weighted_rating=weighted_rating,
         price_min=100,
         price_max=300,
         address="İzmit",
@@ -74,6 +75,50 @@ def test_to_provider_result_leaves_distance_none_when_business_has_no_coordinate
     result = _to_provider_result(business, near)
 
     assert result.distance_km is None
+
+
+def test_sort_by_rating_orders_descending_for_high_preference() -> None:
+    low = _make_business(business_id=1, weighted_rating=3.0)
+    high = _make_business(business_id=2, weighted_rating=4.8)
+
+    result = _sort_by_rating([low, high], "high")
+
+    assert [b.id for b in result] == [2, 1]
+
+
+def test_sort_by_rating_orders_ascending_for_low_preference() -> None:
+    low = _make_business(business_id=1, weighted_rating=3.0)
+    high = _make_business(business_id=2, weighted_rating=4.8)
+
+    result = _sort_by_rating([high, low], "low")
+
+    assert [b.id for b in result] == [1, 2]
+
+
+def test_sort_by_rating_appends_unrated_businesses_at_end_for_high_preference() -> None:
+    """Puanı bilinmeyen bir işletme "en iyi" iddiasıyla üste çıkarılamaz —
+    ADR-0015: Noter gibi hiç yorum almayan kategoriler için NULL, sona gider."""
+    rated = _make_business(business_id=1, weighted_rating=4.0)
+    unrated = _make_business(business_id=2, weighted_rating=None)
+
+    result = _sort_by_rating([unrated, rated], "high")
+
+    assert [b.id for b in result] == [1, 2]
+
+
+def test_sort_by_rating_appends_unrated_businesses_at_end_for_low_preference() -> None:
+    """Aynı kural "en kötü" için de geçerli — NULL puanlı bir işletme "en
+    kötü" olarak da iddia edilemez, yön fark etmeksizin sona gider."""
+    rated = _make_business(business_id=1, weighted_rating=4.0)
+    unrated = _make_business(business_id=2, weighted_rating=None)
+
+    result = _sort_by_rating([unrated, rated], "low")
+
+    assert [b.id for b in result] == [1, 2]
+
+
+def test_sort_by_rating_returns_empty_list_unchanged() -> None:
+    assert _sort_by_rating([], "high") == []
 
 
 class _FakeEmbeddingProvider:
@@ -215,3 +260,61 @@ async def test_search_providers_applies_limit_and_offset(monkeypatch) -> None:
 
     assert response.total == 3
     assert len(response.results) == 1
+
+
+async def test_search_providers_sorts_by_rating_preference_after_reranking(monkeypatch) -> None:
+    """rating_preference verildiğinde, reranker'ın alaka sırasını değil
+    weighted_rating sırasını görmeliyiz (ADR-0015) — reranker burada bilerek
+    RRF/vektör sırasını (1, 2, 3) korur, ama en düşük puanlı business_id=3
+    "low" tercihiyle en üste çıkmalı."""
+
+    async def fake_vector_search(*args, **kwargs):
+        return [(1, 0.9), (2, 0.8), (3, 0.7)]
+
+    monkeypatch.setattr("backend.services.search.service.vector_search", fake_vector_search)
+
+    businesses = [
+        _make_business(business_id=1, weighted_rating=4.8),
+        _make_business(business_id=2, weighted_rating=4.5),
+        _make_business(business_id=3, weighted_rating=2.1),
+    ]
+    session = _make_session_returning(businesses)
+
+    response = await search_providers(
+        session=session,
+        qdrant_client=AsyncMock(),
+        bm25_index=BM25Index(),
+        embedding_provider=_FakeEmbeddingProvider(),
+        reranker_provider=_IdentityRerankerProvider(),
+        query="diş",
+        filters=SearchFilters(),
+        rating_preference="low",
+    )
+
+    assert [result.id for result in response.results] == [3, 2, 1]
+
+
+async def test_search_providers_keeps_rerank_order_when_no_rating_preference(monkeypatch) -> None:
+    async def fake_vector_search(*args, **kwargs):
+        return [(1, 0.9), (2, 0.8), (3, 0.7)]
+
+    monkeypatch.setattr("backend.services.search.service.vector_search", fake_vector_search)
+
+    businesses = [
+        _make_business(business_id=1, weighted_rating=4.8),
+        _make_business(business_id=2, weighted_rating=4.5),
+        _make_business(business_id=3, weighted_rating=2.1),
+    ]
+    session = _make_session_returning(businesses)
+
+    response = await search_providers(
+        session=session,
+        qdrant_client=AsyncMock(),
+        bm25_index=BM25Index(),
+        embedding_provider=_FakeEmbeddingProvider(),
+        reranker_provider=_IdentityRerankerProvider(),
+        query="diş",
+        filters=SearchFilters(),
+    )
+
+    assert [result.id for result in response.results] == [1, 2, 3]

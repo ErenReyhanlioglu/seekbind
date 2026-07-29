@@ -35,6 +35,7 @@ from backend.services.rag.recommendation import RecommendationGenerationError, g
 from backend.services.search import (
     BM25Index,
     DateAvailabilityFilter,
+    RatingPreference,
     RerankerProvider,
     SearchFilters,
     search_providers,
@@ -48,23 +49,26 @@ RECOMMENDATION_FALLBACK_MESSAGE: str = "Aşağıda arama sonuçlarını bulabili
 
 async def _resolve_search_query_and_filters(
     llm_provider: LLMProvider, raw_query: str, today: date, session: AsyncSession
-) -> tuple[str, SearchFilters, DateAvailabilityFilter | None]:
+) -> tuple[str, SearchFilters, DateAvailabilityFilter | None, RatingPreference | None]:
     """Intent parsing dener, başarısız olursa ham sorgu + boş filtreye düşer."""
     try:
         intent = await parse_intent(llm_provider, raw_query, today)
     except IntentParsingError as e:
         logger.warning("Intent parsing başarısız, salt semantik aramaya düşülüyor: %s", e)
-        return raw_query, SearchFilters(), None
+        return raw_query, SearchFilters(), None, None
     filters = await build_search_filters(intent, session)
-    return intent.semantic_query, filters, build_availability_filter(intent, today)
+    return intent.semantic_query, filters, build_availability_filter(intent, today), intent.rating_preference
 
 
 async def _generate_recommendation_with_fallback(
-    llm_provider: LLMProvider, raw_query: str, results: list[ProviderResult]
+    llm_provider: LLMProvider,
+    raw_query: str,
+    results: list[ProviderResult],
+    rating_preference: RatingPreference | None,
 ) -> str:
     """Öneri üretimi başarısız olursa sabit bir mesaja düşer, sonuçlar yine de döner."""
     try:
-        return await generate_recommendation(llm_provider, raw_query, results)
+        return await generate_recommendation(llm_provider, raw_query, results, rating_preference)
     except RecommendationGenerationError as e:
         logger.warning("Öneri üretimi başarısız, sabit mesaja düşülüyor: %s", e)
         return RECOMMENDATION_FALLBACK_MESSAGE
@@ -92,7 +96,7 @@ async def get_recommendation(
     kendi gövdesinde çağırmalı) — fonksiyon imzasında `= date.today()` gibi
     bir varsayılan, sunucu ne zaman başladıysa o ana donardı.
     """
-    search_query, filters, availability = await _resolve_search_query_and_filters(
+    search_query, filters, availability, rating_preference = await _resolve_search_query_and_filters(
         llm_provider, raw_query, today, session
     )
 
@@ -105,6 +109,7 @@ async def get_recommendation(
         query=search_query,
         filters=filters,
         availability=availability,
+        rating_preference=rating_preference,
         limit=limit,
         offset=offset,
     )
@@ -113,7 +118,7 @@ async def get_recommendation(
         return RecommendationResponse(recommendation=EMPTY_RESULTS_MESSAGE, results=[], total=0)
 
     recommendation_text = await _generate_recommendation_with_fallback(
-        llm_provider, raw_query, search_response.results
+        llm_provider, raw_query, search_response.results, rating_preference
     )
     return RecommendationResponse(
         recommendation=recommendation_text,

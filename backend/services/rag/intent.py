@@ -2,7 +2,8 @@
 
 ADR-0011'e göre `response_format=json_object` kullanır — gerçek Tool Calling
 API'si değil. Tek tek geçersiz enum-benzeri alanlar (gender/category/
-day_of_week/time_of_day) hata fırlatmaz, sessizce None'a düşürülür (bkz.
+day_of_week/time_of_day/price_preference/rating_preference) hata fırlatmaz,
+sessizce None'a düşürülür (bkz.
 `ParsedIntent._coerce_invalid_enums`); tam fallback'i (çağıranın ham sorgu +
 boş filtreye düşmesi, bkz. `backend.services.rag.service`) sadece
 `semantic_query` eksikliği/boşluğu ya da LLM/JSON hatası tetikler.
@@ -20,7 +21,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from backend.services.llm import ChatMessage, LLMProvider, LLMServiceError
 from backend.services.rag.pricing import PricePreference, resolve_price_threshold
 from backend.services.rag.prompts import SEARCH_INTENT_PROMPT_PATH, SYSTEM_PROMPT_PATH, load_prompt
-from backend.services.search import DateAvailabilityFilter, SearchFilters, normalize_turkish_text
+from backend.services.search import DateAvailabilityFilter, RatingPreference, SearchFilters, normalize_turkish_text
 from backend.services.search.availability import TimeOfDay
 from scripts.constants.business_types import QUERY_TERM_TO_TYPE
 
@@ -62,6 +63,10 @@ class ParsedIntent(BaseModel):
     # resolve_price_threshold() ile gerçek DB verisine dayanır (bkz. ADR-0011
     # notu, smoke test'te LLM'in fiyat tahmininin güvenilmez çıktığı bulundu).
     price_preference: PricePreference | None = None
+    # "en iyi"/"en kötü" gibi açık üstünlük ifadeleri için — bir fiyat eşiği
+    # gibi filtre değil, arama sonuçlarının puana göre son bir sıralaması
+    # (bkz. ADR-0015, backend.services.search.service.RatingPreference).
+    rating_preference: RatingPreference | None = None
     gender: Literal["female", "male", "unisex"] | None = None
     category: str | None = None
     online_only: bool = False
@@ -82,6 +87,11 @@ class ParsedIntent(BaseModel):
         if price_preference not in ("cheap", "expensive", None):
             logger.warning("Geçersiz price_preference değeri düşürüldü: %r", price_preference)
             data["price_preference"] = None
+
+        rating_preference = data.get("rating_preference")
+        if rating_preference not in ("high", "low", None):
+            logger.warning("Geçersiz rating_preference değeri düşürüldü: %r", rating_preference)
+            data["rating_preference"] = None
 
         gender = data.get("gender")
         if gender not in ("female", "male", "unisex", None):
