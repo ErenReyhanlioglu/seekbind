@@ -23,7 +23,7 @@ damgası.json'a yazılır — bkz. smoke_test_search.py'deki aynı gerekçe
 (zaman damgalı, hiçbir sonuç sessizce ezilmez).
 
 Kullanım:
-    # Sabit 10 senaryonun hepsini çalıştırır
+    # Sabit 16 senaryonun hepsini çalıştırır
     uv run python -m scripts.diagnostics.smoke_test_rag [etiket]
 
     # Sadece tek, elle verilen bir sorguyu çalıştırır (intent parsing
@@ -181,6 +181,32 @@ async def main(label: str | None = None, custom_query: str | None = None) -> Non
         # 10) Çok belirsiz/tek kelimelik sorgu — zarif bozulma
         await run("Çok belirsiz sorgu", "yardım")
 
+        # 11) Somut fiyat verilmişse — min_price/max_price LLM'den doğrudan
+        # gelmeli, price_preference NULL kalmalı (mutex kuralı, şu ana kadar
+        # sadece elle kurulmuş bir ParsedIntent ile unit test edilmişti,
+        # gerçek LLM'e hiç sorulmamıştı)
+        await run("Somut fiyat (mutex kuralı)", "300 TL'den ucuz dişçi")
+
+        # 12-13) Göreceli gün ("yarın"/"bugün") — resolve_day_of_week()'in
+        # LLM'in gün adına çevirdiği çıktıyı doğru işlediği, search_intent.txt
+        # kural 7'nin gerçekten çalıştığı hiç test edilmemişti (hep açık gün
+        # adı — "Perşembe" gibi — kullanılmıştı)
+        await run("Göreceli gün (yarın)", "yarın kuaför randevusu istiyorum")
+        await run("Göreceli gün (bugün)", "bugün öğleden sonra dişçi")
+
+        # 14) Çoklu kategori — sistem tek category alanı için tasarlandı,
+        # iki farklı iş türü aynı anda istenirse ne olacağı belgelenmemişti
+        await run("Çoklu kategori (sistem sınırı)", "hem dişçi hem kuaför istiyorum")
+
+        # 15) Sadece konum, kategori/hizmet belirtilmeden — "yardım" testinden
+        # farklı bir sinyal (belirsiz kelime değil, salt bir yer adı)
+        await run("Sadece konum", "İzmit")
+
+        # 16) "Pahalı" (expensive) — şimdiye kadarki tüm fiyat testleri
+        # "ucuz" idi, resolve_price_threshold()'ın expensive dalı (price_max'ın
+        # 75. percentile'ı) hiç gerçek bir LLM çağrısıyla tetiklenmemişti
+        await run("Pahalı avukat (fiyat eşiği düşük olmalı)", "pahalı bir avukat istiyorum")
+
     output_path = _write_result(scenarios, intent_diagnostics, label)
     logger.info("Sonuçlar kaydedildi: %s", output_path)
     logger.info("Smoke test tamamlandı.")
@@ -200,7 +226,7 @@ def _parse_args() -> argparse.Namespace:
         "--query",
         "-q",
         default=None,
-        help="Verilirse, sabit 10 senaryo yerine sadece bu tek sorgu çalıştırılır",
+        help="Verilirse, sabit 16 senaryo yerine sadece bu tek sorgu çalıştırılır",
     )
     return parser.parse_args()
 

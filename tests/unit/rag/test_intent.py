@@ -113,6 +113,26 @@ async def test_parse_intent_raises_intent_parsing_error_when_llm_call_fails() ->
         await parse_intent(provider, "dişçi", _TUESDAY)
 
 
+async def test_parse_intent_raises_intent_parsing_error_when_json_is_not_an_object() -> None:
+    """LLM geçerli JSON döndürebilir ama obje olmayabilir (örn. bir dizi) —
+    json.loads() burada hata fırlatmaz, ayrıca kontrol etmemiz gerekiyor."""
+    provider = _FakeLLMProvider(content='["dişçi", "kuaför"]')
+
+    with pytest.raises(IntentParsingError):
+        await parse_intent(provider, "dişçi", _TUESDAY)
+
+
+async def test_parse_intent_drops_invalid_time_of_day_but_keeps_other_fields() -> None:
+    provider = _FakeLLMProvider(
+        content='{"semantic_query": "dişçi", "time_of_day": "gece_yarisi", "category": "Diş Kliniği"}'
+    )
+
+    intent = await parse_intent(provider, "dişçi", _TUESDAY)
+
+    assert intent.time_of_day is None
+    assert intent.category == "Diş Kliniği"
+
+
 async def test_parse_intent_drops_invalid_price_preference_but_keeps_other_fields() -> None:
     provider = _FakeLLMProvider(
         content='{"semantic_query": "dişçi", "price_preference": "biraz_ucuz", "category": "Diş Kliniği"}'

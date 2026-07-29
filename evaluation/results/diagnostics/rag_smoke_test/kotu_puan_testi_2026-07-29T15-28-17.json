@@ -1,0 +1,61 @@
+{
+  "label": "kotu_puan_testi",
+  "timestamp": "2026-07-29T15-28-17",
+  "scenarios": [
+    {
+      "title": "Özel sorgu: İzmit'te en kötü, puanı en düşük dişçi",
+      "query": "İzmit'te en kötü, puanı en düşük dişçi",
+      "total": 20,
+      "recommendation": "İzmit'te en düşük puana sahip dişçiler arasında birkaç seçenek bulunuyor. Diş Hekimi Tarık Can Kara, aile dostu bir yaklaşım sunarak çocuk diş hekimliği ve diğer diş tedavileriyle hizmet veriyor. Ayrıca, Dentriva Diş Yahyakaptan ise ortodonti ve pedodonti gibi farklı alanlarda uzmanlaşmış bir klinik olarak dikkatinizi çekebilir. Her iki klinik de randevu alarak hizmet almanıza imkan tanıyor.",
+      "top_results": [
+        {
+          "title": "Yahyakaptan Diş Hekimi Aydın Cevizli- İzmit Nöbetçi Diş - Kocaeli İzmit Acil 7/24 Diş Kliniği -İzmit özel Diş Hastanesi",
+          "type_normalized": "Diş Kliniği",
+          "price_min": 5369,
+          "price_max": 7077
+        },
+        {
+          "title": "Diş Hekimi Uğur Ümit - İzmit Nöbetçi Dişçi | Kocaeli 7/24 Açık Acil Özel Diş Hastanesi",
+          "type_normalized": "Diş Kliniği",
+          "price_min": 4662,
+          "price_max": 6049
+        },
+        {
+          "title": "Dentriva Diş Yahyakaptan - İzmit İmplant-İzmit Nöbetçi Diş-İzmit Diş Teli-İzmit Çocuk Diş-İzmit Ortodonti-İzmit Pedodonti",
+          "type_normalized": "Diş Kliniği",
+          "price_min": 5057,
+          "price_max": 6738
+        },
+        {
+          "title": "Diş Hekimi Tarık Can Kara , İzmit/Kocaeli",
+          "type_normalized": "Diş Kliniği",
+          "price_min": 753,
+          "price_max": 2392
+        },
+        {
+          "title": "Diş Hekimi Dr. Deniz Doğan - İzmit Diş Hekimi & Protetik Diş Tedavisi Uzmanı",
+          "type_normalized": "Diş Kliniği",
+          "price_min": 4698,
+          "price_max": 6216
+        }
+      ]
+    }
+  ],
+  "intent_diagnostics": [
+    {
+      "query": "İzmit'te en kötü, puanı en düşük dişçi",
+      "parsed_intent": {
+        "semantic_query": "İzmit'te en kötü, puanı en düşük dişçi",
+        "min_price": null,
+        "max_price": null,
+        "price_preference": null,
+        "gender": null,
+        "category": "Diş Kliniği",
+        "online_only": false,
+        "weekend_open_only": false,
+        "day_of_week": null,
+        "time_of_day": null
+      }
+    }
+  ]
+}

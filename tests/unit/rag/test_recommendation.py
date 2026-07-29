@@ -44,13 +44,13 @@ class _FakeLLMProvider:
         pass
 
 
-def _make_result(business_id: int, title: str = "Diş Kliniği Alfa") -> ProviderResult:
+def _make_result(business_id: int, title: str = "Diş Kliniği Alfa", weighted_rating: float | None = 4.4) -> ProviderResult:
     return ProviderResult(
         id=business_id,
         title=title,
         type_normalized="Diş Kliniği",
         rating=4.5,
-        weighted_rating=4.4,
+        weighted_rating=weighted_rating,
         price_min=100,
         price_max=300,
         address="İzmit",
@@ -84,6 +84,29 @@ async def test_generate_recommendation_raises_recommendation_generation_error_wh
 
     with pytest.raises(RecommendationGenerationError):
         await generate_recommendation(provider, "ucuz dişçi", [_make_result(1)])
+
+
+async def test_generate_recommendation_includes_weighted_rating_in_prompt() -> None:
+    """weighted_rating (ADR-0004'ün Bayesian düzeltmesi) LLM'e gönderilen
+    metne dahil edilmeli — az yorumlu işletmelerin uç puanlarını düzelten
+    bu sinyal, ham `rating` yerine kullanılıyor."""
+    provider = _FakeLLMProvider(content="öneri metni")
+
+    await generate_recommendation(provider, "dişçi", [_make_result(1, weighted_rating=4.7)])
+
+    assert provider.last_messages is not None
+    user_message = provider.last_messages[-1].content
+    assert "4.7/5" in user_message
+
+
+async def test_generate_recommendation_omits_rating_line_when_weighted_rating_missing() -> None:
+    provider = _FakeLLMProvider(content="öneri metni")
+
+    await generate_recommendation(provider, "dişçi", [_make_result(1, weighted_rating=None)])
+
+    assert provider.last_messages is not None
+    user_message = provider.last_messages[-1].content
+    assert "Puan:" not in user_message
 
 
 async def test_generate_recommendation_limits_businesses_sent_to_prompt() -> None:

@@ -23,6 +23,11 @@ def _format_business_for_prompt(index: int, business: ProviderResult) -> str:
         f"{index}. {business.title} ({business.type_normalized})",
         f"   Fiyat aralığı: {business.price_min}-{business.price_max} TL",
     ]
+    if business.weighted_rating is not None:
+        # Ham rating değil weighted_rating kullanılıyor — ADR-0004'teki
+        # Bayesian düzeltme, az yorumlu işletmelerin yapay şekilde uç bir
+        # puana sahip görünmesini önlüyor, bu yüzden daha güvenilir sinyal.
+        lines.append(f"   Puan: {business.weighted_rating:.1f}/5")
     if business.services:
         lines.append(f"   Hizmetler: {', '.join(business.services)}")
     if business.rich_description:
