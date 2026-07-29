@@ -5,11 +5,13 @@ varsa Qdrant'tan çekilen filtrelenmiş ID kümesiyle kesişime sokulur —
 rank-bm25 kendi başına payload filtering desteklemediği için), (2) RRF ile
 birleştirilir, (3) varsa tarih/saat müsaitliğine göre ikinci fazda daraltılır,
 (4) aday işletmelerin verisi çekilir, (5) cross-encoder reranker ile yeniden
-sıralanır (başarısız olursa RRF sırası korunur, arama çökmez), (6) limit/offset
-ile dilimlenir, (7) response şemasına eşlenir.
+sıralanır (başarısız olursa RRF sırası korunur, arama çökmez), (6) varsa
+puan tercihine göre son bir sıralama uygulanır (ADR-0015), (7) limit/offset
+ile dilimlenir, (8) response şemasına eşlenir.
 """
 
 import logging
+from typing import Literal, cast
 
 from qdrant_client import AsyncQdrantClient
 from sqlalchemy import select
@@ -29,6 +31,13 @@ logger = logging.getLogger(__name__)
 
 CANDIDATE_DEPTH_PER_SOURCE: int = 30
 CANDIDATE_POOL_SIZE: int = 40
+
+# "en iyi"/"en kötü" gibi açık üstünlük ifadeleri için — bir eşik/filtre değil,
+# rerank sonrası son bir SIRALAMA sinyali (bkz. ADR-0015). price_preference'tan
+# farklı olarak Qdrant'a hiç gitmiyor: "ucuz"/"pahalı" bir eşik ifade eder ama
+# "en iyi"/"en kötü" tüm sonuçların o sırada dizilmesini ister, birini
+# elemeyi değil.
+RatingPreference = Literal["high", "low"]
 
 
 async def _fetch_businesses_by_id(session: AsyncSession, business_ids: list[int]) -> list[Business]:
@@ -68,6 +77,25 @@ async def _rerank_businesses(
     return [businesses[index] for index, _ in ranked]
 
 
+def _sort_by_rating(businesses: list[Business], preference: RatingPreference) -> list[Business]:
+    """weighted_rating'i olan işletmeleri tercihe göre sıralar (yüksekten
+    düşüğe ya da düşükten yükseğe), `weighted_rating`'i olmayanları YÖN FARK
+    ETMEKSİZİN listenin sonuna ekler.
+
+    Puanı bilinmeyen bir işletme ne "en iyi" ne "en kötü" olarak iddia
+    edilemez (bkz. ADR-0004'ün Bayesian düzeltmesi — az/hiç yorumu olan
+    işletmelerde `weighted_rating` None kalır); bu yüzden "low" tercihinde
+    bile puansızlar en üste değil, en alta gider.
+    """
+    rated = [business for business in businesses if business.weighted_rating is not None]
+    unrated = [business for business in businesses if business.weighted_rating is None]
+    # cast: bu noktada rated'daki her business'ın weighted_rating'i yukarıdaki
+    # filtreyle zaten None değil — Pyright bunu liste comprehension'ı üzerinden
+    # takip edemiyor (ORM attribute, statik olarak float | None kalıyor).
+    rated.sort(key=lambda business: cast(float, business.weighted_rating), reverse=(preference == "high"))
+    return rated + unrated
+
+
 def _to_provider_result(business: Business, near: NearFilter | None) -> ProviderResult:
     """Business ORM nesnesini ProviderResult response şemasına eşler."""
     distance_km = None
@@ -101,6 +129,7 @@ async def search_providers(
     query: str,
     filters: SearchFilters,
     availability: DateAvailabilityFilter | None = None,
+    rating_preference: RatingPreference | None = None,
     limit: int = 10,
     offset: int = 0,
 ) -> SearchResponse:
@@ -130,6 +159,9 @@ async def search_providers(
 
     candidates = await _fetch_businesses_by_id(session, candidate_ids)
     candidates = await _rerank_businesses(reranker_provider, query, candidates)
+
+    if rating_preference is not None:
+        candidates = _sort_by_rating(candidates, rating_preference)
 
     page = candidates[offset : offset + limit]
     results = [_to_provider_result(business, filters.near) for business in page]

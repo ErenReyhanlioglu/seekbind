@@ -32,4 +32,4 @@ tarafından supersede edildi)
 | [0012](0012-synthetic-description-mode-collapse-mitigation.md) | Sentetik açıklama mode collapse önlemi | Kabul edildi | 2026-07-24 |
 | [0013](0013-reranker-provider-selection.md) | Reranker sağlayıcısı seçimi (Jina AI) | Kabul edildi | 2026-07-28 |
 | [0014](0014-price-threshold-resolution.md) | Fiyat eşiği hesaplama (LLM tahmini yerine gerçek DB verisi) | Kabul edildi | 2026-07-29 |
-| [0015](0015-rating-based-ranking-gap.md) | Puan/kalite bazlı sıralama eksikliği | Planlandı | 2026-07-29 |
+| [0015](0015-rating-based-ranking-gap.md) | Puan/kalite bazlı sıralama eksikliği | Kabul edildi, uygulandı | 2026-07-29 |

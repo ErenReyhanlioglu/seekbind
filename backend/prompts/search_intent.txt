@@ -41,6 +41,12 @@ Kurallar:
    ifade belirtilmemişse null.
 8. time_of_day: "sabah" -> morning, "öğleden sonra" -> afternoon, "akşam"
    -> evening. Belirtilmemişse null.
+9. rating_preference: SADECE sorguda "en iyi", "en kötü", "en yüksek
+   puanlı", "en düşük puanlı" gibi AÇIK bir üstünlük/superlatif ifadesi
+   varsa doldur — iyi/yüksek yönde ise "high", kötü/düşük yönde ise "low".
+   Bu bir sıralama isteğidir, bir eşik değil. Sadece "iyi bir yer" gibi
+   yumuşak/belirsiz bir ifade varsa (açık üstünlük iddiası yoksa) null
+   bırak.
 
 Sadece şu JSON formatında yanıt ver, başka hiçbir metin ekleme:
-{{"semantic_query": "...", "min_price": null, "max_price": null, "price_preference": null, "gender": null, "category": null, "online_only": false, "weekend_open_only": false, "day_of_week": null, "time_of_day": null}}
+{{"semantic_query": "...", "min_price": null, "max_price": null, "price_preference": null, "rating_preference": null, "gender": null, "category": null, "online_only": false, "weekend_open_only": false, "day_of_week": null, "time_of_day": null}}

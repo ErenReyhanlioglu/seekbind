@@ -152,6 +152,25 @@ async def test_parse_intent_extracts_valid_price_preference() -> None:
     assert intent.price_preference == "cheap"
 
 
+async def test_parse_intent_drops_invalid_rating_preference_but_keeps_other_fields() -> None:
+    provider = _FakeLLMProvider(
+        content='{"semantic_query": "dişçi", "rating_preference": "en_iyi", "category": "Diş Kliniği"}'
+    )
+
+    intent = await parse_intent(provider, "dişçi", _TUESDAY)
+
+    assert intent.rating_preference is None
+    assert intent.category == "Diş Kliniği"
+
+
+async def test_parse_intent_extracts_valid_rating_preference() -> None:
+    provider = _FakeLLMProvider(content='{"semantic_query": "en kötü dişçi", "rating_preference": "low"}')
+
+    intent = await parse_intent(provider, "en kötü dişçi", _TUESDAY)
+
+    assert intent.rating_preference == "low"
+
+
 async def test_parse_intent_drops_invalid_category_but_keeps_other_fields() -> None:
     provider = _FakeLLMProvider(
         content='{"semantic_query": "dişçi", "category": "Uydurma Kategori", "min_price": 100}'

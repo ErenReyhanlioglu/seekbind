@@ -1,0 +1,62 @@
+{
+  "label": "rating_fix_low",
+  "timestamp": "2026-07-29T16-53-31",
+  "scenarios": [
+    {
+      "title": "Özel sorgu: en kötü dişçi hangisi",
+      "query": "en kötü dişçi hangisi",
+      "total": 20,
+      "recommendation": "En kötü dişçi arayışınızda, aslında en iyi seçenekleri keşfetmek isterseniz, İzmit'teki bazı diş kliniklerini önerebilirim. Örneğin, Dr. Muharrem Özgeldi, ortodonti ve diş beyazlatma hizmetleriyle dikkat çekiyor. Ayrıca, KOSTÜ Ağız ve Diş Sağlığı Merkezi de çocuk diş hekimliği ve estetik çözümler sunarak hızlı tedavi süreçleriyle biliniyor. Eğer alternatif arıyorsanız, Özel Kocaeli Arma Ağız ve Diş Sağlığı Polikliniği, geniş hizmet yelpazesiyle dikkat çekiyor. Bu klinikler, genel olarak yüksek puanlara sahip ve birçok hastanın olumlu deneyimler yaşadığı yerler.",
+      "top_results": [
+        {
+          "title": "Dr. Muharrem Özgeldi",
+          "type_normalized": "Diş Kliniği",
+          "price_min": 5772,
+          "price_max": 7354
+        },
+        {
+          "title": "KOSTÜ AĞIZ VE DİŞ SAĞLIĞI UYGULAMA VE ARAŞTIRMA MERKEZİ",
+          "type_normalized": "Diş Kliniği",
+          "price_min": 4586,
+          "price_max": 5962
+        },
+        {
+          "title": "Özel Marka Ağız ve Diş Sağlığı Polikliniği",
+          "type_normalized": "Diş Kliniği",
+          "price_min": 3098,
+          "price_max": 4950
+        },
+        {
+          "title": "Özel Kocaeli Diş Polikliniği",
+          "type_normalized": "Diş Kliniği",
+          "price_min": 576,
+          "price_max": 5779
+        },
+        {
+          "title": "Özel Kocaeli Arma Ağız ve Diş Sağlığı Polikliniği",
+          "type_normalized": "Diş Kliniği",
+          "price_min": 3497,
+          "price_max": 5602
+        }
+      ]
+    }
+  ],
+  "intent_diagnostics": [
+    {
+      "query": "en kötü dişçi hangisi",
+      "parsed_intent": {
+        "semantic_query": "en kötü dişçi hangisi",
+        "min_price": null,
+        "max_price": null,
+        "price_preference": null,
+        "rating_preference": "low",
+        "gender": null,
+        "category": "Diş Kliniği",
+        "online_only": false,
+        "weekend_open_only": false,
+        "day_of_week": null,
+        "time_of_day": null
+      }
+    }
+  ]
+}
