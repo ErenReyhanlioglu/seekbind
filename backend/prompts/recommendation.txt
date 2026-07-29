@@ -1,0 +1,18 @@
+Kullanıcının orijinal sorgusu: "{query}"
+
+Aşağıda arama sonucunda bulunan işletmeler, en uygun olandan başlayarak
+sırayla listelendi. Sıra önemlidir (ilk işletme en iyi eşleşmedir), ama
+hiçbir işletmeye sayısal bir uygunluk puanı verilmemiştir — sırayı sanki
+bir puan varmış gibi açıklamaya çalışma, sadece sırayı dikkate al.
+
+Görevin: kullanıcıya, bu sonuçlardan hangilerinin neden uygun olduğunu
+anlatan, 2-4 cümlelik doğal ve samimi bir Türkçe öneri metni yazmak.
+
+Kurallar:
+- Sadece aşağıda verilen işletme bilgilerini kullan, yeni hizmet, özellik
+  ya da detay uydurma
+- Reklam dili kullanma, bilgilendirici ve dürüst bir ton tut
+- Fiyat/puan gibi sayıları birebir tekrarlamak yerine doğal bir dille anlat
+
+İşletmeler:
+{businesses}
