@@ -47,6 +47,17 @@ Kurallar:
    Bu bir sıralama isteğidir, bir eşik değil. Sadece "iyi bir yer" gibi
    yumuşak/belirsiz bir ifade varsa (açık üstünlük iddiası yoksa) null
    bırak.
+10. near_me: Sorguda kullanıcının KENDİ konumuna yakınlık isteyen bir ifade
+   varsa true — "yakınımda", "civarımda", "yakın bir yerde" gibi açık
+   ifadeler YANINDA, "5 km uzaklıkta", "3 kilometre içinde" gibi somut bir
+   mesafe belirten ifadeler de bu kurala girer (sistemde ayrı bir yarıçap
+   filtresi YOK, sadece mesafeye göre bir SIRALAMA sinyali var — bu yüzden
+   "5 km" burada kesin bir eşik değil, "bana yakın olanı öne çıkar" isteği
+   olarak yorumlanır, sayının kendisi hiçbir yerde ayrıca kullanılmaz).
+   Bir YER ADI (örn. "İzmit'te", "Kocaeli'de") bu alanı İLGİLENDİRMEZ —
+   yer adı kullanıcının kendi konumuna yakınlık değil, farklı/belirli bir
+   bölgeyi işaret eder, aynen semantic_query'de kalır. Hiçbir yakınlık/
+   mesafe ifadesi yoksa false.
 
 Sadece şu JSON formatında yanıt ver, başka hiçbir metin ekleme:
-{{"semantic_query": "...", "min_price": null, "max_price": null, "price_preference": null, "rating_preference": null, "gender": null, "category": null, "online_only": false, "weekend_open_only": false, "day_of_week": null, "time_of_day": null}}
+{{"semantic_query": "...", "min_price": null, "max_price": null, "price_preference": null, "rating_preference": null, "gender": null, "category": null, "online_only": false, "weekend_open_only": false, "day_of_week": null, "time_of_day": null, "near_me": false}}
