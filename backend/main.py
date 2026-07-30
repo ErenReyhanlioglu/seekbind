@@ -11,6 +11,7 @@ from backend.api.routes import router
 from backend.config import get_settings
 from backend.core.monitoring import get_langfuse_client
 from backend.db.qdrant import get_qdrant_client
+from backend.db.redis import get_redis_client
 from backend.db.session import get_engine, get_session_factory
 from backend.services.llm import get_llm_provider
 from backend.services.search import get_bm25_index, get_reranker_provider, periodic_refresh_loop
@@ -19,7 +20,7 @@ from backend.services.search import get_bm25_index, get_reranker_provider, perio
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     """Başlangıçta BM25 index'i kurar ve periyodik yenileme görevini başlatır;
-    kapanışta bu görevi + DB engine'i + Qdrant client'ını düzgün kapatır.
+    kapanışta bu görevi + DB engine'i + Qdrant/Redis client'larını düzgün kapatır.
 
     İlk kurulum burada try/except'siz — DB'ye ulaşılamıyorsa uygulama fail-fast
     çökmeli (sessizce boş bir index'le ayağa kalkmak yerine). Periyodik
@@ -42,6 +43,7 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
 
     await get_engine().dispose()
     await get_qdrant_client().close()
+    await get_redis_client().aclose()
     await get_reranker_provider().close()
     await get_llm_provider().close()
     get_langfuse_client().flush()
