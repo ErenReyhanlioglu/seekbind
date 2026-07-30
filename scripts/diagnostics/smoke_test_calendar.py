@@ -40,28 +40,27 @@ TIMESTAMP_FORMAT: str = "%Y-%m-%dT%H-%M-%S"
 
 
 def _print_and_record(title: str, result: BookResponse) -> dict:
-    """Sonucu terminale yazdırır, JSON'a kaydedilecek yapıyı döner."""
+    """Sonucu terminale yazdırır, JSON'a kaydedilecek yapıyı döner.
+
+    `alternatives`, `BookingAlternative`'ın TÜM alanlarıyla (adres,
+    telefon, hizmetler, fiyat vb. dahil — `ProviderResult`'ın zenginliği)
+    kaydedilir; `model_dump` kullanılır, elle alan alan kopyalanmaz —
+    böylece şemaya yeni bir alan eklenirse bu script elle güncellenmesine
+    gerek kalmadan onu da yakalar.
+    """
     print(f"\n=== {title} ===")
     print(f"  success={result.success} booking_id={result.booking_id}")
     for i, alt in enumerate(result.alternatives, start=1):
         print(
-            f"    {i}. business_id={alt.business_id} {alt.business_title[:45]!r} "
-            f"slot={alt.appointment_slot_id} start={alt.start_time} puan={alt.weighted_rating}"
+            f"    {i}. {alt.business.title[:45]!r} ({alt.business.type_normalized}) — "
+            f"{alt.business.price_min}-{alt.business.price_max}TL — puan={alt.business.weighted_rating} — "
+            f"adres={alt.business.address} — slot={alt.appointment_slot_id} start={alt.start_time}"
         )
     return {
         "title": title,
         "success": result.success,
         "booking_id": result.booking_id,
-        "alternatives": [
-            {
-                "business_id": alt.business_id,
-                "business_title": alt.business_title,
-                "appointment_slot_id": alt.appointment_slot_id,
-                "start_time": alt.start_time.isoformat(),
-                "weighted_rating": alt.weighted_rating,
-            }
-            for alt in result.alternatives
-        ],
+        "alternatives": [alt.model_dump(mode="json") for alt in result.alternatives],
     }
 
 

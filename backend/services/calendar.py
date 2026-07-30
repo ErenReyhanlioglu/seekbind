@@ -26,7 +26,7 @@ from typing import cast
 from sqlalchemy import CursorResult, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from backend.api.schemas import BookingAlternative, BookResponse
+from backend.api.schemas import BookingAlternative, BookResponse, ProviderResult
 from backend.db.models import AppointmentSlot, Booking, Business
 from backend.services.search.availability import DateAvailabilityFilter, fetch_available_business_ids
 
@@ -39,6 +39,32 @@ class CalendarServiceError(Exception):
 
 class SlotNotFoundError(CalendarServiceError):
     """Verilen appointment_slot_id'ye karşılık gelen bir slot yoksa."""
+
+
+def _to_provider_result(business: Business) -> ProviderResult:
+    """Business ORM nesnesini ProviderResult'a eşler.
+
+    `search/service.py`'deki aynı isimli fonksiyonun mesafesiz hali —
+    calendar-service henüz konum bilgisi kullanmıyor (bkz. ADR-0018),
+    `distance_km` hep None kalır.
+    """
+    return ProviderResult(
+        id=business.id,
+        title=business.title,
+        type_normalized=business.type_normalized,
+        rating=business.rating,
+        weighted_rating=business.weighted_rating,
+        price_min=business.price_min,
+        price_max=business.price_max,
+        address=business.address,
+        phone=business.phone,
+        online_available=business.online_available,
+        gender=business.gender,
+        services=business.services,
+        tags=business.tags,
+        rich_description=business.rich_description,
+        distance_km=None,
+    )
 
 
 async def _fetch_slot(
@@ -94,7 +120,7 @@ async def _find_same_business_alternatives(
     """Aynı işletmedeki, kullanıcının programıyla çakışmayan boş slotlardan
     öneri üretir — kronolojik sıralanır (puan sabit, ayırt edici değil)."""
     result = await session.execute(
-        select(AppointmentSlot.id, AppointmentSlot.start_time, Business.title, Business.appointment_duration_min)
+        select(AppointmentSlot.id, AppointmentSlot.start_time, Business)
         .join(Business, AppointmentSlot.business_id == Business.id)
         .where(
             AppointmentSlot.business_id == business_id,
@@ -106,12 +132,12 @@ async def _find_same_business_alternatives(
     schedule = await _fetch_user_schedule(session, user_id)
 
     alternatives: list[BookingAlternative] = []
-    for slot_id, start_time, title, duration in result.all():
-        if any(_slots_overlap(start_time, duration, s, d) for s, d in schedule):
+    for slot_id, start_time, business in result.all():
+        if any(_slots_overlap(start_time, business.appointment_duration_min, s, d) for s, d in schedule):
             continue
         alternatives.append(
             BookingAlternative(
-                business_id=business_id, business_title=title, appointment_slot_id=slot_id, start_time=start_time
+                business=_to_provider_result(business), appointment_slot_id=slot_id, start_time=start_time
             )
         )
         if len(alternatives) >= ALTERNATIVE_LIMIT:
@@ -185,14 +211,7 @@ async def _find_cross_business_alternatives(
     day_start = datetime.combine(target_date, time.min)
     day_end = datetime.combine(target_date, time.max)
     result = await session.execute(
-        select(
-            AppointmentSlot.id,
-            AppointmentSlot.business_id,
-            AppointmentSlot.start_time,
-            Business.title,
-            Business.appointment_duration_min,
-            Business.weighted_rating,
-        )
+        select(AppointmentSlot.id, AppointmentSlot.business_id, AppointmentSlot.start_time, Business)
         .join(Business, AppointmentSlot.business_id == Business.id)
         .where(
             AppointmentSlot.business_id.in_(available_ids),
@@ -205,22 +224,18 @@ async def _find_cross_business_alternatives(
     schedule = await _fetch_user_schedule(session, user_id)
 
     best_per_business: dict[int, BookingAlternative] = {}
-    for slot_id, business_id, start_time, title, duration, rating in result.all():
+    for slot_id, business_id, start_time, business in result.all():
         if business_id in best_per_business:
             continue  # bu işletmeden zaten (en erken olduğu için ilk görülen) bir slot seçildi
-        if any(_slots_overlap(start_time, duration, s, d) for s, d in schedule):
+        if any(_slots_overlap(start_time, business.appointment_duration_min, s, d) for s, d in schedule):
             continue
         best_per_business[business_id] = BookingAlternative(
-            business_id=business_id,
-            business_title=title,
-            appointment_slot_id=slot_id,
-            start_time=start_time,
-            weighted_rating=rating,
+            business=_to_provider_result(business), appointment_slot_id=slot_id, start_time=start_time
         )
 
-    rated = [alt for alt in best_per_business.values() if alt.weighted_rating is not None]
-    unrated = [alt for alt in best_per_business.values() if alt.weighted_rating is None]
-    rated.sort(key=lambda alt: cast(float, alt.weighted_rating), reverse=True)
+    rated = [alt for alt in best_per_business.values() if alt.business.weighted_rating is not None]
+    unrated = [alt for alt in best_per_business.values() if alt.business.weighted_rating is None]
+    rated.sort(key=lambda alt: cast(float, alt.business.weighted_rating), reverse=True)
     return (rated + unrated)[:ALTERNATIVE_LIMIT]
 
 

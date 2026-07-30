@@ -7,7 +7,8 @@ from unittest.mock import AsyncMock, MagicMock
 import pytest
 
 import backend.services.calendar as calendar_module
-from backend.api.schemas import BookingAlternative
+from backend.api.schemas import BookingAlternative, ProviderResult
+from backend.db.models import Business
 from backend.services.calendar import (
     ALTERNATIVE_LIMIT,
     SlotNotFoundError,
@@ -20,18 +21,55 @@ from backend.services.calendar import (
     _has_user_conflict,
     _same_category_candidate_ids,
     _slots_overlap,
+    _to_provider_result,
     book_appointment,
 )
 
 
+def _make_business(
+    business_id: int = 5,
+    title: str = "Test İşletme",
+    weighted_rating: float | None = 4.5,
+    appointment_duration_min: int = 30,
+    type_normalized: str = "Berber",
+) -> Business:
+    return Business(
+        id=business_id,
+        title=title,
+        type_normalized=type_normalized,
+        rating=4.5,
+        weighted_rating=weighted_rating,
+        price_min=100,
+        price_max=300,
+        appointment_duration_min=appointment_duration_min,
+        online_available=False,
+        gender="unisex",
+        services=[],
+        tags=[],
+        rich_description=None,
+        address=None,
+        phone=None,
+    )
+
+
 def _make_alternative(appointment_slot_id: int = 1, weighted_rating: float | None = 4.5) -> BookingAlternative:
     return BookingAlternative(
-        business_id=5,
-        business_title="Test İşletme",
+        business=_to_provider_result(_make_business(weighted_rating=weighted_rating)),
         appointment_slot_id=appointment_slot_id,
         start_time=datetime(2026, 8, 1, 10, 0),
-        weighted_rating=weighted_rating,
     )
+
+
+def test_to_provider_result_maps_business_fields() -> None:
+    business = _make_business(business_id=7, title="X Berber", weighted_rating=4.8)
+
+    result = _to_provider_result(business)
+
+    assert isinstance(result, ProviderResult)
+    assert result.id == 7
+    assert result.title == "X Berber"
+    assert result.weighted_rating == 4.8
+    assert result.distance_km is None
 
 
 def test_slots_overlap_detects_overlapping_ranges() -> None:
@@ -118,10 +156,11 @@ async def test_find_same_business_alternatives_excludes_slots_conflicting_with_u
     session = AsyncMock()
     conflicting_time = datetime(2026, 8, 1, 10, 0)
     free_time = datetime(2026, 8, 1, 14, 0)
+    business = _make_business()
     session.execute.return_value = SimpleNamespace(
         all=lambda: [
-            (10, conflicting_time, "İşletme A", 30),
-            (11, free_time, "İşletme A", 30),
+            (10, conflicting_time, business),
+            (11, free_time, business),
         ]
     )
     monkeypatch.setattr(calendar_module, "_fetch_user_schedule", AsyncMock(return_value=[(conflicting_time, 30)]))
@@ -130,11 +169,13 @@ async def test_find_same_business_alternatives_excludes_slots_conflicting_with_u
 
     assert len(alternatives) == 1
     assert alternatives[0].appointment_slot_id == 11
+    assert alternatives[0].business.title == "Test İşletme"
 
 
 async def test_find_same_business_alternatives_respects_limit(monkeypatch) -> None:
     session = AsyncMock()
-    rows = [(i, datetime(2026, 8, 1, 9 + i, 0), "İşletme A", 30) for i in range(10)]
+    business = _make_business()
+    rows = [(i, datetime(2026, 8, 1, 9 + i, 0), business) for i in range(10)]
     session.execute.return_value = SimpleNamespace(all=lambda: rows)
     monkeypatch.setattr(calendar_module, "_fetch_user_schedule", AsyncMock(return_value=[]))
 
@@ -209,14 +250,17 @@ async def test_find_cross_business_alternatives_picks_one_slot_per_business_sort
     işletme (None) yön fark etmeksizin sona eklenir (bkz. ADR-0015)."""
     monkeypatch.setattr(calendar_module, "_same_category_candidate_ids", AsyncMock(return_value=[7, 8, 9]))
     monkeypatch.setattr(calendar_module, "fetch_available_business_ids", AsyncMock(return_value={7, 8, 9}))
+    business_7 = _make_business(business_id=7, title="İşletme 7", weighted_rating=4.5)
+    business_8 = _make_business(business_id=8, title="İşletme 8", weighted_rating=4.9)
+    business_9 = _make_business(business_id=9, title="İşletme 9", weighted_rating=None)
     session = AsyncMock()
     session.execute.return_value = SimpleNamespace(
         all=lambda: [
             # business 7: iki slot var, en erken olan (09:00) seçilmeli
-            (701, 7, datetime(2026, 8, 1, 9, 0), "İşletme 7", 30, 4.5),
-            (702, 7, datetime(2026, 8, 1, 11, 0), "İşletme 7", 30, 4.5),
-            (801, 8, datetime(2026, 8, 1, 10, 0), "İşletme 8", 30, 4.9),
-            (901, 9, datetime(2026, 8, 1, 10, 0), "İşletme 9", 30, None),
+            (701, 7, datetime(2026, 8, 1, 9, 0), business_7),
+            (702, 7, datetime(2026, 8, 1, 11, 0), business_7),
+            (801, 8, datetime(2026, 8, 1, 10, 0), business_8),
+            (901, 9, datetime(2026, 8, 1, 10, 0), business_9),
         ]
     )
     monkeypatch.setattr(calendar_module, "_fetch_user_schedule", AsyncMock(return_value=[]))
@@ -240,10 +284,9 @@ async def test_find_cross_business_alternatives_excludes_user_conflicts(monkeypa
     monkeypatch.setattr(calendar_module, "_same_category_candidate_ids", AsyncMock(return_value=[7]))
     monkeypatch.setattr(calendar_module, "fetch_available_business_ids", AsyncMock(return_value={7}))
     conflicting_time = datetime(2026, 8, 1, 10, 0)
+    business = _make_business(business_id=7, title="İşletme 7")
     session = AsyncMock()
-    session.execute.return_value = SimpleNamespace(
-        all=lambda: [(701, 7, conflicting_time, "İşletme 7", 30, 4.5)]
-    )
+    session.execute.return_value = SimpleNamespace(all=lambda: [(701, 7, conflicting_time, business)])
     monkeypatch.setattr(calendar_module, "_fetch_user_schedule", AsyncMock(return_value=[(conflicting_time, 30)]))
 
     alternatives = await _find_cross_business_alternatives(
@@ -364,10 +407,11 @@ async def test_book_appointment_passes_filters_through_to_find_alternatives(monk
     monkeypatch.setattr(calendar_module, "_fetch_slot", AsyncMock(return_value=(5, "Berber", now, 30, True)))
     captured: dict = {}
 
-    async def fake_find_alternatives(session, user_id, business_id, category, exclude_slot_id, requested_start, online_only, gender, min_price, max_price):
-        captured.update(
-            online_only=online_only, gender=gender, min_price=min_price, max_price=max_price
-        )
+    async def fake_find_alternatives(
+        session, user_id, business_id, category, exclude_slot_id, requested_start,
+        online_only, gender, min_price, max_price,
+    ):
+        captured.update(online_only=online_only, gender=gender, min_price=min_price, max_price=max_price)
         return []
 
     monkeypatch.setattr(calendar_module, "_find_alternatives", fake_find_alternatives)

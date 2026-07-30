@@ -90,13 +90,18 @@ class RecommendationResponse(BaseModel):
 class BookingAlternative(BaseModel):
     """`book_appointment()` başarısız olduğunda (slot dolu ya da kullanıcının
     kendi randevusuyla çakışıyor) önerilen boş bir slot — aynı işletmeden
-    ya da aynı kategorideki başka bir işletmeden olabilir."""
+    ya da aynı kategorideki başka bir işletmeden olabilir.
 
-    business_id: int
-    business_title: str
+    `business`, `/recommend`'in de kullandığı `ProviderResult` — aynı
+    zengin bilgi (fiyat, adres, telefon, hizmetler vb.) burada da
+    tekrarlanmasın, tek bir yerden geliyor. `distance_km` burada hep
+    `None` kalır (mesafe henüz calendar-service'e dahil değil, bkz.
+    ADR-0018/roadmap "feature/near-filter" notu).
+    """
+
+    business: ProviderResult
     appointment_slot_id: int
     start_time: datetime
-    weighted_rating: float | None = None
 
 
 class BookRequest(BaseModel):
