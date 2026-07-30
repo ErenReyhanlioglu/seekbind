@@ -18,13 +18,19 @@ varsayılan `pytest` çalıştırmasında hariç tutulurlar (bkz. pyproject.toml
    senaryoları için SAVEPOINT (nested transaction) izolasyonu.
 4. `real_test_user_id` — `scripts/seed_test_user.py`'nin referans kullanıcısı,
    `near_me` testleri için gerçek koordinat kaynağı.
+5. `query_counter` — `test/db-integration`'ın N+1 regresyon testleri için,
+   gerçekten çalışan SQL sorgularını sayan bir liste.
 """
 
 from collections.abc import AsyncGenerator, Callable, Generator
 
 import httpx
 import pytest
-from sqlalchemy import select
+from typing import Any
+
+from sqlalchemy import event, select
+from sqlalchemy.engine import Connection
+from sqlalchemy.engine.interfaces import ExecutionContext
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from backend.db.models import UserProfile
@@ -239,3 +245,47 @@ def book_savepoint_client(api_client: httpx.AsyncClient, savepoint_session: Asyn
 
     app.dependency_overrides[get_db_session] = _override
     return api_client
+
+
+@pytest.fixture
+def query_counter() -> Generator[list[str], None, None]:
+    """`engine.sync_engine`'e bağlanan, gerçekten çalışan SQL sorgularını
+    sayan bir liste döner — `test_db_query_counts.py`'nin N+1 regresyon
+    testleri için.
+
+    `event.listen(engine, "before_cursor_execute", ...)` `AsyncEngine`'e
+    doğrudan bağlanamaz (`NotImplementedError` fırlatır, `savepoint_session`'daki
+    `session.sync_session` gotcha'sının aynı ailesi) — `engine.sync_engine`'e
+    bağlanmak gerekiyor, gerçek dev DB'ye karşı doğrulandı.
+
+    `SAVEPOINT`/`RELEASE SAVEPOINT`/`ROLLBACK TO SAVEPOINT` ifadeleri bilerek
+    filtreleniyor: `savepoint_session` kullanan testlerde uygulama kodunun her
+    `commit()`'i (`join_transaction_mode="create_savepoint"` sayesinde) bir
+    SAVEPOINT açıp kapatıyor — bunlar test edilen fonksiyonun gerçek sorgu
+    sayısıyla ilgisiz "muhasebe" ifadeleri, sayaca karışırsa sonuçlar
+    (özellikle karşılaştırmalı küçük-N/büyük-N testlerinde) yanıltıcı olur.
+    Bu filtreleme de gerçek dev DB'ye karşı elle doğrulandı.
+
+    Kullanım: testte `query_counter.clear()` ile ölçüm öncesi sıfırlanır,
+    fonksiyon çalıştırılır, `len(query_counter)` ile okunur.
+    """
+    engine = get_engine()
+    statements: list[str] = []
+
+    def _listener(
+        conn: Connection,
+        cursor: Any,
+        statement: str,
+        parameters: Any,
+        context: ExecutionContext | None,
+        executemany: bool,
+    ) -> None:
+        normalized = statement.strip().upper()
+        if not normalized.startswith(("SAVEPOINT", "RELEASE SAVEPOINT", "ROLLBACK TO SAVEPOINT")):
+            statements.append(statement)
+
+    event.listen(engine.sync_engine, "before_cursor_execute", _listener)
+    try:
+        yield statements
+    finally:
+        event.remove(engine.sync_engine, "before_cursor_execute", _listener)

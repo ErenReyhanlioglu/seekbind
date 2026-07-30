@@ -43,7 +43,7 @@ git push origin --delete feature/ozellik-adi   # remote'tan da sil (GitHub otoma
 | `git merge main` | (feature branch'teyken) main'deki yeni değişiklikleri branch'ine getirir |
 | `git fetch -p` | Remote'ta silinmiş branch referanslarını local'den temizler |
 
-### Conventional Commit türleri (CLAUDE.md)
+### Conventional Commit türleri (proje kuralı)
 
 | Önek | Ne zaman kullanılır |
 |---|---|
@@ -54,46 +54,27 @@ git push origin --delete feature/ozellik-adi   # remote'tan da sil (GitHub otoma
 | `docs:` | Döküman güncelleme |
 | `chore:` | Bağımlılık, iskelet, ayar gibi işler |
 
-### PowerShell'de çok satırlı commit mesajı (Türkçe karakter tuzağı)
+### PowerShell'de çok satırlı commit mesajı
 
-Bash'teki `git commit -m "$(cat <<'EOF' ... EOF)"` deseni PowerShell'de
-**çalışmaz** (`<<` PowerShell'de ayrı bir anlama sahip, parse hatası verir).
-PowerShell'in kendi çok satırlı string'i **here-string**'tir:
+Bash heredoc (`git commit -m "$(cat <<'EOF' ... EOF)"`) PowerShell'de çalışmaz.
+`git commit -m $msg` ve `$msg | git commit -F -` de kullanma — biri satırları
+ayrı argümana bölüp pathspec hatası verir, diğeri Türkçe karakterleri (`ı`,
+`ş`, `ğ` vb.) sessizce `?`'e çevirebilir. Doğru yöntem:
 
 ```powershell
 $msg = @'
 feat: kısa başlık
 
-Uzun açıklama, birden fazla satır olabilir.
+Uzun açıklama.
 '@
-```
+# '@ kapanışı satır başında, boşluksuz olmalı
 
-`'@` kapanışı **satır başında, hiç boşluksuz** olmalı — aksi halde parse hatası.
-
-**Bunu doğrudan `git commit -m $msg` ile kullanma** — PowerShell çok
-satırlı bir string'i native bir programa (git.exe) argüman olarak
-verirken satır sonlarında bölebiliyor, git bu parçaları commit mesajı
-yerine dosya yolu (pathspec) sanıp hata verir.
-
-**`| git commit -F -` ile pipe'lamak da riskli** — Türkçe karakterler
-(`ı`, `ş`, `ğ`, `ç`, `ü`, `ö`) konsolun varsayılan kod sayfası yüzünden
-sessizce `?`'e dönüşebilir (commit mesajına kalıcı olarak öyle yazılır,
-sadece ekran görüntüsü sorunu değil — `git log -1 --format="%s" | xxd`
-ile ham byte'lara bakıp kontrol edilebilir).
-
-**Doğru ve güvenilir yöntem:** mesajı BOM'suz UTF-8 bir dosyaya yaz,
-oradan oku:
-
-```powershell
 [System.IO.File]::WriteAllText("$PWD\commit_msg.txt", $msg, (New-Object System.Text.UTF8Encoding $false))
 git commit -F commit_msg.txt
 Remove-Item commit_msg.txt
 ```
 
-(`Out-File -Encoding utf8` de bir seçenek gibi görünür ama Windows
-PowerShell 5.1'de dosyanın başına görünmez bir BOM ekler — bu da commit
-mesajının en başına gömülür. `[System.IO.File]::WriteAllText(...)` +
-`UTF8Encoding $false` BOM eklemez, temiz sonuç verir.)
+(`Out-File -Encoding utf8` de olur ama BOM ekler — `WriteAllText` + `UTF8Encoding $false` temiz.)
 
 ---
 
@@ -118,9 +99,23 @@ mesajının en başına gömülür. `[System.IO.File]::WriteAllText(...)` +
 |---|---|
 | `uv run pytest` | Unit testleri çalıştırır (hızlı, mock'lu, docker gerektirmez) — `integration` marker'lı testler `pyproject.toml`'daki `addopts` ile varsayılan olarak hariç tutulur |
 | `uv run pytest -m integration -v` | **Sadece** entegrasyon testlerini çalıştırır — gerçek Postgres/Qdrant'a bağlanır, önce `docker compose up -d` şart |
+| `uv run pytest tests/integration/test_x.py -m integration -v` | Tek bir entegrasyon test dosyasını çalıştırır |
 | `uv run pytest -k <isim_parçası>` | İsminde geçen kelimeye göre testleri filtreler (örn. `-k concurrency`) |
+| `uv run pytest ... -s` | `print()` çıktısını gösterir (varsayılan davranış test çıktısını yutar) — hızlı debug için |
 | `uv run pytest -q` | Sessiz mod, sadece özet (nokta nokta + son satır) |
 | `uv run pyright` | Tip kontrolü — proje kuralı: her zaman 0 hata |
+
+### Proje dışından (örn. scratchpad) tek seferlik bir Python betiği çalıştırma
+
+Gerçek DB/Qdrant'a karşı hızlı bir kontrol/doğrulama yapmak için (kalıcı bir
+teste dönüştürmeden) — `backend`/`scripts` importlarının bulunması için proje
+kökü `PYTHONPATH`'e eklenmeli:
+
+```
+PYTHONPATH="<proje kökü>" uv run python "<betik yolu>"
+```
+
+Proje kökünden çalıştırılan `uv run python -c "..."` tek satırlıklarında buna gerek yok.
 
 ---
 
