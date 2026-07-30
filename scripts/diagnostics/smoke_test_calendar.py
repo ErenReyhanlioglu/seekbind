@@ -54,6 +54,7 @@ def _print_and_record(title: str, result: BookResponse) -> dict:
         print(
             f"    {i}. {alt.business.title[:45]!r} ({alt.business.type_normalized}) — "
             f"{alt.business.price_min}-{alt.business.price_max}TL — puan={alt.business.weighted_rating} — "
+            f"mesafe={alt.business.distance_km} — "
             f"adres={alt.business.address} — slot={alt.appointment_slot_id} start={alt.start_time}"
         )
     return {
@@ -145,6 +146,9 @@ async def main() -> None:
 
             result_filtered = await book_appointment(session, user.id, other_booked_id, max_price=1000)
             scenarios.append(_print_and_record("Aynı senaryo, max_price=1000 filtresiyle", result_filtered))
+
+            result_near = await book_appointment(session, user.id, other_booked_id, near_me=True)
+            scenarios.append(_print_and_record("Aynı senaryo, near_me=True (mesafeye göre sıralı)", result_near))
 
         cross_conflict_id = await _find_cross_business_conflict_slot(session, user.id)
         if cross_conflict_id is not None:

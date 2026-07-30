@@ -38,6 +38,9 @@ import logging
 from datetime import date, datetime
 from pathlib import Path
 
+from sqlalchemy import select
+
+from backend.db.models import UserProfile
 from backend.db.qdrant import get_qdrant_client
 from backend.db.session import get_session_factory
 from backend.services.embedding import get_embedding_provider
@@ -59,7 +62,8 @@ def _print_and_record_intent(query: str, intent: ParsedIntent) -> dict:
     print(
         f"  filtreler: category={intent.category}, min_price={intent.min_price}, "
         f"max_price={intent.max_price}, gender={intent.gender}, "
-        f"online_only={intent.online_only}, weekend_open_only={intent.weekend_open_only}"
+        f"online_only={intent.online_only}, weekend_open_only={intent.weekend_open_only}, "
+        f"near_me={intent.near_me}"
     )
     print(f"  zaman: day_of_week={intent.day_of_week}, time_of_day={intent.time_of_day}")
     return {"query": query, "parsed_intent": intent.model_dump()}
@@ -144,6 +148,11 @@ async def main(label: str | None = None, custom_query: str | None = None) -> Non
         await bm25_index.refresh_if_stale(session)
         logger.info("BM25 index kuruldu")
 
+        user = (await session.execute(select(UserProfile))).scalars().first()
+        if user is None:
+            logger.error("UserProfile bulunamadı — önce 'uv run python -m scripts.seed_test_user' çalıştırılmalı")
+            return
+
         async def run(title: str, query: str) -> None:
             intent = await parse_intent(llm_provider, query, today)
             intent_diagnostics.append(_print_and_record_intent(query, intent))
@@ -156,6 +165,7 @@ async def main(label: str | None = None, custom_query: str | None = None) -> Non
                 reranker_provider=reranker_provider,
                 llm_provider=llm_provider,
                 raw_query=query,
+                user_id=user.id,
                 today=today,
             )
             scenarios.append(_print_and_record_recommendation(title, query, response))
@@ -231,6 +241,39 @@ async def main(label: str | None = None, custom_query: str | None = None) -> Non
         # "ucuz" idi, resolve_price_threshold()'ın expensive dalı (price_max'ın
         # 75. percentile'ı) hiç gerçek bir LLM çağrısıyla tetiklenmemişti
         await run("Pahalı avukat (fiyat eşiği düşük olmalı)", "pahalı bir avukat istiyorum")
+
+        # 17) "Yakınımda" (near_me) — feat/near-filter: intent'in near_me=true
+        # ayrıştırdığı, kullanıcının UserProfile referans konumunun bulunup
+        # sonuçlara distance_km olarak yansıdığı hiç gerçek bir LLM/DB
+        # çağrısıyla doğrulanmamıştı
+        await run("Yakınımda (near_me sinyali)", "yakınımda ucuz bir berber var mı")
+
+        # 18) Somut mesafe ifadesi ("X km") — search_intent.txt kural 10'un
+        # sadece "yakınımda" gibi kalıp ifadeleri değil, sayısal mesafe
+        # ifadelerini de near_me=true'ya çevirdiği (sistemde yarıçap filtresi
+        # olmadığı için bu bir eşik değil, aynı sıralama sinyaline dönüşüyor)
+        # hiç gerçek bir LLM çağrısıyla doğrulanmamıştı
+        await run("Somut mesafe ifadesi (near_me'ye çevrilmeli)", "5 km uzaklıkta bir dişçi arıyorum")
+
+        # 19) Yer adı + near_me AYRIMI — "İzmit'te" gibi bir yer adının
+        # near_me'yi YANLIŞLIKLA tetiklememesi gerekiyor (kural 10'un ayrım
+        # notu), aksi halde her yer-adı içeren sorguda kullanıcının kendi
+        # konumuna göre anlamsız bir sıralama uygulanırdı
+        await run("Yer adı near_me'yi tetiklememeli", "İzmit'te bir dişçi arıyorum")
+
+        # 20) near_me + rating_preference birlikte — RRF'in puan ve mesafeyi
+        # gerçek veriyle birleştirdiği (apply_final_sort, search/service.py)
+        # hiç gerçek bir uçtan uca çağrıyla doğrulanmamıştı, sadece unit
+        # testte sentetik veriyle test edilmişti
+        await run("Yakınımda + en iyi puanlı (RRF füzyonu)", "yakınımda en iyi puanlı kuaförü bul")
+
+        # 21) near_me + online_only birlikte — online işletmelerin normalde
+        # mesafe sıralamasından muaf tutulduğu, ama online_only AÇIKÇA
+        # istendiğinde bu muafiyetin kalkması gerektiği (apply_final_sort'un
+        # online_exempt_from_distance parametresi) hiç gerçek bir çağrıyla
+        # doğrulanmamıştı — bu tam da bu oturumda düzeltilen bir kablolama
+        # hatasıydı (search_providers() online_only'yi hiç iletmiyordu)
+        await run("Yakınımda + online (muafiyet kalkmalı)", "yakınımda online bir ders almak istiyorum")
 
     output_path = _write_result(scenarios, intent_diagnostics, label)
     logger.info("Sonuçlar kaydedildi: %s", output_path)

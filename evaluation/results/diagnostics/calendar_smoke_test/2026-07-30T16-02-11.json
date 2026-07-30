@@ -1,0 +1,631 @@
+[
+  {
+    "title": "Başarılı rezervasyon",
+    "success": true,
+    "booking_id": 9,
+    "alternatives": []
+  },
+  {
+    "title": "Slot başkası tarafından zaten dolu",
+    "success": false,
+    "booking_id": null,
+    "alternatives": [
+      {
+        "business": {
+          "id": 16,
+          "title": "Diş Hekimi Ahmet Melih Bozoğlu Diş Kliniği",
+          "type_normalized": "Diş Kliniği",
+          "rating": 5.0,
+          "weighted_rating": 4.976141685472325,
+          "price_min": 6748,
+          "price_max": 7949,
+          "address": "Başiskele/Kocaeli, Türkiye",
+          "phone": "+90 541 908 16 41",
+          "online_available": false,
+          "gender": "unisex",
+          "services": [
+            "diş çekimi",
+            "kanal tedavisi",
+            "diş dolgusu",
+            "implant",
+            "gülüş tasarımı",
+            "lamina (veneer)"
+          ],
+          "tags": [
+            "hafta sonu açık",
+            "yüksek puanlı",
+            "premium"
+          ],
+          "rich_description": "Ahmet Melih Bozoğlu tarafından yönetilen diş kliniği, gülüş tasarımı ve lamina gibi estetik uygulamalarının yanı sıra implant, kanal tedavisi ve dolgu işlemleri de gerçekleştiriyor. Kısa sürede tamamlanan seanslarla profesyonel bakım sunan klinik, uzun yılların deneyimini yansıtan güvenilir bir merkezdir. Farklı yaş ve ihtiyaçlara uygun tedavi seçenekleri mevcut.",
+          "distance_km": null
+        },
+        "appointment_slot_id": 916,
+        "start_time": "2026-07-27T08:05:00Z"
+      },
+      {
+        "business": {
+          "id": 4,
+          "title": "Diş Hekimi Uğur Ümit - İzmit Nöbetçi Dişçi | Kocaeli 7/24 Açık Acil Özel Diş Hastanesi",
+          "type_normalized": "Diş Kliniği",
+          "rating": 4.9,
+          "weighted_rating": 4.876608511300425,
+          "price_min": 4662,
+          "price_max": 6049,
+          "address": "Devlet Hst. Sk. No:30 Kat: 2",
+          "phone": "+90 531 573 78 41",
+          "online_available": false,
+          "gender": "unisex",
+          "services": [
+            "diş çekimi",
+            "diş temizliği (detertraj)",
+            "protez",
+            "diş eti tedavisi (periodontoloji)",
+            "diş dolgusu",
+            "implant"
+          ],
+          "tags": [
+            "yüksek puanlı"
+          ],
+          "rich_description": "Diş Hekimi Uğur Ümit, Kocaeli'de 7/24 açık olan acil diş hastanesi olarak diş eti tedavisinden implant uygulamalarına kadar kapsamlı hizmetler sunmaktadır. Protez, diş dolgusu ve diş temizliği işlemleri kısa sürede gerçekleştirilmektedir. Acil diş problemlerinde hızlı müdahale imkanı sunan klinik, her yaş grubuna hitap etmektedir.",
+          "distance_km": null
+        },
+        "appointment_slot_id": 157,
+        "start_time": "2026-07-27T05:15:00Z"
+      },
+      {
+        "business": {
+          "id": 20,
+          "title": "Dt. Emine Sungur Yılmaz",
+          "type_normalized": "Diş Kliniği",
+          "rating": 5.0,
+          "weighted_rating": 4.864176681862135,
+          "price_min": 3446,
+          "price_max": 6545,
+          "address": "İsmail Gaspıralı Cd. NO:97/5",
+          "phone": "+90 505 733 41 00",
+          "online_available": false,
+          "gender": "unisex",
+          "services": [
+            "diş dolgusu",
+            "kanal tedavisi",
+            "ortodonti (tel tedavisi)",
+            "diş beyazlatma"
+          ],
+          "tags": [
+            "hafta sonu açık",
+            "yüksek puanlı"
+          ],
+          "rich_description": "Dt. Emine Sungur Yılmaz, ortodonti ve diş beyazlatma alanlarında uzmanlaşmış; ayrıca dolgu ve kanal tedavisi uygulamalarını gerçekleştiriyor. Yaklaşık bir saat süren seanslarla etkili sonuçlar alınmasını hedefleyen klinik, kişiye özel tedavi planları hazırlıyor. Güncel yöntemlerle estetik ve sağlık odaklı hizmet sağlanıyor.",
+          "distance_km": null
+        },
+        "appointment_slot_id": 1145,
+        "start_time": "2026-07-27T08:30:00Z"
+      },
+      {
+        "business": {
+          "id": 15,
+          "title": "Diş Hekimi Dr. Deniz Doğan - İzmit Diş Hekimi & Protetik Diş Tedavisi Uzmanı",
+          "type_normalized": "Diş Kliniği",
+          "rating": 5.0,
+          "weighted_rating": 4.855045702491523,
+          "price_min": 4698,
+          "price_max": 6216,
+          "address": "Meditorium sağlık plaza, yazgı sok no:70 kat:2 no:19",
+          "phone": "+90 543 609 71 41",
+          "online_available": false,
+          "gender": "unisex",
+          "services": [
+            "implant",
+            "diş temizliği (detertraj)",
+            "diş çekimi",
+            "diş dolgusu",
+            "zirkonyum kaplama"
+          ],
+          "tags": [
+            "hafta sonu açık",
+            "yüksek puanlı"
+          ],
+          "rich_description": "Dr. Deniz Doğan, İzmit'te implant ve zirkonyum kaplama gibi ileri tedaviler yaparken aynı zamanda diş çekimi ve temizliği hizmetleri sunuyor. Uzmanlığı protetik diş tedavisi alanında olup, kapsamlı ağız bakımı için tercih edilen bir isimdir. 45 dakikalık seansları ile randevularınızı planlayabilirsiniz.",
+          "distance_km": null
+        },
+        "appointment_slot_id": 845,
+        "start_time": "2026-07-27T08:15:00Z"
+      },
+      {
+        "business": {
+          "id": 14,
+          "title": "Dr.Tarık Can Kara",
+          "type_normalized": "Diş Kliniği",
+          "rating": 5.0,
+          "weighted_rating": 4.852567851252061,
+          "price_min": 2319,
+          "price_max": 4886,
+          "address": "Gazi Mustafa Kemal Blv. No:109 D:A",
+          "phone": "+90 531 343 73 05",
+          "online_available": false,
+          "gender": "unisex",
+          "services": [
+            "diş temizliği (detertraj)",
+            "protez",
+            "kanal tedavisi",
+            "diş beyazlatma",
+            "diş dolgusu"
+          ],
+          "tags": [
+            "yüksek puanlı"
+          ],
+          "rich_description": "Dr. Tarık Can Kara, kısa sürede tamamlanan randevu yapısıyla diş temizliği, dolgu ve kanal tedavisi gibi işlemleri pratik şekilde sunuyor. Protez ve beyazlatma uygulamalarıyla da gülüşünüzü desteklemeyi amaçlayan hekim, herkese açık randevu fırsatları sağlıyor. Kişiye özel çözümlerle diş sağlığını korumaya odaklanmaktadır.",
+          "distance_km": null
+        },
+        "appointment_slot_id": 740,
+        "start_time": "2026-07-27T05:15:00Z"
+      }
+    ]
+  },
+  {
+    "title": "Aynı senaryo, max_price=1000 filtresiyle",
+    "success": false,
+    "booking_id": null,
+    "alternatives": [
+      {
+        "business": {
+          "id": 7,
+          "title": "Diş Hekimi Tarık Can Kara , İzmit/Kocaeli",
+          "type_normalized": "Diş Kliniği",
+          "rating": 5.0,
+          "weighted_rating": 4.806184703331362,
+          "price_min": 753,
+          "price_max": 2392,
+          "address": null,
+          "phone": "+90 531 343 73 05",
+          "online_available": false,
+          "gender": "unisex",
+          "services": [
+            "diş çekimi",
+            "pedodonti (çocuk diş hekimliği)",
+            "protez"
+          ],
+          "tags": [
+            "hafta sonu açık",
+            "yüksek puanlı",
+            "uygun fiyatlı"
+          ],
+          "rich_description": "Diş Hekimi Tarık Can Kara, İzmit'te aileden bireylere geniş kapsamlı diş sağlığı hizmetleri sunuyor. Çocuk diş hekimliği alanında uzman olan klinik, aynı zamanda diş çekimi ve protez tedavileriyle de destek sağlıyor. Randevular yaklaşık 45 dakika sürüyor ve her yaştan hasta kabul ediliyor.",
+          "distance_km": null
+        },
+        "appointment_slot_id": 376,
+        "start_time": "2026-07-27T08:15:00Z"
+      },
+      {
+        "business": {
+          "id": 5,
+          "title": "DentAtlas Ağız Ve Diş Sağlığı Polikliniği",
+          "type_normalized": "Diş Kliniği",
+          "rating": 4.8,
+          "weighted_rating": 4.791170730725897,
+          "price_min": 950,
+          "price_max": 6033,
+          "address": "İnönü Cd. No:131",
+          "phone": "+90 4448397",
+          "online_available": false,
+          "gender": "unisex",
+          "services": [
+            "diş temizliği (detertraj)",
+            "diş beyazlatma",
+            "zirkonyum kaplama",
+            "implant",
+            "ortodonti (tel tedavisi)",
+            "gülüş tasarımı"
+          ],
+          "tags": [],
+          "rich_description": "DentAtlas Ağız ve Diş Sağlığı Polikliniği, İzmit'te uzun süren seanslarda diş temizliği, ortodonti ve gülüş tasarımı gibi hizmetler vermektedir. Zirkonyum kaplamalar ile estetik çözümler sunarken, implant tedavileriyle eksik dişlerinizi tamamlamayı hedefler. Kapsamlı tedavi seçenekleriyle ağız sağlığınızı bütünsel olarak destekleyen bir merkezdir.",
+          "distance_km": null
+        },
+        "appointment_slot_id": 242,
+        "start_time": "2026-07-27T07:40:00Z"
+      },
+      {
+        "business": {
+          "id": 8,
+          "title": "Özel Kocaeli Diş Polikliniği",
+          "type_normalized": "Diş Kliniği",
+          "rating": 4.3,
+          "weighted_rating": 4.488856296792937,
+          "price_min": 576,
+          "price_max": 5779,
+          "address": "Mehmetalipaşa mahallesi bağdat caddesi, Erkan Sk. 20/A",
+          "phone": "+90 549 911 41 41",
+          "online_available": false,
+          "gender": "unisex",
+          "services": [
+            "implant",
+            "ortodonti (tel tedavisi)",
+            "diş dolgusu",
+            "diş temizliği (detertraj)",
+            "lamina (veneer)"
+          ],
+          "tags": [],
+          "rich_description": "Özel Kocaeli Diş Polikliniği, implanttan tel tedavisine kadar çeşitli çözümler sunarak ağız sağlığınızı destekliyor. Diş dolgusu, lamina ve profesyonel diş temizliği hizmetleriyle estetik ve sağlık bir arada. Kliniğin sunduğu tedaviler genel olarak bir saat içinde tamamlanıyor.",
+          "distance_km": null
+        },
+        "appointment_slot_id": 434,
+        "start_time": "2026-07-27T09:05:00Z"
+      },
+      {
+        "business": {
+          "id": 1,
+          "title": "Yahyakaptan Diş Hekimi Aydın Cevizli- İzmit Nöbetçi Diş - Kocaeli İzmit Acil 7/24 Diş Kliniği -İzmit özel Diş Hastanesi",
+          "type_normalized": "Diş Kliniği",
+          "rating": 4.9,
+          "weighted_rating": 4.892282690999628,
+          "price_min": 5369,
+          "price_max": 7077,
+          "address": "Gazi Mustafa Kemal Blv. No:111",
+          "phone": "+90 505 318 90 69",
+          "online_available": false,
+          "gender": "unisex",
+          "services": [
+            "implant",
+            "gülüş tasarımı",
+            "diş çekimi",
+            "diş beyazlatma"
+          ],
+          "tags": [
+            "hafta sonu açık",
+            "yüksek puanlı",
+            "premium"
+          ],
+          "rich_description": "Yahyakaptan Diş Hekimi Aydın Cevizli, İzmit'te 7/24 ulaşılabilen özel diş kliniği olarak implant uygulamaları, diş çekimi ve gülüş tasarımı gibi kapsamlı tedaviler sunmaktadır. Diş beyazlatma işlemleriyle estetik görünümünüzü destekleyen kliniğin uzman kadrosu, her yaştan hastaya kişiye özel çözümler üretmektedir.",
+          "distance_km": null
+        },
+        "appointment_slot_id": 3,
+        "start_time": "2026-07-25T08:45:00Z"
+      },
+      {
+        "business": {
+          "id": 1,
+          "title": "Yahyakaptan Diş Hekimi Aydın Cevizli- İzmit Nöbetçi Diş - Kocaeli İzmit Acil 7/24 Diş Kliniği -İzmit özel Diş Hastanesi",
+          "type_normalized": "Diş Kliniği",
+          "rating": 4.9,
+          "weighted_rating": 4.892282690999628,
+          "price_min": 5369,
+          "price_max": 7077,
+          "address": "Gazi Mustafa Kemal Blv. No:111",
+          "phone": "+90 505 318 90 69",
+          "online_available": false,
+          "gender": "unisex",
+          "services": [
+            "implant",
+            "gülüş tasarımı",
+            "diş çekimi",
+            "diş beyazlatma"
+          ],
+          "tags": [
+            "hafta sonu açık",
+            "yüksek puanlı",
+            "premium"
+          ],
+          "rich_description": "Yahyakaptan Diş Hekimi Aydın Cevizli, İzmit'te 7/24 ulaşılabilen özel diş kliniği olarak implant uygulamaları, diş çekimi ve gülüş tasarımı gibi kapsamlı tedaviler sunmaktadır. Diş beyazlatma işlemleriyle estetik görünümünüzü destekleyen kliniğin uzman kadrosu, her yaştan hastaya kişiye özel çözümler üretmektedir.",
+          "distance_km": null
+        },
+        "appointment_slot_id": 4,
+        "start_time": "2026-07-25T10:45:00Z"
+      }
+    ]
+  },
+  {
+    "title": "Aynı senaryo, near_me=True (mesafeye göre sıralı)",
+    "success": false,
+    "booking_id": null,
+    "alternatives": [
+      {
+        "business": {
+          "id": 19,
+          "title": "Özel Dentkartepe Ağız Ve Diş Sağlığı Polikliniği",
+          "type_normalized": "Diş Kliniği",
+          "rating": 4.9,
+          "weighted_rating": 4.852479453137348,
+          "price_min": 1634,
+          "price_max": 4885,
+          "address": "Gazi Mustafa Kemal Blv. No: 157/1",
+          "phone": "+90 262 323 55 00",
+          "online_available": false,
+          "gender": "unisex",
+          "services": [
+            "protez",
+            "pedodonti (çocuk diş hekimliği)",
+            "diş dolgusu",
+            "diş çekimi",
+            "diş temizliği (detertraj)",
+            "kanal tedavisi"
+          ],
+          "tags": [
+            "hafta sonu açık",
+            "yüksek puanlı"
+          ],
+          "rich_description": "Özel Dentkartepe Polikliniği, çocuk diş hekimliği hizmetlerinin yanı sıra protez, dolgu ve kanal tedavisi de sunuyor. Diş temizliği ve çekimi işlemlerinde geniş yaş grubuna hizmet veren klinik, yaklaşık bir buçuk saatlik randevularla detaylı kontrol imkanı sağlıyor. Hasta odaklı yaklaşımıyla bilinen işletme, aileler için uygun bir diş sağlığı merkezi konumunda.",
+          "distance_km": 1.4561876794168938
+        },
+        "appointment_slot_id": 1116,
+        "start_time": "2026-07-27T07:40:00Z"
+      },
+      {
+        "business": {
+          "id": 14,
+          "title": "Dr.Tarık Can Kara",
+          "type_normalized": "Diş Kliniği",
+          "rating": 5.0,
+          "weighted_rating": 4.852567851252061,
+          "price_min": 2319,
+          "price_max": 4886,
+          "address": "Gazi Mustafa Kemal Blv. No:109 D:A",
+          "phone": "+90 531 343 73 05",
+          "online_available": false,
+          "gender": "unisex",
+          "services": [
+            "diş temizliği (detertraj)",
+            "protez",
+            "kanal tedavisi",
+            "diş beyazlatma",
+            "diş dolgusu"
+          ],
+          "tags": [
+            "yüksek puanlı"
+          ],
+          "rich_description": "Dr. Tarık Can Kara, kısa sürede tamamlanan randevu yapısıyla diş temizliği, dolgu ve kanal tedavisi gibi işlemleri pratik şekilde sunuyor. Protez ve beyazlatma uygulamalarıyla da gülüşünüzü desteklemeyi amaçlayan hekim, herkese açık randevu fırsatları sağlıyor. Kişiye özel çözümlerle diş sağlığını korumaya odaklanmaktadır.",
+          "distance_km": 1.6883408194949399
+        },
+        "appointment_slot_id": 740,
+        "start_time": "2026-07-27T05:15:00Z"
+      },
+      {
+        "business": {
+          "id": 4,
+          "title": "Diş Hekimi Uğur Ümit - İzmit Nöbetçi Dişçi | Kocaeli 7/24 Açık Acil Özel Diş Hastanesi",
+          "type_normalized": "Diş Kliniği",
+          "rating": 4.9,
+          "weighted_rating": 4.876608511300425,
+          "price_min": 4662,
+          "price_max": 6049,
+          "address": "Devlet Hst. Sk. No:30 Kat: 2",
+          "phone": "+90 531 573 78 41",
+          "online_available": false,
+          "gender": "unisex",
+          "services": [
+            "diş çekimi",
+            "diş temizliği (detertraj)",
+            "protez",
+            "diş eti tedavisi (periodontoloji)",
+            "diş dolgusu",
+            "implant"
+          ],
+          "tags": [
+            "yüksek puanlı"
+          ],
+          "rich_description": "Diş Hekimi Uğur Ümit, Kocaeli'de 7/24 açık olan acil diş hastanesi olarak diş eti tedavisinden implant uygulamalarına kadar kapsamlı hizmetler sunmaktadır. Protez, diş dolgusu ve diş temizliği işlemleri kısa sürede gerçekleştirilmektedir. Acil diş problemlerinde hızlı müdahale imkanı sunan klinik, her yaş grubuna hitap etmektedir.",
+          "distance_km": 3.229764513295219
+        },
+        "appointment_slot_id": 157,
+        "start_time": "2026-07-27T05:15:00Z"
+      },
+      {
+        "business": {
+          "id": 3,
+          "title": "Dentriva Diş Yahyakaptan - İzmit İmplant-İzmit Nöbetçi Diş-İzmit Diş Teli-İzmit Çocuk Diş-İzmit Ortodonti-İzmit Pedodonti",
+          "type_normalized": "Diş Kliniği",
+          "rating": 4.8,
+          "weighted_rating": 4.797375895430465,
+          "price_min": 5057,
+          "price_max": 6738,
+          "address": "Demokrasi Cd. No:49",
+          "phone": "+90 533 465 24 72",
+          "online_available": false,
+          "gender": "unisex",
+          "services": [
+            "diş temizliği (detertraj)",
+            "diş dolgusu",
+            "zirkonyum kaplama",
+            "protez",
+            "ortodonti (tel tedavisi)"
+          ],
+          "tags": [
+            "hafta sonu açık",
+            "premium"
+          ],
+          "rich_description": "Dentriva Diş Yahyakaptan, İzmit'te ortodonti ve pedodonti alanlarında da hizmet sunan geniş kapsamlı bir diş kliniğidir. Zirkonyum kaplama ve protez uygulamalarının yanı sıra diş dolgusu ve profesyonel diş temizliği de yapılmaktadır. Modern tedavi yöntemleriyle hasta memnuniyetine önem veren klinik, her yaştan bireye uygun çözümler üretmektedir.",
+          "distance_km": 1.2879751743227335
+        },
+        "appointment_slot_id": 104,
+        "start_time": "2026-07-27T10:15:00Z"
+      },
+      {
+        "business": {
+          "id": 9,
+          "title": "Özel Kocaeli Arma Ağız ve Diş Sağlığı Polikliniği",
+          "type_normalized": "Diş Kliniği",
+          "rating": 4.6,
+          "weighted_rating": 4.6245512560321105,
+          "price_min": 3497,
+          "price_max": 5602,
+          "address": "Dönmez Sk. No:29",
+          "phone": "+90 262 311 00 03",
+          "online_available": false,
+          "gender": "unisex",
+          "services": [
+            "implant",
+            "diş beyazlatma",
+            "kanal tedavisi",
+            "ortodonti (tel tedavisi)",
+            "pedodonti (çocuk diş hekimliği)",
+            "protez"
+          ],
+          "tags": [
+            "hafta sonu açık"
+          ],
+          "rich_description": "Özel Kocaeli Arma Ağız ve Diş Sağlığı Polikliniği, kapsamlı diş hizmetleriyle öne çıkıyor. Kanal tedavisinden çocuk diş hekimliğine, implanttan proteze kadar geniş bir yelpazede hizmet veriliyor. Ayrıca diş beyazlatma uygulamalarıyla gülüşünüzü yenilemek isteyenlere destek sağlıyor.",
+          "distance_km": 1.1684892658096422
+        },
+        "appointment_slot_id": 481,
+        "start_time": "2026-07-27T08:30:00Z"
+      }
+    ]
+  },
+  {
+    "title": "Kullanıcının başka işletmedeki randevusuyla çakışma",
+    "success": false,
+    "booking_id": null,
+    "alternatives": [
+      {
+        "business": {
+          "id": 16,
+          "title": "Diş Hekimi Ahmet Melih Bozoğlu Diş Kliniği",
+          "type_normalized": "Diş Kliniği",
+          "rating": 5.0,
+          "weighted_rating": 4.976141685472325,
+          "price_min": 6748,
+          "price_max": 7949,
+          "address": "Başiskele/Kocaeli, Türkiye",
+          "phone": "+90 541 908 16 41",
+          "online_available": false,
+          "gender": "unisex",
+          "services": [
+            "diş çekimi",
+            "kanal tedavisi",
+            "diş dolgusu",
+            "implant",
+            "gülüş tasarımı",
+            "lamina (veneer)"
+          ],
+          "tags": [
+            "hafta sonu açık",
+            "yüksek puanlı",
+            "premium"
+          ],
+          "rich_description": "Ahmet Melih Bozoğlu tarafından yönetilen diş kliniği, gülüş tasarımı ve lamina gibi estetik uygulamalarının yanı sıra implant, kanal tedavisi ve dolgu işlemleri de gerçekleştiriyor. Kısa sürede tamamlanan seanslarla profesyonel bakım sunan klinik, uzun yılların deneyimini yansıtan güvenilir bir merkezdir. Farklı yaş ve ihtiyaçlara uygun tedavi seçenekleri mevcut.",
+          "distance_km": null
+        },
+        "appointment_slot_id": 908,
+        "start_time": "2026-07-25T06:05:00Z"
+      },
+      {
+        "business": {
+          "id": 1,
+          "title": "Yahyakaptan Diş Hekimi Aydın Cevizli- İzmit Nöbetçi Diş - Kocaeli İzmit Acil 7/24 Diş Kliniği -İzmit özel Diş Hastanesi",
+          "type_normalized": "Diş Kliniği",
+          "rating": 4.9,
+          "weighted_rating": 4.892282690999628,
+          "price_min": 5369,
+          "price_max": 7077,
+          "address": "Gazi Mustafa Kemal Blv. No:111",
+          "phone": "+90 505 318 90 69",
+          "online_available": false,
+          "gender": "unisex",
+          "services": [
+            "implant",
+            "gülüş tasarımı",
+            "diş çekimi",
+            "diş beyazlatma"
+          ],
+          "tags": [
+            "hafta sonu açık",
+            "yüksek puanlı",
+            "premium"
+          ],
+          "rich_description": "Yahyakaptan Diş Hekimi Aydın Cevizli, İzmit'te 7/24 ulaşılabilen özel diş kliniği olarak implant uygulamaları, diş çekimi ve gülüş tasarımı gibi kapsamlı tedaviler sunmaktadır. Diş beyazlatma işlemleriyle estetik görünümünüzü destekleyen kliniğin uzman kadrosu, her yaştan hastaya kişiye özel çözümler üretmektedir.",
+          "distance_km": null
+        },
+        "appointment_slot_id": 3,
+        "start_time": "2026-07-25T08:45:00Z"
+      },
+      {
+        "business": {
+          "id": 15,
+          "title": "Diş Hekimi Dr. Deniz Doğan - İzmit Diş Hekimi & Protetik Diş Tedavisi Uzmanı",
+          "type_normalized": "Diş Kliniği",
+          "rating": 5.0,
+          "weighted_rating": 4.855045702491523,
+          "price_min": 4698,
+          "price_max": 6216,
+          "address": "Meditorium sağlık plaza, yazgı sok no:70 kat:2 no:19",
+          "phone": "+90 543 609 71 41",
+          "online_available": false,
+          "gender": "unisex",
+          "services": [
+            "implant",
+            "diş temizliği (detertraj)",
+            "diş çekimi",
+            "diş dolgusu",
+            "zirkonyum kaplama"
+          ],
+          "tags": [
+            "hafta sonu açık",
+            "yüksek puanlı"
+          ],
+          "rich_description": "Dr. Deniz Doğan, İzmit'te implant ve zirkonyum kaplama gibi ileri tedaviler yaparken aynı zamanda diş çekimi ve temizliği hizmetleri sunuyor. Uzmanlığı protetik diş tedavisi alanında olup, kapsamlı ağız bakımı için tercih edilen bir isimdir. 45 dakikalık seansları ile randevularınızı planlayabilirsiniz.",
+          "distance_km": null
+        },
+        "appointment_slot_id": 835,
+        "start_time": "2026-07-25T04:30:00Z"
+      },
+      {
+        "business": {
+          "id": 7,
+          "title": "Diş Hekimi Tarık Can Kara , İzmit/Kocaeli",
+          "type_normalized": "Diş Kliniği",
+          "rating": 5.0,
+          "weighted_rating": 4.806184703331362,
+          "price_min": 753,
+          "price_max": 2392,
+          "address": null,
+          "phone": "+90 531 343 73 05",
+          "online_available": false,
+          "gender": "unisex",
+          "services": [
+            "diş çekimi",
+            "pedodonti (çocuk diş hekimliği)",
+            "protez"
+          ],
+          "tags": [
+            "hafta sonu açık",
+            "yüksek puanlı",
+            "uygun fiyatlı"
+          ],
+          "rich_description": "Diş Hekimi Tarık Can Kara, İzmit'te aileden bireylere geniş kapsamlı diş sağlığı hizmetleri sunuyor. Çocuk diş hekimliği alanında uzman olan klinik, aynı zamanda diş çekimi ve protez tedavileriyle de destek sağlıyor. Randevular yaklaşık 45 dakika sürüyor ve her yaştan hasta kabul ediliyor.",
+          "distance_km": null
+        },
+        "appointment_slot_id": 373,
+        "start_time": "2026-07-25T08:15:00Z"
+      },
+      {
+        "business": {
+          "id": 11,
+          "title": "Uzman Diş Grup - İmplant - Gömülü Diş - Ortodonti - Pedodonti - Gülüş Tasarımı - Kocaeli Diş Kliniği",
+          "type_normalized": "Diş Kliniği",
+          "rating": 4.8,
+          "weighted_rating": 4.795698814074292,
+          "price_min": 1741,
+          "price_max": 7423,
+          "address": "Nazerinn İş Merkezi, Şht. Ali İhsan Çakmak Sk. No:46/B",
+          "phone": "+90 262 332 35 45",
+          "online_available": false,
+          "gender": "unisex",
+          "services": [
+            "kanal tedavisi",
+            "gülüş tasarımı",
+            "diş dolgusu",
+            "protez",
+            "implant",
+            "diş çekimi"
+          ],
+          "tags": [
+            "hafta sonu açık"
+          ],
+          "rich_description": "Uzman Diş Grup, Kocaeli'de geniş kapsamlı diş sağlığı çözümleriyle dikkat çekiyor. Kanal tedavisi, implant ve protez gibi temel uygulamaların yanı sıra gülüş tasarımı hizmetleri de bulunuyor. Tedavi süreçleri yaklaşık 90 dakika sürmekte ve her yaş grubuna hitap etmektedir.",
+          "distance_km": null
+        },
+        "appointment_slot_id": 596,
+        "start_time": "2026-07-25T04:45:00Z"
+      }
+    ]
+  }
+]
