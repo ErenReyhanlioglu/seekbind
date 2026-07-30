@@ -5,6 +5,9 @@ ORM (SQLAlchemy) nesneleri doğrudan serialize edilmez, her zaman
 buradaki gibi ayrı bir response schema'sına eşlenir.
 """
 
+from datetime import datetime
+from typing import Literal
+
 from pydantic import BaseModel, Field
 
 # search_providers()'ın aday havuzu üst sınırıyla (CANDIDATE_POOL_SIZE,
@@ -82,3 +85,49 @@ class RecommendationResponse(BaseModel):
     recommendation: str
     results: list[ProviderResult]
     total: int
+
+
+class BookingAlternative(BaseModel):
+    """`book_appointment()` başarısız olduğunda (slot dolu ya da kullanıcının
+    kendi randevusuyla çakışıyor) önerilen boş bir slot — aynı işletmeden
+    ya da aynı kategorideki başka bir işletmeden olabilir."""
+
+    business_id: int
+    business_title: str
+    appointment_slot_id: int
+    start_time: datetime
+    weighted_rating: float | None = None
+
+
+class BookRequest(BaseModel):
+    """`POST /book` istek gövdesi — belirli bir slotu belirli bir kullanıcıya rezerve etme isteği.
+
+    `online_only`/`gender`/`min_price`/`max_price` opsiyonel — çağıran
+    (örn. bir frontend ya da SeekBind 2.0), zaten `/recommend`'e yaptığı
+    orijinal çağrıdan bu tercihleri elinde tutuyorsa, alternatif
+    önerisinin de bunlara uymasını istiyorsa iletebilir. `SearchFilters`
+    doğrudan gömülmüyor bilerek — `category`/`near` gibi burada anlamsız
+    alanlar taşımasın diye (bkz. `RecommendRequest`'in aynı gerekçesi).
+    """
+
+    user_id: int
+    appointment_slot_id: int
+    online_only: bool = False
+    gender: Literal["female", "male", "unisex"] | None = None
+    min_price: int | None = None
+    max_price: int | None = None
+
+
+class BookResponse(BaseModel):
+    """`POST /book` yanıtı.
+
+    `success=True` ise `booking_id` dolu. `success=False` ise (slot dolu
+    ya da kullanıcının başka bir randevusuyla çakışıyor) `alternatives`
+    doldurulur — düz metin değil, yapılandırılmış veri (bkz.
+    docs/roadmap.md "SeekBind 2.0" notu: ileride bunu programatik
+    tüketecek bir orkestrasyon katmanı için).
+    """
+
+    success: bool
+    booking_id: int | None = None
+    alternatives: list[BookingAlternative] = Field(default_factory=list)

@@ -4,13 +4,16 @@ from datetime import date
 from typing import cast
 from unittest.mock import AsyncMock, MagicMock
 
+import pytest
+from fastapi import HTTPException
 from pydantic import SecretStr
 from qdrant_client import AsyncQdrantClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
 import backend.api.routes as routes_module
-from backend.api.schemas import DependencyStatus, RecommendationResponse, RecommendRequest
-from backend.api.routes import check_llm_config, check_postgres, check_qdrant, health_check, recommend
+from backend.api.schemas import BookRequest, BookResponse, DependencyStatus, RecommendationResponse, RecommendRequest
+from backend.api.routes import book, check_llm_config, check_postgres, check_qdrant, health_check, recommend
+from backend.services.calendar import SlotNotFoundError
 from backend.services.embedding import EmbeddingProvider
 from backend.services.llm import LLMProvider
 from backend.services.search import BM25Index, RerankerProvider
@@ -149,3 +152,51 @@ async def test_recommend_calls_get_recommendation_with_request_fields(monkeypatc
     assert captured["offset"] == 2
     assert isinstance(captured["today"], date)
     assert response.recommendation == "test önerisi"
+
+
+async def test_book_calls_book_appointment_with_request_fields(monkeypatch) -> None:
+    captured: dict = {}
+
+    async def fake_book_appointment(
+        session, user_id, appointment_slot_id, *, online_only=False, gender=None, min_price=None, max_price=None
+    ):
+        captured.update(
+            user_id=user_id,
+            appointment_slot_id=appointment_slot_id,
+            online_only=online_only,
+            gender=gender,
+            min_price=min_price,
+            max_price=max_price,
+        )
+        return BookResponse(success=True, booking_id=42)
+
+    monkeypatch.setattr(routes_module, "book_appointment", fake_book_appointment)
+    request = BookRequest(user_id=1, appointment_slot_id=7, online_only=True, gender="unisex", max_price=500)
+
+    response = await book(request=request, session=cast(AsyncSession, object()))
+
+    assert captured == {
+        "user_id": 1,
+        "appointment_slot_id": 7,
+        "online_only": True,
+        "gender": "unisex",
+        "min_price": None,
+        "max_price": 500,
+    }
+    assert response.success is True
+    assert response.booking_id == 42
+
+
+async def test_book_raises_http_404_when_slot_not_found(monkeypatch) -> None:
+    async def fake_book_appointment(
+        session, user_id, appointment_slot_id, *, online_only=False, gender=None, min_price=None, max_price=None
+    ):
+        raise SlotNotFoundError(f"appointment_slot_id={appointment_slot_id} bulunamadı")
+
+    monkeypatch.setattr(routes_module, "book_appointment", fake_book_appointment)
+    request = BookRequest(user_id=1, appointment_slot_id=999)
+
+    with pytest.raises(HTTPException) as exc_info:
+        await book(request=request, session=cast(AsyncSession, object()))
+
+    assert exc_info.value.status_code == 404
