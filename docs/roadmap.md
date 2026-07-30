@@ -60,6 +60,7 @@ test kanıtı ve "SeekBind 2.0" notu için bkz. [ADR-0017](adr/0017-tool-calling
 ## Roadmap dışı (ihtiyaç oldukça)
 
 - ✅ `docs/terminal-cheatsheet` — git/uv/docker komut referansı
+- ⬜ `perf/connection-pool-tuning` — `get_engine()` connection pool boyutu ayarı, tahminen `test/db-integration`'dan sonra
 
 ---
 
