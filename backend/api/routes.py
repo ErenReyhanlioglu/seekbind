@@ -2,15 +2,23 @@
 
 from datetime import date
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from qdrant_client import AsyncQdrantClient
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from backend.api.schemas import DependencyStatus, HealthCheckResponse, RecommendationResponse, RecommendRequest
+from backend.api.schemas import (
+    BookRequest,
+    BookResponse,
+    DependencyStatus,
+    HealthCheckResponse,
+    RecommendationResponse,
+    RecommendRequest,
+)
 from backend.config import get_settings
 from backend.db.qdrant import get_qdrant_client
 from backend.db.session import get_db_session
+from backend.services.calendar import SlotNotFoundError, book_appointment
 from backend.services.embedding import EmbeddingProvider, get_embedding_provider
 from backend.services.llm import LLMProvider, get_llm_provider
 from backend.services.rag import get_recommendation
@@ -87,3 +95,28 @@ async def recommend(
         limit=request.limit,
         offset=request.offset,
     )
+
+
+@router.post("/book", response_model=BookResponse)
+async def book(
+    request: BookRequest,
+    session: AsyncSession = Depends(get_db_session),
+) -> BookResponse:
+    """Belirli bir randevu slotunu kullanıcıya rezerve eder.
+
+    Slot dolu ya da kullanıcının başka bir randevusuyla çakışıyorsa
+    `success=False` + yapılandırılmış alternatifler döner (istisna değil,
+    bu normal ve beklenen bir sonuç).
+    """
+    try:
+        return await book_appointment(
+            session,
+            request.user_id,
+            request.appointment_slot_id,
+            online_only=request.online_only,
+            gender=request.gender,
+            min_price=request.min_price,
+            max_price=request.max_price,
+        )
+    except SlotNotFoundError as e:
+        raise HTTPException(status_code=404, detail=str(e)) from e

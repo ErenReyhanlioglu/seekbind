@@ -1,0 +1,134 @@
+[
+  {
+    "title": "Başarılı rezervasyon",
+    "success": true,
+    "booking_id": 7,
+    "alternatives": []
+  },
+  {
+    "title": "Slot başkası tarafından zaten dolu",
+    "success": false,
+    "booking_id": null,
+    "alternatives": [
+      {
+        "business_id": 16,
+        "business_title": "Diş Hekimi Ahmet Melih Bozoğlu Diş Kliniği",
+        "appointment_slot_id": 916,
+        "start_time": "2026-07-27T08:05:00+00:00",
+        "weighted_rating": 4.976141685472325
+      },
+      {
+        "business_id": 4,
+        "business_title": "Diş Hekimi Uğur Ümit - İzmit Nöbetçi Dişçi | Kocaeli 7/24 Açık Acil Özel Diş Hastanesi",
+        "appointment_slot_id": 157,
+        "start_time": "2026-07-27T05:15:00+00:00",
+        "weighted_rating": 4.876608511300425
+      },
+      {
+        "business_id": 20,
+        "business_title": "Dt. Emine Sungur Yılmaz",
+        "appointment_slot_id": 1145,
+        "start_time": "2026-07-27T08:30:00+00:00",
+        "weighted_rating": 4.864176681862135
+      },
+      {
+        "business_id": 15,
+        "business_title": "Diş Hekimi Dr. Deniz Doğan - İzmit Diş Hekimi & Protetik Diş Tedavisi Uzmanı",
+        "appointment_slot_id": 845,
+        "start_time": "2026-07-27T08:15:00+00:00",
+        "weighted_rating": 4.855045702491523
+      },
+      {
+        "business_id": 14,
+        "business_title": "Dr.Tarık Can Kara",
+        "appointment_slot_id": 740,
+        "start_time": "2026-07-27T05:15:00+00:00",
+        "weighted_rating": 4.852567851252061
+      }
+    ]
+  },
+  {
+    "title": "Aynı senaryo, max_price=1000 filtresiyle",
+    "success": false,
+    "booking_id": null,
+    "alternatives": [
+      {
+        "business_id": 7,
+        "business_title": "Diş Hekimi Tarık Can Kara , İzmit/Kocaeli",
+        "appointment_slot_id": 376,
+        "start_time": "2026-07-27T08:15:00+00:00",
+        "weighted_rating": 4.806184703331362
+      },
+      {
+        "business_id": 5,
+        "business_title": "DentAtlas Ağız Ve Diş Sağlığı Polikliniği",
+        "appointment_slot_id": 242,
+        "start_time": "2026-07-27T07:40:00+00:00",
+        "weighted_rating": 4.791170730725897
+      },
+      {
+        "business_id": 8,
+        "business_title": "Özel Kocaeli Diş Polikliniği",
+        "appointment_slot_id": 434,
+        "start_time": "2026-07-27T09:05:00+00:00",
+        "weighted_rating": 4.488856296792937
+      },
+      {
+        "business_id": 1,
+        "business_title": "Yahyakaptan Diş Hekimi Aydın Cevizli- İzmit Nöbetçi Diş - Kocaeli İzmit Acil 7/24 Diş Kliniği -İzmit özel Diş Hastanesi",
+        "appointment_slot_id": 3,
+        "start_time": "2026-07-25T08:45:00+00:00",
+        "weighted_rating": null
+      },
+      {
+        "business_id": 1,
+        "business_title": "Yahyakaptan Diş Hekimi Aydın Cevizli- İzmit Nöbetçi Diş - Kocaeli İzmit Acil 7/24 Diş Kliniği -İzmit özel Diş Hastanesi",
+        "appointment_slot_id": 4,
+        "start_time": "2026-07-25T10:45:00+00:00",
+        "weighted_rating": null
+      }
+    ]
+  },
+  {
+    "title": "Kullanıcının başka işletmedeki randevusuyla çakışma",
+    "success": false,
+    "booking_id": null,
+    "alternatives": [
+      {
+        "business_id": 16,
+        "business_title": "Diş Hekimi Ahmet Melih Bozoğlu Diş Kliniği",
+        "appointment_slot_id": 908,
+        "start_time": "2026-07-25T06:05:00+00:00",
+        "weighted_rating": 4.976141685472325
+      },
+      {
+        "business_id": 1,
+        "business_title": "Yahyakaptan Diş Hekimi Aydın Cevizli- İzmit Nöbetçi Diş - Kocaeli İzmit Acil 7/24 Diş Kliniği -İzmit özel Diş Hastanesi",
+        "appointment_slot_id": 3,
+        "start_time": "2026-07-25T08:45:00+00:00",
+        "weighted_rating": 4.892282690999628
+      },
+      {
+        "business_id": 15,
+        "business_title": "Diş Hekimi Dr. Deniz Doğan - İzmit Diş Hekimi & Protetik Diş Tedavisi Uzmanı",
+        "appointment_slot_id": 835,
+        "start_time": "2026-07-25T04:30:00+00:00",
+        "weighted_rating": 4.855045702491523
+      },
+      {
+        "business_id": 7,
+        "business_title": "Diş Hekimi Tarık Can Kara , İzmit/Kocaeli",
+        "appointment_slot_id": 373,
+        "start_time": "2026-07-25T08:15:00+00:00",
+        "weighted_rating": 4.806184703331362
+      },
+      {
+        "business_id": 11,
+        "business_title": "Uzman Diş Grup - İmplant - Gömülü Diş - Ortodonti - Pedodonti - Gülüş Tasarımı - Kocaeli Diş Kliniği",
+        "appointment_slot_id": 596,
+        "start_time": "2026-07-25T04:45:00+00:00",
+        "weighted_rating": 4.795698814074292
+      }
+    ]
+  }
+]
