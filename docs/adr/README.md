@@ -37,3 +37,4 @@ tarafından supersede edildi)
 | [0017](0017-tool-calling-not-needed.md) | Tool calling gerekli değil — çoklu-hizmet arama SeekBind 2.0'a bırakıldı | Kabul edildi | 2026-07-29 |
 | [0018](0018-calendar-service-booking-and-alternatives.md) | Calendar-service — rezervasyon, çakışma kontrolü ve alternatif önerisi | Kabul edildi, uygulandı | 2026-07-30 |
 | [0019](0019-distance-as-ranking-signal.md) | Mesafe — filtre değil, RRF ile birleşen bir sıralama sinyali | Kabul edildi, uygulandı | 2026-07-30 |
+| [0020](0020-integration-test-isolation-strategy.md) | Entegrasyon testi izolasyon stratejisi — gerçek DB, SAVEPOINT ve sahte LLM sağlayıcıları | Kabul edildi, uygulandı | 2026-07-30 |

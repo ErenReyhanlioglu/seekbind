@@ -20,6 +20,7 @@ dependencies = [
 
 [dependency-groups]
 dev = [
+    "httpx>=0.28.1",
     "pyright>=1.1.411",
     "pytest>=9.1.1",
     "pytest-asyncio>=1.4.0",
@@ -28,3 +29,16 @@ dev = [
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
+# tests/integration bir pytest oturumunda tek bir gerçek Postgres connection
+# pool'u (get_engine(), @lru_cache) paylaşıyor — pytest-asyncio'nun
+# varsayılanı (her test fonksiyonuna ayrı event loop) bu pool'u ilk kurulduğu
+# loop'a kilitler, sonraki testler farklı bir loop'ta çalışırsa asyncpg
+# "attached to a different loop" hatası verir. Tüm oturumun tek event loop
+# paylaşması bunu çözer; unit testler saf mock kullandığı için (gerçek
+# asyncpg/network bağlantısı yok) bu değişiklikten etkilenmez.
+asyncio_default_fixture_loop_scope = "session"
+asyncio_default_test_loop_scope = "session"
+markers = [
+    "integration: gerçek Postgres/Qdrant'a karşı çalışır, docker-compose servislerinin ayakta olmasını gerektirir (varsayılan çalıştırmada hariç tutulur)",
+]
+addopts = "-m 'not integration'"
