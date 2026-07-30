@@ -104,4 +104,8 @@ coverage %100 korundu.
 - `user_id`'nin gerçekten var olup olmadığı doğrulanmıyor — geçersiz bir
   `user_id` verilirse hata, DB'nin FK constraint'inden çıplak bir 500
   olarak sızıyor, kullanıcı dostu bir mesaj değil
-- Mesafe (yukarıda açıklandı, `feature/near-filter`'a bırakıldı)
+- ~~Mesafe (yukarıda açıklandı, `feature/near-filter`'a bırakıldı)~~ —
+  [ADR-0019](0019-distance-as-ranking-signal.md)'da kapatıldı:
+  `_find_cross_business_alternatives()` artık `apply_final_sort()`'u
+  (kendi elle yazdığı rating-sort kodu yerine) yeniden kullanıyor,
+  `book_appointment()`'a `near_me: bool` parametresi eklendi.

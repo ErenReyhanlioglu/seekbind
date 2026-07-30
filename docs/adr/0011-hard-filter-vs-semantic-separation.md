@@ -1,7 +1,7 @@
 # ADR-0011: Kesin filtre / semantik ayrımı
 
-**Durum:** Kısmen uygulandı
-**Tarih:** 2026-07-24 (karar) · 2026-07-29 (ayrıştırma kısmı büyük ölçüde tamamlandı, konum hariç)
+**Durum:** Kabul edildi, uygulandı
+**Tarih:** 2026-07-24 (karar) · 2026-07-29 (ayrıştırma kısmı büyük ölçüde tamamlandı, konum hariç) · 2026-07-30 (konum, [ADR-0019](0019-distance-as-ranking-signal.md)'da farklı bir yaklaşımla kapatıldı)
 
 ## Bağlam
 
@@ -30,10 +30,17 @@ cinsiyet, online, hafta sonu, gün/saat müsaitliği ayrıştırılıyor ve
 semantik kısım (`semantic_query`) yer adları dahil korunarak embedding
 aramasına gidiyor.
 
-**Eksik kalan tek parça: konum (`NearFilter`).** "Yakınımda" gibi
-ifadeler için gerçek koordinat çıkarımı yapılmıyor — geocoding/cihaz
-konumu altyapısı yok (frontend de henüz yok, Faz 7). Bu, unutulmuş
-değil bilinçli bir sınır; roadmap'te de şu an bunu ele alacak bir
-branch tanımlı değil. `NearFilter` hâlâ sadece hazır bir
-(lat, lon, radius) üçlüsü kabul ediyor, LLM'in bunu doldurması için
-bir yol yok.
+**Konum, `feat/near-filter`'da ([ADR-0019](0019-distance-as-ranking-signal.md))
+kapatıldı — ama bu ADR'nin orijinal metninin varsaydığından FARKLI bir
+mekanizmayla.** Gerçek geocoding/cihaz konumu hâlâ yok (frontend de
+henüz yok, Faz 7) — bu hâlâ bilinçli bir sınır. Ama `UserProfile`'ın
+sabit referans konumu kullanılarak, "yakınımda" (ve "5 km uzaklıkta"
+gibi somut mesafe ifadeleri) artık `ParsedIntent.near_me: bool` olarak
+ayrıştırılıyor. Kritik fark: konum burada bu ADR'nin diğer kesin
+filtreleri (fiyat, cinsiyet, kategori) gibi bir Qdrant `geo_radius`
+HARD FİLTRESİ olarak uygulanmadı — sparse kategorilerde (`Cilt Bakım
+Merkezi` gibi 2 işletmeli) sıfır sonuç riski yüzünden bilinçli olarak
+bir SIRALAMA sinyaline dönüştürüldü (detay ve gerekçe ADR-0019'da).
+`NearFilter`/`SearchFilters.near`'ın bu ADR'de tarif edilen
+`geo_radius` mekanizması koddan silinmedi ama hâlâ hiçbir yerden set
+edilmiyor.
