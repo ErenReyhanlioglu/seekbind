@@ -135,7 +135,7 @@ async def test_recommend_calls_get_recommendation_with_request_fields(monkeypatc
         return RecommendationResponse(recommendation="test önerisi", results=[], total=0)
 
     monkeypatch.setattr(routes_module, "get_recommendation", fake_get_recommendation)
-    request = RecommendRequest(query="ucuz dişçi", limit=5, offset=2)
+    request = RecommendRequest(query="ucuz dişçi", user_id=1, limit=5, offset=2)
 
     response = await recommend(
         request=request,
@@ -148,6 +148,7 @@ async def test_recommend_calls_get_recommendation_with_request_fields(monkeypatc
     )
 
     assert captured["raw_query"] == "ucuz dişçi"
+    assert captured["user_id"] == 1
     assert captured["limit"] == 5
     assert captured["offset"] == 2
     assert isinstance(captured["today"], date)
@@ -158,7 +159,15 @@ async def test_book_calls_book_appointment_with_request_fields(monkeypatch) -> N
     captured: dict = {}
 
     async def fake_book_appointment(
-        session, user_id, appointment_slot_id, *, online_only=False, gender=None, min_price=None, max_price=None
+        session,
+        user_id,
+        appointment_slot_id,
+        *,
+        online_only=False,
+        gender=None,
+        min_price=None,
+        max_price=None,
+        near_me=False,
     ):
         captured.update(
             user_id=user_id,
@@ -167,11 +176,14 @@ async def test_book_calls_book_appointment_with_request_fields(monkeypatch) -> N
             gender=gender,
             min_price=min_price,
             max_price=max_price,
+            near_me=near_me,
         )
         return BookResponse(success=True, booking_id=42)
 
     monkeypatch.setattr(routes_module, "book_appointment", fake_book_appointment)
-    request = BookRequest(user_id=1, appointment_slot_id=7, online_only=True, gender="unisex", max_price=500)
+    request = BookRequest(
+        user_id=1, appointment_slot_id=7, online_only=True, gender="unisex", max_price=500, near_me=True
+    )
 
     response = await book(request=request, session=cast(AsyncSession, object()))
 
@@ -182,6 +194,7 @@ async def test_book_calls_book_appointment_with_request_fields(monkeypatch) -> N
         "gender": "unisex",
         "min_price": None,
         "max_price": 500,
+        "near_me": True,
     }
     assert response.success is True
     assert response.booking_id == 42
@@ -189,7 +202,15 @@ async def test_book_calls_book_appointment_with_request_fields(monkeypatch) -> N
 
 async def test_book_raises_http_404_when_slot_not_found(monkeypatch) -> None:
     async def fake_book_appointment(
-        session, user_id, appointment_slot_id, *, online_only=False, gender=None, min_price=None, max_price=None
+        session,
+        user_id,
+        appointment_slot_id,
+        *,
+        online_only=False,
+        gender=None,
+        min_price=None,
+        max_price=None,
+        near_me=False,
     ):
         raise SlotNotFoundError(f"appointment_slot_id={appointment_slot_id} bulunamadı")
 

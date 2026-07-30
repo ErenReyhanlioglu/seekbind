@@ -138,3 +138,12 @@ Değişen dosyalar: `search/service.py` (`RatingPreference`, `_sort_by_rating`,
 `rag/recommendation.py` (`ordering_context`), `search_intent.txt`,
 `recommendation.txt`. 14 yeni birim testi eklendi (toplam 118), `pytest`
 ve `pyright` temiz.
+
+**Not (2026-07-30):** `_sort_by_rating()`, [ADR-0019](0019-distance-as-ranking-signal.md)'da
+`apply_final_sort()` olarak genelleştirildi — mesafe de istenirse
+`reciprocal_rank_fusion()` ile birleştiriliyor. Bu, yukarıdaki
+"Değerlendirilen alternatifler"de reddedilen "puanı RRF'ye üçüncü bir
+sinyal olarak eklemek" fikriyle ÇELİŞMİYOR — orada reddedilen, puanın
+ALAKA (BM25+vektör) füzyonuna karışmasıydı; ADR-0019'daki RRF kullanımı
+farklı bir seviyede, reranking'den SONRA sadece iki tercih sinyalini
+(puan + mesafe) birleştiriyor, alakaya hiç dokunmuyor.

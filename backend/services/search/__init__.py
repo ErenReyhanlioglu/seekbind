@@ -37,7 +37,7 @@ from backend.services.search.reranker import (
     RerankerServiceError,
     get_reranker_provider,
 )
-from backend.services.search.service import RatingPreference, search_providers
+from backend.services.search.service import RatingPreference, apply_final_sort, search_providers
 from backend.services.search.text import normalize_turkish_text, tokenize
 from backend.services.search.vector import fetch_filtered_business_ids, vector_search
 
@@ -49,6 +49,7 @@ __all__ = [
     "RerankerProvider",
     "RerankerServiceError",
     "SearchFilters",
+    "apply_final_sort",
     "build_corpus",
     "build_lexical_text",
     "compute_distance_km",

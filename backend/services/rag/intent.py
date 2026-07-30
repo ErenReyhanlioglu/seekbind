@@ -74,6 +74,10 @@ class ParsedIntent(BaseModel):
     weekend_open_only: bool = False
     day_of_week: DayOfWeek | None = None
     time_of_day: TimeOfDay | None = None
+    # Sadece açık "yakınımda" gibi bir ifade varsa true (bkz. search_intent.txt
+    # kural 10) — mesafe bir filtre değil, search_providers'ta rating_preference
+    # ile aynı şekilde bir SIRALAMA sinyalidir (bkz. feat/near-filter).
+    near_me: bool = False
 
     @model_validator(mode="before")
     @classmethod

@@ -7,13 +7,15 @@ from unittest.mock import AsyncMock
 from backend.db.models import Business
 from backend.services.search.availability import DateAvailabilityFilter
 from backend.services.search.bm25 import BM25Index
-from backend.services.search.filters import NearFilter, SearchFilters
+from backend.services.search.filters import SearchFilters
 from backend.services.search.reranker import RerankerServiceError
 from backend.services.search.service import (
     _fetch_businesses_by_id,
+    _rank_by_distance,
+    _rank_by_rating,
     _rerank_businesses,
-    _sort_by_rating,
     _to_provider_result,
+    apply_final_sort,
     search_providers,
 )
 
@@ -27,6 +29,7 @@ def _make_business(
     latitude: float | None = 40.77,
     longitude: float | None = 29.92,
     weighted_rating: float | None = 4.3,
+    online_available: bool = False,
 ) -> Business:
     return Business(
         id=business_id,
@@ -38,7 +41,7 @@ def _make_business(
         price_max=300,
         address="İzmit",
         phone="0000",
-        online_available=False,
+        online_available=online_available,
         gender="unisex",
         services=services if services is not None else ["dolgu"],
         tags=[],
@@ -59,17 +62,16 @@ def _build_bm25_index(businesses: list[Business]) -> BM25Index:
     return index
 
 
-def test_to_provider_result_computes_distance_when_near_filter_given() -> None:
+def test_to_provider_result_computes_distance_when_reference_given() -> None:
     business = _make_business(latitude=40.77, longitude=29.92)
-    near = NearFilter(latitude=40.78, longitude=29.93, radius_km=5)
 
-    result = _to_provider_result(business, near)
+    result = _to_provider_result(business, (40.78, 29.93))
 
     assert result.distance_km is not None
     assert result.distance_km > 0
 
 
-def test_to_provider_result_leaves_distance_none_without_near_filter() -> None:
+def test_to_provider_result_leaves_distance_none_without_reference() -> None:
     business = _make_business()
 
     result = _to_provider_result(business, None)
@@ -79,9 +81,8 @@ def test_to_provider_result_leaves_distance_none_without_near_filter() -> None:
 
 def test_to_provider_result_leaves_distance_none_when_business_has_no_coordinates() -> None:
     business = _make_business(latitude=None, longitude=None)
-    near = NearFilter(latitude=40.78, longitude=29.93, radius_km=5)
 
-    result = _to_provider_result(business, near)
+    result = _to_provider_result(business, (40.78, 29.93))
 
     assert result.distance_km is None
 
@@ -121,48 +122,136 @@ async def test_rerank_businesses_falls_back_to_original_order_on_failure() -> No
     assert [b.id for b in result] == [1, 2]
 
 
-def test_sort_by_rating_orders_descending_for_high_preference() -> None:
+def test_rank_by_rating_orders_descending_for_high_preference() -> None:
     low = _make_business(business_id=1, weighted_rating=3.0)
     high = _make_business(business_id=2, weighted_rating=4.8)
 
-    result = _sort_by_rating([low, high], "high")
+    result = _rank_by_rating([low, high], "high")
 
-    assert [b.id for b in result] == [2, 1]
+    assert [business_id for business_id, _ in result] == [2, 1]
 
 
-def test_sort_by_rating_orders_ascending_for_low_preference() -> None:
+def test_rank_by_rating_orders_ascending_for_low_preference() -> None:
     low = _make_business(business_id=1, weighted_rating=3.0)
     high = _make_business(business_id=2, weighted_rating=4.8)
 
-    result = _sort_by_rating([high, low], "low")
+    result = _rank_by_rating([high, low], "low")
 
-    assert [b.id for b in result] == [1, 2]
+    assert [business_id for business_id, _ in result] == [1, 2]
 
 
-def test_sort_by_rating_appends_unrated_businesses_at_end_for_high_preference() -> None:
+def test_rank_by_rating_appends_unrated_businesses_at_end_for_high_preference() -> None:
     """Puanı bilinmeyen bir işletme "en iyi" iddiasıyla üste çıkarılamaz —
     ADR-0015: Noter gibi hiç yorum almayan kategoriler için NULL, sona gider."""
     rated = _make_business(business_id=1, weighted_rating=4.0)
     unrated = _make_business(business_id=2, weighted_rating=None)
 
-    result = _sort_by_rating([unrated, rated], "high")
+    result = _rank_by_rating([unrated, rated], "high")
 
-    assert [b.id for b in result] == [1, 2]
+    assert [business_id for business_id, _ in result] == [1, 2]
 
 
-def test_sort_by_rating_appends_unrated_businesses_at_end_for_low_preference() -> None:
+def test_rank_by_rating_appends_unrated_businesses_at_end_for_low_preference() -> None:
     """Aynı kural "en kötü" için de geçerli — NULL puanlı bir işletme "en
     kötü" olarak da iddia edilemez, yön fark etmeksizin sona gider."""
     rated = _make_business(business_id=1, weighted_rating=4.0)
     unrated = _make_business(business_id=2, weighted_rating=None)
 
-    result = _sort_by_rating([unrated, rated], "low")
+    result = _rank_by_rating([unrated, rated], "low")
+
+    assert [business_id for business_id, _ in result] == [1, 2]
+
+
+def test_rank_by_rating_returns_empty_list_unchanged() -> None:
+    assert _rank_by_rating([], "high") == []
+
+
+def test_rank_by_distance_orders_by_proximity_to_reference() -> None:
+    near = _make_business(business_id=1, latitude=40.771, longitude=29.921)
+    far = _make_business(business_id=2, latitude=41.5, longitude=30.5)
+
+    result = _rank_by_distance([far, near], (40.77, 29.92), online_exempt=True)
+
+    assert [business_id for business_id, _ in result] == [1, 2]
+
+
+def test_rank_by_distance_excludes_businesses_without_coordinates() -> None:
+    with_coords = _make_business(business_id=1, latitude=40.77, longitude=29.92)
+    without_coords = _make_business(business_id=2, latitude=None, longitude=None)
+
+    result = _rank_by_distance([with_coords, without_coords], (40.77, 29.92), online_exempt=True)
+
+    assert [business_id for business_id, _ in result] == [1]
+
+
+def test_rank_by_distance_excludes_online_businesses_when_exempt() -> None:
+    """Online hizmet veren işletme, kullanıcı özellikle online_only istemediği
+    sürece mesafeye göre cezalandırılıp ödüllendirilmemeli — bu yüzden
+    online_exempt=True iken mesafe sıralamasından tamamen çıkarılır."""
+    physical = _make_business(business_id=1, latitude=41.5, longitude=30.5, online_available=False)
+    online = _make_business(business_id=2, latitude=40.77, longitude=29.92, online_available=True)
+
+    result = _rank_by_distance([physical, online], (40.77, 29.92), online_exempt=True)
+
+    assert [business_id for business_id, _ in result] == [1]
+
+
+def test_rank_by_distance_includes_online_businesses_when_not_exempt() -> None:
+    """Kullanıcı online_only=True gibi mesafeyi bilerek istediğinde
+    (online_exempt=False), online işletmeler de normal şekilde sıralanır."""
+    physical = _make_business(business_id=1, latitude=41.5, longitude=30.5, online_available=False)
+    online = _make_business(business_id=2, latitude=40.77, longitude=29.92, online_available=True)
+
+    result = _rank_by_distance([physical, online], (40.77, 29.92), online_exempt=False)
+
+    assert [business_id for business_id, _ in result] == [2, 1]
+
+
+def test_apply_final_sort_returns_original_order_without_any_signal() -> None:
+    businesses = [_make_business(business_id=1), _make_business(business_id=2)]
+
+    result = apply_final_sort(businesses, rating_preference=None, distance_reference=None)
 
     assert [b.id for b in result] == [1, 2]
 
 
-def test_sort_by_rating_returns_empty_list_unchanged() -> None:
-    assert _sort_by_rating([], "high") == []
+def test_apply_final_sort_reduces_to_rating_only_behavior_when_alone() -> None:
+    """Tek sinyal (sadece rating) verildiğinde RRF, mevcut _rank_by_rating
+    sırasını aynen korumalı — puansızlar dahil, hiçbiri sonuçtan düşmemeli."""
+    rated_low = _make_business(business_id=1, weighted_rating=3.0)
+    rated_high = _make_business(business_id=2, weighted_rating=4.8)
+    unrated = _make_business(business_id=3, weighted_rating=None)
+
+    result = apply_final_sort([rated_low, unrated, rated_high], rating_preference="high", distance_reference=None)
+
+    assert [b.id for b in result] == [2, 1, 3]
+
+
+def test_apply_final_sort_combines_rating_and_distance_via_rrf() -> None:
+    """En yakın ama düşük puanlı ile uzak ama yüksek puanlı işletme
+    arasında, ikisi de aktifken RRF ikisini de dengeleyerek sıralamalı —
+    tekil sinyallerin tersini üretmemeli (ikisi de dahil edilmeli)."""
+    close_low_rated = _make_business(business_id=1, latitude=40.771, longitude=29.921, weighted_rating=3.0)
+    far_high_rated = _make_business(business_id=2, latitude=41.5, longitude=30.5, weighted_rating=4.9)
+
+    result = apply_final_sort(
+        [close_low_rated, far_high_rated], rating_preference="high", distance_reference=(40.77, 29.92)
+    )
+
+    assert {b.id for b in result} == {1, 2}
+
+
+def test_apply_final_sort_appends_businesses_excluded_from_every_signal() -> None:
+    """Hiçbir sinyale dahil olmayan (konumu yok VE puansız) bir işletme
+    sonuçtan düşmemeli, en sona eklenmeli."""
+    rated_with_coords = _make_business(business_id=1, latitude=40.77, longitude=29.92, weighted_rating=4.0)
+    neither = _make_business(business_id=2, latitude=None, longitude=None, weighted_rating=None)
+
+    result = apply_final_sort(
+        [neither, rated_with_coords], rating_preference="high", distance_reference=(40.77, 29.92)
+    )
+
+    assert [b.id for b in result] == [1, 2]
 
 
 class _FakeEmbeddingProvider:
@@ -370,6 +459,71 @@ async def test_search_providers_sorts_by_rating_preference_after_reranking(monke
     )
 
     assert [result.id for result in response.results] == [3, 2, 1]
+
+
+async def test_search_providers_sorts_by_distance_reference_after_reranking(monkeypatch) -> None:
+    """distance_reference verildiğinde reranker sırası değil mesafeye
+    yakınlık sırası görülmeli, sonuçlarda distance_km de dolu olmalı."""
+
+    async def fake_vector_search(*args, **kwargs):
+        return [(1, 0.9), (2, 0.8)]
+
+    monkeypatch.setattr("backend.services.search.service.vector_search", fake_vector_search)
+
+    far = _make_business(business_id=1, latitude=41.5, longitude=30.5)
+    near = _make_business(business_id=2, latitude=40.771, longitude=29.921)
+    session = _make_session_returning([far, near])
+
+    response = await search_providers(
+        session=session,
+        qdrant_client=AsyncMock(),
+        bm25_index=BM25Index(),
+        embedding_provider=_FakeEmbeddingProvider(),
+        reranker_provider=_IdentityRerankerProvider(),
+        query="diş",
+        filters=SearchFilters(),
+        distance_reference=(40.77, 29.92),
+    )
+
+    assert [result.id for result in response.results] == [2, 1]
+    assert response.results[0].distance_km is not None
+
+
+async def test_search_providers_includes_online_businesses_in_distance_sort_when_online_only_requested(
+    monkeypatch,
+) -> None:
+    """online_only=True açıkça istendiğinde, online işletmeler artık mesafe
+    sıralamasından muaf tutulmamalı (bkz. apply_final_sort docstring'i) —
+    filters.online_only, apply_final_sort'un online_exempt_from_distance'ına
+    doğru şekilde ulaşmalı."""
+
+    async def fake_vector_search(*args, **kwargs):
+        return [(1, 0.9), (2, 0.8)]
+
+    async def fake_fetch_filtered_business_ids(*args, **kwargs):
+        return {1, 2}
+
+    monkeypatch.setattr("backend.services.search.service.vector_search", fake_vector_search)
+    monkeypatch.setattr(
+        "backend.services.search.service.fetch_filtered_business_ids", fake_fetch_filtered_business_ids
+    )
+
+    far_physical = _make_business(business_id=1, latitude=41.5, longitude=30.5, online_available=False)
+    near_online = _make_business(business_id=2, latitude=40.771, longitude=29.921, online_available=True)
+    session = _make_session_returning([far_physical, near_online])
+
+    response = await search_providers(
+        session=session,
+        qdrant_client=AsyncMock(),
+        bm25_index=BM25Index(),
+        embedding_provider=_FakeEmbeddingProvider(),
+        reranker_provider=_IdentityRerankerProvider(),
+        query="diş",
+        filters=SearchFilters(online_only=True),
+        distance_reference=(40.77, 29.92),
+    )
+
+    assert [result.id for result in response.results] == [2, 1]
 
 
 async def test_search_providers_keeps_rerank_order_when_no_rating_preference(monkeypatch) -> None:

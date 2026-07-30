@@ -32,6 +32,9 @@ def _make_business(
     weighted_rating: float | None = 4.5,
     appointment_duration_min: int = 30,
     type_normalized: str = "Berber",
+    latitude: float | None = None,
+    longitude: float | None = None,
+    online_available: bool = False,
 ) -> Business:
     return Business(
         id=business_id,
@@ -42,19 +45,21 @@ def _make_business(
         price_min=100,
         price_max=300,
         appointment_duration_min=appointment_duration_min,
-        online_available=False,
+        online_available=online_available,
         gender="unisex",
         services=[],
         tags=[],
         rich_description=None,
         address=None,
         phone=None,
+        latitude=latitude,
+        longitude=longitude,
     )
 
 
 def _make_alternative(appointment_slot_id: int = 1, weighted_rating: float | None = 4.5) -> BookingAlternative:
     return BookingAlternative(
-        business=_to_provider_result(_make_business(weighted_rating=weighted_rating)),
+        business=_to_provider_result(_make_business(weighted_rating=weighted_rating), None),
         appointment_slot_id=appointment_slot_id,
         start_time=datetime(2026, 8, 1, 10, 0),
     )
@@ -63,13 +68,22 @@ def _make_alternative(appointment_slot_id: int = 1, weighted_rating: float | Non
 def test_to_provider_result_maps_business_fields() -> None:
     business = _make_business(business_id=7, title="X Berber", weighted_rating=4.8)
 
-    result = _to_provider_result(business)
+    result = _to_provider_result(business, None)
 
     assert isinstance(result, ProviderResult)
     assert result.id == 7
     assert result.title == "X Berber"
     assert result.weighted_rating == 4.8
     assert result.distance_km is None
+
+
+def test_to_provider_result_computes_distance_when_reference_given() -> None:
+    business = _make_business(business_id=7, latitude=40.77, longitude=29.92)
+
+    result = _to_provider_result(business, (40.78, 29.93))
+
+    assert result.distance_km is not None
+    assert result.distance_km > 0
 
 
 def test_slots_overlap_detects_overlapping_ranges() -> None:
@@ -165,7 +179,9 @@ async def test_find_same_business_alternatives_excludes_slots_conflicting_with_u
     )
     monkeypatch.setattr(calendar_module, "_fetch_user_schedule", AsyncMock(return_value=[(conflicting_time, 30)]))
 
-    alternatives = await _find_same_business_alternatives(session, user_id=1, business_id=5, exclude_slot_id=99)
+    alternatives = await _find_same_business_alternatives(
+        session, user_id=1, business_id=5, exclude_slot_id=99, distance_reference=None
+    )
 
     assert len(alternatives) == 1
     assert alternatives[0].appointment_slot_id == 11
@@ -179,7 +195,9 @@ async def test_find_same_business_alternatives_respects_limit(monkeypatch) -> No
     session.execute.return_value = SimpleNamespace(all=lambda: rows)
     monkeypatch.setattr(calendar_module, "_fetch_user_schedule", AsyncMock(return_value=[]))
 
-    alternatives = await _find_same_business_alternatives(session, user_id=1, business_id=5, exclude_slot_id=99)
+    alternatives = await _find_same_business_alternatives(
+        session, user_id=1, business_id=5, exclude_slot_id=99, distance_reference=None
+    )
 
     assert len(alternatives) == ALTERNATIVE_LIMIT
 
@@ -221,6 +239,7 @@ async def test_find_cross_business_alternatives_returns_empty_when_no_candidates
         gender=None,
         min_price=None,
         max_price=None,
+        distance_reference=None,
     )
 
     assert alternatives == []
@@ -240,6 +259,7 @@ async def test_find_cross_business_alternatives_returns_empty_when_none_availabl
         gender=None,
         min_price=None,
         max_price=None,
+        distance_reference=None,
     )
 
     assert alternatives == []
@@ -275,9 +295,46 @@ async def test_find_cross_business_alternatives_picks_one_slot_per_business_sort
         gender=None,
         min_price=None,
         max_price=None,
+        distance_reference=None,
     )
 
     assert [alt.appointment_slot_id for alt in alternatives] == [801, 701, 901]
+
+
+async def test_find_cross_business_alternatives_sorts_by_distance_when_reference_given(monkeypatch) -> None:
+    """distance_reference verildiğinde (rating tercihi olmadan çağrılmasa da
+    book_appointment içeride hep rating_preference="high" ile çağırır),
+    RRF puan + mesafeyi birleştirir; burada tek amaç sinyalin gerçekten
+    _find_cross_business_alternatives'a ulaştığını doğrulamak — apply_final_sort
+    zaten search/service.py'de ayrıca test ediliyor."""
+    monkeypatch.setattr(calendar_module, "_same_category_candidate_ids", AsyncMock(return_value=[7, 8]))
+    monkeypatch.setattr(calendar_module, "fetch_available_business_ids", AsyncMock(return_value={7, 8}))
+    near_business = _make_business(business_id=7, title="Yakın", weighted_rating=None, latitude=40.771, longitude=29.921)
+    far_business = _make_business(business_id=8, title="Uzak", weighted_rating=None, latitude=41.5, longitude=30.5)
+    session = AsyncMock()
+    session.execute.return_value = SimpleNamespace(
+        all=lambda: [
+            (701, 7, datetime(2026, 8, 1, 9, 0), near_business),
+            (801, 8, datetime(2026, 8, 1, 9, 0), far_business),
+        ]
+    )
+    monkeypatch.setattr(calendar_module, "_fetch_user_schedule", AsyncMock(return_value=[]))
+
+    alternatives = await _find_cross_business_alternatives(
+        session,
+        user_id=1,
+        original_business_id=5,
+        category="Berber",
+        target_date=date(2026, 8, 1),
+        online_only=False,
+        gender=None,
+        min_price=None,
+        max_price=None,
+        distance_reference=(40.77, 29.92),
+    )
+
+    assert [alt.appointment_slot_id for alt in alternatives] == [701, 801]
+    assert alternatives[0].business.distance_km is not None
 
 
 async def test_find_cross_business_alternatives_excludes_user_conflicts(monkeypatch) -> None:
@@ -299,9 +356,91 @@ async def test_find_cross_business_alternatives_excludes_user_conflicts(monkeypa
         gender=None,
         min_price=None,
         max_price=None,
+        distance_reference=None,
     )
 
     assert alternatives == []
+
+
+async def test_find_cross_business_alternatives_disables_online_exemption_when_online_only_requested(
+    monkeypatch,
+) -> None:
+    """online_only=True verildiğinde, apply_final_sort'a artık
+    online_exempt_from_distance=False ulaşmalı — kullanıcı zaten sadece
+    online işletme istediği için, o işletmeler mesafe sıralamasından
+    muaf tutulmamalı (bkz. apply_final_sort docstring'i). RRF'in gerçek
+    sıralama matematiği search/test_service.py'de zaten test ediliyor;
+    burada sadece doğru parametrenin iletildiğini doğruluyoruz — 2 adaylı
+    bir RRF füzyonunda skorlar simetrik takas yüzünden tam eşitlenebiliyor
+    (kararsız sıra), o yüzden burada sıralama sonucuna değil çağrıya bakılıyor.
+    """
+    monkeypatch.setattr(calendar_module, "_same_category_candidate_ids", AsyncMock(return_value=[7]))
+    monkeypatch.setattr(calendar_module, "fetch_available_business_ids", AsyncMock(return_value={7}))
+    business = _make_business(business_id=7, latitude=40.77, longitude=29.92, online_available=True)
+    session = AsyncMock()
+    session.execute.return_value = SimpleNamespace(
+        all=lambda: [(701, 7, datetime(2026, 8, 1, 9, 0), business)]
+    )
+    monkeypatch.setattr(calendar_module, "_fetch_user_schedule", AsyncMock(return_value=[]))
+    captured: dict = {}
+    real_apply_final_sort = calendar_module.apply_final_sort
+
+    def spying_apply_final_sort(*args, **kwargs):
+        captured.update(kwargs)
+        return real_apply_final_sort(*args, **kwargs)
+
+    monkeypatch.setattr(calendar_module, "apply_final_sort", spying_apply_final_sort)
+
+    await _find_cross_business_alternatives(
+        session,
+        user_id=1,
+        original_business_id=5,
+        category="Berber",
+        target_date=date(2026, 8, 1),
+        online_only=True,
+        gender=None,
+        min_price=None,
+        max_price=None,
+        distance_reference=(40.77, 29.92),
+    )
+
+    assert captured["online_exempt_from_distance"] is False
+
+
+async def test_find_cross_business_alternatives_keeps_online_exemption_by_default(monkeypatch) -> None:
+    """online_only=False (varsayılan) iken online işletmeler mesafe
+    sıralamasından muaf kalmaya devam etmeli."""
+    monkeypatch.setattr(calendar_module, "_same_category_candidate_ids", AsyncMock(return_value=[7]))
+    monkeypatch.setattr(calendar_module, "fetch_available_business_ids", AsyncMock(return_value={7}))
+    business = _make_business(business_id=7, latitude=40.77, longitude=29.92, online_available=True)
+    session = AsyncMock()
+    session.execute.return_value = SimpleNamespace(
+        all=lambda: [(701, 7, datetime(2026, 8, 1, 9, 0), business)]
+    )
+    monkeypatch.setattr(calendar_module, "_fetch_user_schedule", AsyncMock(return_value=[]))
+    captured: dict = {}
+    real_apply_final_sort = calendar_module.apply_final_sort
+
+    def spying_apply_final_sort(*args, **kwargs):
+        captured.update(kwargs)
+        return real_apply_final_sort(*args, **kwargs)
+
+    monkeypatch.setattr(calendar_module, "apply_final_sort", spying_apply_final_sort)
+
+    await _find_cross_business_alternatives(
+        session,
+        user_id=1,
+        original_business_id=5,
+        category="Berber",
+        target_date=date(2026, 8, 1),
+        online_only=False,
+        gender=None,
+        min_price=None,
+        max_price=None,
+        distance_reference=(40.77, 29.92),
+    )
+
+    assert captured["online_exempt_from_distance"] is True
 
 
 async def test_find_alternatives_puts_cross_business_before_same_business(monkeypatch) -> None:
@@ -321,6 +460,7 @@ async def test_find_alternatives_puts_cross_business_before_same_business(monkey
         gender=None,
         min_price=None,
         max_price=None,
+        distance_reference=None,
     )
 
     assert [alt.appointment_slot_id for alt in alternatives] == [1, 2]
@@ -409,9 +549,15 @@ async def test_book_appointment_passes_filters_through_to_find_alternatives(monk
 
     async def fake_find_alternatives(
         session, user_id, business_id, category, exclude_slot_id, requested_start,
-        online_only, gender, min_price, max_price,
+        online_only, gender, min_price, max_price, distance_reference,
     ):
-        captured.update(online_only=online_only, gender=gender, min_price=min_price, max_price=max_price)
+        captured.update(
+            online_only=online_only,
+            gender=gender,
+            min_price=min_price,
+            max_price=max_price,
+            distance_reference=distance_reference,
+        )
         return []
 
     monkeypatch.setattr(calendar_module, "_find_alternatives", fake_find_alternatives)
@@ -421,4 +567,34 @@ async def test_book_appointment_passes_filters_through_to_find_alternatives(monk
         online_only=True, gender="unisex", min_price=100, max_price=500,
     )
 
-    assert captured == {"online_only": True, "gender": "unisex", "min_price": 100, "max_price": 500}
+    assert captured == {
+        "online_only": True,
+        "gender": "unisex",
+        "min_price": 100,
+        "max_price": 500,
+        "distance_reference": None,
+    }
+
+
+async def test_book_appointment_resolves_distance_reference_when_near_me_true(monkeypatch) -> None:
+    """near_me=True verildiğinde kullanıcının referans konumu çözülüp
+    _find_alternatives'a distance_reference olarak ulaşmalı."""
+    now = datetime(2026, 8, 1, 10, 0)
+    monkeypatch.setattr(calendar_module, "_fetch_slot", AsyncMock(return_value=(5, "Berber", now, 30, True)))
+    monkeypatch.setattr(
+        calendar_module, "get_user_reference_location", AsyncMock(return_value=(40.77, 29.92))
+    )
+    captured: dict = {}
+
+    async def fake_find_alternatives(
+        session, user_id, business_id, category, exclude_slot_id, requested_start,
+        online_only, gender, min_price, max_price, distance_reference,
+    ):
+        captured["distance_reference"] = distance_reference
+        return []
+
+    monkeypatch.setattr(calendar_module, "_find_alternatives", fake_find_alternatives)
+
+    await book_appointment(AsyncMock(), user_id=1, appointment_slot_id=10, near_me=True)
+
+    assert captured["distance_reference"] == (40.77, 29.92)

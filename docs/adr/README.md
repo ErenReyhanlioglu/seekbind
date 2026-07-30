@@ -28,7 +28,7 @@ tarafından supersede edildi)
 | [0008](0008-llm-comparison-phase-4.md) | Runtime LLM karşılaştırması (Faz 4) | Planlandı | 2026-07-28 |
 | [0009](0009-ragas-evaluator-model.md) | RAGAS evaluator modeli | Kabul edildi | 2026-07-28 |
 | [0010](0010-hybrid-search-with-rrf.md) | Hybrid search (BM25 + vektör, RRF) | Kabul edildi | 2026-07-24 |
-| [0011](0011-hard-filter-vs-semantic-separation.md) | Kesin filtre / semantik ayrımı | Kısmen uygulandı | 2026-07-29 |
+| [0011](0011-hard-filter-vs-semantic-separation.md) | Kesin filtre / semantik ayrımı | Kabul edildi, uygulandı | 2026-07-29 |
 | [0012](0012-synthetic-description-mode-collapse-mitigation.md) | Sentetik açıklama mode collapse önlemi | Kabul edildi | 2026-07-24 |
 | [0013](0013-reranker-provider-selection.md) | Reranker sağlayıcısı seçimi (Jina AI) | Kabul edildi | 2026-07-28 |
 | [0014](0014-price-threshold-resolution.md) | Fiyat eşiği hesaplama (LLM tahmini yerine gerçek DB verisi) | Kabul edildi | 2026-07-29 |
@@ -36,3 +36,4 @@ tarafından supersede edildi)
 | [0016](0016-langfuse-trace-grouping.md) | Langfuse trace gruplama ve yapılandırılmış metadata | Kabul edildi, uygulandı | 2026-07-29 |
 | [0017](0017-tool-calling-not-needed.md) | Tool calling gerekli değil — çoklu-hizmet arama SeekBind 2.0'a bırakıldı | Kabul edildi | 2026-07-29 |
 | [0018](0018-calendar-service-booking-and-alternatives.md) | Calendar-service — rezervasyon, çakışma kontrolü ve alternatif önerisi | Kabul edildi, uygulandı | 2026-07-30 |
+| [0019](0019-distance-as-ranking-signal.md) | Mesafe — filtre değil, RRF ile birleşen bir sıralama sinyali | Kabul edildi, uygulandı | 2026-07-30 |
