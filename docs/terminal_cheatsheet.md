@@ -54,6 +54,47 @@ git push origin --delete feature/ozellik-adi   # remote'tan da sil (GitHub otoma
 | `docs:` | Döküman güncelleme |
 | `chore:` | Bağımlılık, iskelet, ayar gibi işler |
 
+### PowerShell'de çok satırlı commit mesajı (Türkçe karakter tuzağı)
+
+Bash'teki `git commit -m "$(cat <<'EOF' ... EOF)"` deseni PowerShell'de
+**çalışmaz** (`<<` PowerShell'de ayrı bir anlama sahip, parse hatası verir).
+PowerShell'in kendi çok satırlı string'i **here-string**'tir:
+
+```powershell
+$msg = @'
+feat: kısa başlık
+
+Uzun açıklama, birden fazla satır olabilir.
+'@
+```
+
+`'@` kapanışı **satır başında, hiç boşluksuz** olmalı — aksi halde parse hatası.
+
+**Bunu doğrudan `git commit -m $msg` ile kullanma** — PowerShell çok
+satırlı bir string'i native bir programa (git.exe) argüman olarak
+verirken satır sonlarında bölebiliyor, git bu parçaları commit mesajı
+yerine dosya yolu (pathspec) sanıp hata verir.
+
+**`| git commit -F -` ile pipe'lamak da riskli** — Türkçe karakterler
+(`ı`, `ş`, `ğ`, `ç`, `ü`, `ö`) konsolun varsayılan kod sayfası yüzünden
+sessizce `?`'e dönüşebilir (commit mesajına kalıcı olarak öyle yazılır,
+sadece ekran görüntüsü sorunu değil — `git log -1 --format="%s" | xxd`
+ile ham byte'lara bakıp kontrol edilebilir).
+
+**Doğru ve güvenilir yöntem:** mesajı BOM'suz UTF-8 bir dosyaya yaz,
+oradan oku:
+
+```powershell
+[System.IO.File]::WriteAllText("$PWD\commit_msg.txt", $msg, (New-Object System.Text.UTF8Encoding $false))
+git commit -F commit_msg.txt
+Remove-Item commit_msg.txt
+```
+
+(`Out-File -Encoding utf8` de bir seçenek gibi görünür ama Windows
+PowerShell 5.1'de dosyanın başına görünmez bir BOM ekler — bu da commit
+mesajının en başına gömülür. `[System.IO.File]::WriteAllText(...)` +
+`UTF8Encoding $false` BOM eklemez, temiz sonuç verir.)
+
 ---
 
 ## uv — Python Ortam ve Bağımlılık Yönetimi
@@ -64,8 +105,22 @@ git push origin --delete feature/ozellik-adi   # remote'tan da sil (GitHub otoma
 | `uv init` | Yeni bir uv projesi başlatır (`pyproject.toml` oluşturur) |
 | `uv sync` | `pyproject.toml`/`uv.lock`'a göre `.venv`'i kurar/günceller |
 | `uv add <paket>` | Yeni bağımlılık ekler (örn. `uv add fastapi`) |
+| `uv add --group dev <paket>` | Sadece geliştirme/test için bağımlılık ekler (örn. `uv add --group dev httpx`) — üretime gitmez |
+| `uv remove <paket>` | Bağımlılığı kaldırır (`--group dev` ile dev grubundan) |
 | `uv run <komut>` | Sanal ortamı aktive etmeden, o ortamdaki gibi komut çalıştırır |
 | `uv run python -c "..."` | Tek satırlık Python kodu çalıştırır (hızlı test için) |
+
+---
+
+## pytest — Test Çalıştırma
+
+| Komut | Ne işe yarar |
+|---|---|
+| `uv run pytest` | Unit testleri çalıştırır (hızlı, mock'lu, docker gerektirmez) — `integration` marker'lı testler `pyproject.toml`'daki `addopts` ile varsayılan olarak hariç tutulur |
+| `uv run pytest -m integration -v` | **Sadece** entegrasyon testlerini çalıştırır — gerçek Postgres/Qdrant'a bağlanır, önce `docker compose up -d` şart |
+| `uv run pytest -k <isim_parçası>` | İsminde geçen kelimeye göre testleri filtreler (örn. `-k concurrency`) |
+| `uv run pytest -q` | Sessiz mod, sadece özet (nokta nokta + son satır) |
+| `uv run pyright` | Tip kontrolü — proje kuralı: her zaman 0 hata |
 
 ---
 
