@@ -1,7 +1,8 @@
 """SQLAlchemy ORM modelleri.
 
-business_types, businesses ve appointment_slots tabloları — şema
-tasarımı ve kararların gerekçesi için bkz. docs/database_schema.md.
+business_types, businesses, appointment_slots, user_profiles ve bookings
+tabloları — şema tasarımı ve kararların gerekçesi için bkz.
+docs/database_schema.md.
 """
 
 from datetime import datetime
@@ -95,3 +96,47 @@ class AppointmentSlot(Base):
     is_booked: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
 
     business: Mapped[Business] = relationship(back_populates="slots")
+    booking: Mapped["Booking | None"] = relationship(back_populates="appointment_slot")
+
+
+class UserProfile(Base):
+    """Referans/test kullanıcı profili.
+
+    Henüz gerçek bir auth/oturum sistemi yok — şimdilik konum tabanlı
+    arama (`NearFilter`/"yakınımda") ve randevu çakışma kontrolü için tek
+    bir referans test kullanıcısı (bkz. `scripts/seed_test_user.py`).
+    """
+
+    __tablename__ = "user_profiles"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    name: Mapped[str] = mapped_column(String(200), nullable=False)
+    latitude: Mapped[float | None] = mapped_column(Float, nullable=True)
+    longitude: Mapped[float | None] = mapped_column(Float, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+    bookings: Mapped[list["Booking"]] = relationship(
+        back_populates="user_profile", cascade="all, delete-orphan"
+    )
+
+
+class Booking(Base):
+    """Bir kullanıcının belirli bir randevu slotuna yaptığı rezervasyon.
+
+    `AppointmentSlot.is_booked`'ın yerine geçmez, onunla çakışmaz — o
+    zaten dolu (is_booked=true) alanı belirler, bu tablo sadece dolu bir
+    slotun HANGİ kullanıcıya ait olduğunu etiketler. Bir slot en fazla bir
+    kullanıcıya ait olabileceği için appointment_slot_id unique.
+    """
+
+    __tablename__ = "bookings"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("user_profiles.id", ondelete="CASCADE"), nullable=False)
+    appointment_slot_id: Mapped[int] = mapped_column(
+        ForeignKey("appointment_slots.id", ondelete="CASCADE"), unique=True, nullable=False
+    )
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+    user_profile: Mapped[UserProfile] = relationship(back_populates="bookings")
+    appointment_slot: Mapped[AppointmentSlot] = relationship(back_populates="booking")

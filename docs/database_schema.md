@@ -11,6 +11,8 @@ okumak için.
 erDiagram
     BUSINESS_TYPES ||--o{ BUSINESSES : kategorize_eder
     BUSINESSES ||--o{ APPOINTMENT_SLOTS : sahip_olur
+    USER_PROFILES ||--o{ BOOKINGS : yapar
+    APPOINTMENT_SLOTS ||--o| BOOKINGS : baglanir
 
     BUSINESS_TYPES {
         string name PK
@@ -51,6 +53,21 @@ erDiagram
         datetime start_time
         bool is_booked
     }
+
+    USER_PROFILES {
+        int id PK
+        string name
+        float latitude
+        float longitude
+        datetime created_at
+    }
+
+    BOOKINGS {
+        int id PK
+        int user_id FK
+        int appointment_slot_id FK "UK"
+        datetime created_at
+    }
 ```
 
 ## Tablolar
@@ -68,6 +85,18 @@ sorusuna göre yapıldı — bkz. aşağıdaki kararlar.
 `business_id` + `start_time` + `is_booked` üzerinde bileşik index.
 Uygulamanın en sık atacağı sorgu ("Salı sabahı müsait olanlar") bu
 tablo üzerinden çalışacak.
+
+### `user_profiles` — referans/test kullanıcı profili
+Henüz gerçek bir auth/oturum sistemi yok — `feat/user-profile` branch'i
+kapsamında, konum tabanlı arama (`NearFilter`/"yakınımda") ve randevu
+çakışma kontrolü için tek bir referans test kullanıcısı
+(`scripts/seed_test_user.py`).
+
+### `bookings` — kullanıcı ↔ randevu slotu ilişkisi
+`appointment_slots.is_booked`'ın yerine geçmez — o zaten dolu alanı
+belirler, `bookings` sadece dolu bir slotun HANGİ kullanıcıya ait
+olduğunu etiketler. `appointment_slot_id` unique (bir slot en fazla bir
+kullanıcıya ait olabilir).
 
 ---
 
@@ -114,3 +143,12 @@ tablo üzerinden çalışacak.
   `keywords`, `search_vector` (hepsi filtreleme/sıralama için
   kullanılacak), `appointment_slots(business_id, start_time, is_booked)`
   bileşik index (asıl kritik sorgu deseni).
+
+- **`bookings` ayrı bir tablo, `appointment_slots.is_booked`'a yeni bir
+  kolon eklemek yerine.** Bir slotun dolu/boş olması (`is_booked`) ile
+  kimin rezerve ettiği farklı kaygılar — booking kendi metadata'sına
+  (örn. ileride iptal tarihi, oluşturulma zamanı) sahip olabilsin diye
+  ayrı tutuldu. `is_booked` mevcut müsaitlik sorgularının (bkz.
+  `search/availability.py`) tek doğruluk kaynağı olmaya devam ediyor,
+  `bookings` ona dokunmuyor/onunla çakışmıyor — sadece zaten dolu bir
+  slotun hangi kullanıcıya ait olduğunu etiketliyor.
