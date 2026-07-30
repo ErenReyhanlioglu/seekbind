@@ -91,6 +91,7 @@ async def recommend(
         reranker_provider=reranker_provider,
         llm_provider=llm_provider,
         raw_query=request.query,
+        user_id=request.user_id,
         today=date.today(),
         limit=request.limit,
         offset=request.offset,
@@ -117,6 +118,7 @@ async def book(
             gender=request.gender,
             min_price=request.min_price,
             max_price=request.max_price,
+            near_me=request.near_me,
         )
     except SlotNotFoundError as e:
         raise HTTPException(status_code=404, detail=str(e)) from e

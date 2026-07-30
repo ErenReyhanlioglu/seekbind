@@ -12,12 +12,9 @@ Müsait değilse (slot dolu ya da kullanıcının başka bir randevusuyla
 (bkz. docs/roadmap.md "SeekBind 2.0" notu) için tasarlandı. Alternatifler
 iki kaynaktan gelir: (1) aynı işletmenin başka bir zamanı (kronolojik
 sıralanır — puan sabit olduğu için sıralamada ayırt edici değil), (2)
-aynı kategorideki, aynı gün müsait olan başka işletmeler (weighted_rating'e
-göre sıralanır — burada puan gerçekten ayırt edici, `search/service.py`'nin
-`_sort_by_rating`'iyle aynı NULL-son deseni kullanılır, bkz. ADR-0015).
-
-Mesafe bilinçli olarak dışarıda bırakıldı — ayrı bir mini branch'te ele
-alınacak (bkz. docs/roadmap.md).
+aynı kategorideki, aynı gün müsait olan başka işletmeler (weighted_rating
+ve — `near_me=True` ise — mesafeye göre `search/service.py`'deki
+`apply_final_sort` ile sıralanır, tekrar yazılmaz, bkz. feat/near-filter).
 """
 
 from datetime import date, datetime, time, timedelta
@@ -28,7 +25,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.api.schemas import BookingAlternative, BookResponse, ProviderResult
 from backend.db.models import AppointmentSlot, Booking, Business
+from backend.services.search import apply_final_sort, compute_distance_km
 from backend.services.search.availability import DateAvailabilityFilter, fetch_available_business_ids
+from backend.services.user_location import get_user_reference_location
 
 ALTERNATIVE_LIMIT: int = 5
 
@@ -41,13 +40,17 @@ class SlotNotFoundError(CalendarServiceError):
     """Verilen appointment_slot_id'ye karşılık gelen bir slot yoksa."""
 
 
-def _to_provider_result(business: Business) -> ProviderResult:
+def _to_provider_result(business: Business, distance_reference: tuple[float, float] | None) -> ProviderResult:
     """Business ORM nesnesini ProviderResult'a eşler.
 
-    `search/service.py`'deki aynı isimli fonksiyonun mesafesiz hali —
-    calendar-service henüz konum bilgisi kullanmıyor (bkz. ADR-0018),
-    `distance_km` hep None kalır.
+    `search/service.py`'deki aynı isimli fonksiyonun eşdeğeri — `near_me`
+    true ise ve kullanıcının referans konumu biliniyorsa `distance_km`
+    doldurulur, aksi halde None kalır.
     """
+    distance_km = None
+    if distance_reference is not None and business.latitude is not None and business.longitude is not None:
+        ref_lat, ref_lon = distance_reference
+        distance_km = compute_distance_km(ref_lat, ref_lon, business.latitude, business.longitude)
     return ProviderResult(
         id=business.id,
         title=business.title,
@@ -63,7 +66,7 @@ def _to_provider_result(business: Business) -> ProviderResult:
         services=business.services,
         tags=business.tags,
         rich_description=business.rich_description,
-        distance_km=None,
+        distance_km=distance_km,
     )
 
 
@@ -115,10 +118,14 @@ async def _has_user_conflict(
 
 
 async def _find_same_business_alternatives(
-    session: AsyncSession, user_id: int, business_id: int, exclude_slot_id: int
+    session: AsyncSession,
+    user_id: int,
+    business_id: int,
+    exclude_slot_id: int,
+    distance_reference: tuple[float, float] | None,
 ) -> list[BookingAlternative]:
     """Aynı işletmedeki, kullanıcının programıyla çakışmayan boş slotlardan
-    öneri üretir — kronolojik sıralanır (puan sabit, ayırt edici değil)."""
+    öneri üretir — kronolojik sıralanır (puan/mesafe sabit, ayırt edici değil)."""
     result = await session.execute(
         select(AppointmentSlot.id, AppointmentSlot.start_time, Business)
         .join(Business, AppointmentSlot.business_id == Business.id)
@@ -137,7 +144,9 @@ async def _find_same_business_alternatives(
             continue
         alternatives.append(
             BookingAlternative(
-                business=_to_provider_result(business), appointment_slot_id=slot_id, start_time=start_time
+                business=_to_provider_result(business, distance_reference),
+                appointment_slot_id=slot_id,
+                start_time=start_time,
             )
         )
         if len(alternatives) >= ALTERNATIVE_LIMIT:
@@ -188,13 +197,13 @@ async def _find_cross_business_alternatives(
     gender: str | None,
     min_price: int | None,
     max_price: int | None,
+    distance_reference: tuple[float, float] | None,
 ) -> list[BookingAlternative]:
     """Aynı kategorideki diğer işletmelerden, verilen kısıtlara uyan ve aynı
     gün müsait olan alternatifler bulur. Her işletmeden en erken boş slot
     alınır (çeşitlilik için tek işletme birden fazla kez önerilmez),
-    weighted_rating'e göre sıralanır — puanı olmayanlar (ADR-0004'teki
-    Bayesian düzeltme az yorumlu işletmelerde None kalabiliyor) yön fark
-    etmeksizin sona eklenir (bkz. ADR-0015'teki aynı desen).
+    `apply_final_sort` (search/service.py) ile weighted_rating ve — varsa —
+    mesafeye göre sıralanır; sıralama mantığı burada tekrar yazılmaz.
     """
     candidate_ids = await _same_category_candidate_ids(
         session, original_business_id, category, online_only, gender, min_price, max_price
@@ -223,20 +232,29 @@ async def _find_cross_business_alternatives(
     )
     schedule = await _fetch_user_schedule(session, user_id)
 
-    best_per_business: dict[int, BookingAlternative] = {}
+    best_per_business: dict[int, tuple[int, datetime, Business]] = {}
     for slot_id, business_id, start_time, business in result.all():
         if business_id in best_per_business:
             continue  # bu işletmeden zaten (en erken olduğu için ilk görülen) bir slot seçildi
         if any(_slots_overlap(start_time, business.appointment_duration_min, s, d) for s, d in schedule):
             continue
-        best_per_business[business_id] = BookingAlternative(
-            business=_to_provider_result(business), appointment_slot_id=slot_id, start_time=start_time
-        )
+        best_per_business[business_id] = (slot_id, start_time, business)
 
-    rated = [alt for alt in best_per_business.values() if alt.business.weighted_rating is not None]
-    unrated = [alt for alt in best_per_business.values() if alt.business.weighted_rating is None]
-    rated.sort(key=lambda alt: cast(float, alt.business.weighted_rating), reverse=True)
-    return (rated + unrated)[:ALTERNATIVE_LIMIT]
+    ordered_businesses = apply_final_sort(
+        [business for _, _, business in best_per_business.values()],
+        rating_preference="high",
+        distance_reference=distance_reference,
+        online_exempt_from_distance=not online_only,
+    )
+    alternatives = [
+        BookingAlternative(
+            business=_to_provider_result(business, distance_reference),
+            appointment_slot_id=best_per_business[business.id][0],
+            start_time=best_per_business[business.id][1],
+        )
+        for business in ordered_businesses
+    ]
+    return alternatives[:ALTERNATIVE_LIMIT]
 
 
 async def _find_alternatives(
@@ -250,15 +268,28 @@ async def _find_alternatives(
     gender: str | None,
     min_price: int | None,
     max_price: int | None,
+    distance_reference: tuple[float, float] | None,
 ) -> list[BookingAlternative]:
-    """Aynı kategorideki diğer işletmeleri (aynı gün, puana göre sıralı) +
-    aynı işletmenin başka zamanlarını (kronolojik) birleştirip döner —
-    ilki önce, çünkü orijinal istek genellikle günü sabit tutmak istiyor.
+    """Aynı kategorideki diğer işletmeleri (aynı gün, puana/mesafeye göre
+    sıralı) + aynı işletmenin başka zamanlarını (kronolojik) birleştirip
+    döner — ilki önce, çünkü orijinal istek genellikle günü sabit tutmak
+    istiyor.
     """
     cross_business = await _find_cross_business_alternatives(
-        session, user_id, business_id, category, requested_start.date(), online_only, gender, min_price, max_price
+        session,
+        user_id,
+        business_id,
+        category,
+        requested_start.date(),
+        online_only,
+        gender,
+        min_price,
+        max_price,
+        distance_reference,
     )
-    same_business = await _find_same_business_alternatives(session, user_id, business_id, exclude_slot_id)
+    same_business = await _find_same_business_alternatives(
+        session, user_id, business_id, exclude_slot_id, distance_reference
+    )
     return (cross_business + same_business)[:ALTERNATIVE_LIMIT]
 
 
@@ -288,6 +319,7 @@ async def book_appointment(
     gender: str | None = None,
     min_price: int | None = None,
     max_price: int | None = None,
+    near_me: bool = False,
 ) -> BookResponse:
     """Belirli bir randevu slotunu kullanıcıya rezerve etmeyi dener.
 
@@ -296,26 +328,30 @@ async def book_appointment(
     doğruysa alternatif öner) -> atomik olarak rezerve etmeyi dene (araya
     başka biri girdiyse yine alternatif öner) -> `Booking` kaydı oluştur.
 
-    `online_only`/`gender`/`min_price`/`max_price` opsiyonel — çağıran
-    orijinal `/recommend` isteğinden bu tercihleri biliyorsa, alternatif
-    önerisinin de bunlara uymasını istiyorsa iletebilir.
+    `online_only`/`gender`/`min_price`/`max_price`/`near_me` opsiyonel —
+    çağıran orijinal `/recommend` isteğinden bu tercihleri biliyorsa,
+    alternatif önerisinin de bunlara uymasını istiyorsa iletebilir. `near_me`
+    true ise kullanıcının referans konumu (bkz. `get_user_reference_location`)
+    çapraz-işletme alternatiflerinin sıralamasına dahil edilir.
     """
     slot = await _fetch_slot(session, appointment_slot_id)
     if slot is None:
         raise SlotNotFoundError(f"appointment_slot_id={appointment_slot_id} bulunamadı")
 
+    distance_reference = await get_user_reference_location(session, user_id) if near_me else None
+
     business_id, category, start_time, duration_min, is_booked = slot
     if is_booked or await _has_user_conflict(session, user_id, start_time, duration_min):
         alternatives = await _find_alternatives(
             session, user_id, business_id, category, appointment_slot_id, start_time,
-            online_only, gender, min_price, max_price,
+            online_only, gender, min_price, max_price, distance_reference,
         )
         return BookResponse(success=False, alternatives=alternatives)
 
     if not await _claim_slot(session, appointment_slot_id):
         alternatives = await _find_alternatives(
             session, user_id, business_id, category, appointment_slot_id, start_time,
-            online_only, gender, min_price, max_price,
+            online_only, gender, min_price, max_price, distance_reference,
         )
         return BookResponse(success=False, alternatives=alternatives)
 

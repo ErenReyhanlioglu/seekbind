@@ -9,7 +9,7 @@ değiştirilip get_recommendation'ın orkestrasyon mantığı test ediliyor.
 
 from datetime import date
 from typing import cast
-from unittest.mock import MagicMock
+from unittest.mock import AsyncMock, MagicMock
 
 from qdrant_client import AsyncQdrantClient
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -117,6 +117,7 @@ async def test_get_recommendation_calls_search_providers_with_parsed_filters_on_
         reranker_provider=_RERANKER_PROVIDER,
         llm_provider=llm,
         raw_query="ucuz dişçi",
+        user_id=1,
         today=_TODAY,
     )
 
@@ -147,6 +148,7 @@ async def test_get_recommendation_passes_rating_preference_through_to_search_pro
         reranker_provider=_RERANKER_PROVIDER,
         llm_provider=llm,
         raw_query="en kötü dişçi",
+        user_id=1,
         today=_TODAY,
     )
 
@@ -179,10 +181,64 @@ async def test_get_recommendation_passes_rating_preference_to_recommendation_gen
         reranker_provider=_RERANKER_PROVIDER,
         llm_provider=llm,
         raw_query="en kötü dişçi",
+        user_id=1,
         today=_TODAY,
     )
 
     assert captured["rating_preference"] == "low"
+
+
+async def test_get_recommendation_resolves_distance_reference_when_near_me_true(monkeypatch) -> None:
+    """intent'te near_me true çıkarsa, kullanıcının referans konumu
+    search_providers()'a distance_reference olarak ulaşmalı."""
+    captured: dict = {}
+
+    async def fake_search_providers(**kwargs):
+        captured.update(kwargs)
+        return SearchResponse(results=[_make_result(1)], total=1)
+
+    monkeypatch.setattr(rag_service, "search_providers", fake_search_providers)
+    monkeypatch.setattr(rag_service, "get_user_reference_location", AsyncMock(return_value=(40.77, 29.92)))
+    llm = _FakeLLMProvider(['{"semantic_query": "yakınımda dişçi", "near_me": true}', "öneri metni"])
+
+    await get_recommendation(
+        session=_SESSION,
+        qdrant_client=_QDRANT_CLIENT,
+        bm25_index=_BM25_INDEX,
+        embedding_provider=_EMBEDDING_PROVIDER,
+        reranker_provider=_RERANKER_PROVIDER,
+        llm_provider=llm,
+        raw_query="yakınımda dişçi",
+        user_id=1,
+        today=_TODAY,
+    )
+
+    assert captured["distance_reference"] == (40.77, 29.92)
+
+
+async def test_get_recommendation_leaves_distance_reference_none_when_near_me_false(monkeypatch) -> None:
+    captured: dict = {}
+
+    async def fake_search_providers(**kwargs):
+        captured.update(kwargs)
+        return SearchResponse(results=[_make_result(1)], total=1)
+
+    monkeypatch.setattr(rag_service, "search_providers", fake_search_providers)
+    llm = _FakeLLMProvider([_VALID_INTENT_JSON, "öneri metni"])
+
+    await get_recommendation(
+        session=_SESSION,
+        qdrant_client=_QDRANT_CLIENT,
+        bm25_index=_BM25_INDEX,
+        embedding_provider=_EMBEDDING_PROVIDER,
+        reranker_provider=_RERANKER_PROVIDER,
+        llm_provider=llm,
+        raw_query="ucuz dişçi",
+        user_id=1,
+        today=_TODAY,
+    )
+
+    assert captured["distance_reference"] is None
 
 
 async def test_get_recommendation_falls_back_to_raw_query_and_empty_filters_on_malformed_json(monkeypatch) -> None:
@@ -203,6 +259,7 @@ async def test_get_recommendation_falls_back_to_raw_query_and_empty_filters_on_m
         reranker_provider=_RERANKER_PROVIDER,
         llm_provider=llm,
         raw_query="ucuz dişçi",
+        user_id=1,
         today=_TODAY,
     )
 
@@ -227,6 +284,7 @@ async def test_get_recommendation_skips_recommendation_call_when_search_results_
         reranker_provider=_RERANKER_PROVIDER,
         llm_provider=llm,
         raw_query="ucuz dişçi",
+        user_id=1,
         today=_TODAY,
     )
 
@@ -277,6 +335,7 @@ async def test_get_recommendation_falls_back_to_templated_message_when_recommend
         reranker_provider=_RERANKER_PROVIDER,
         llm_provider=llm,
         raw_query="ucuz dişçi",
+        user_id=1,
         today=_TODAY,
     )
 
@@ -299,6 +358,7 @@ async def test_get_recommendation_returns_full_pipeline_result_on_success(monkey
         reranker_provider=_RERANKER_PROVIDER,
         llm_provider=llm,
         raw_query="ucuz dişçi",
+        user_id=1,
         today=_TODAY,
     )
 
@@ -325,6 +385,7 @@ async def test_get_recommendation_passes_limit_and_offset_through_to_search_prov
         reranker_provider=_RERANKER_PROVIDER,
         llm_provider=llm,
         raw_query="ucuz dişçi",
+        user_id=1,
         today=_TODAY,
         limit=5,
         offset=15,
@@ -343,6 +404,8 @@ def test_build_trace_metadata_includes_all_filter_fields() -> None:
         filters=filters,
         availability=availability,
         rating_preference="low",
+        near_me=True,
+        distance_reference=(40.77, 29.92),
         intent_fallback=False,
         recommendation_fallback=True,
         result_count=3,
@@ -358,6 +421,8 @@ def test_build_trace_metadata_includes_all_filter_fields() -> None:
     assert metadata["gender"] == "unisex"
     assert metadata["online_only"] is True
     assert metadata["rating_preference"] == "low"
+    assert metadata["near_me"] is True
+    assert metadata["distance_reference_resolved"] is True
     assert metadata["availability_date"] == "2026-08-01"
     assert metadata["availability_time_of_day"] == "morning"
     assert metadata["intent_parsing_fallback"] is False
@@ -372,6 +437,8 @@ def test_build_trace_metadata_handles_missing_availability() -> None:
         filters=SearchFilters(),
         availability=None,
         rating_preference=None,
+        near_me=False,
+        distance_reference=None,
         intent_fallback=False,
         recommendation_fallback=False,
         result_count=0,
@@ -382,6 +449,8 @@ def test_build_trace_metadata_handles_missing_availability() -> None:
 
     assert metadata["availability_date"] is None
     assert metadata["availability_time_of_day"] is None
+    assert metadata["near_me"] is False
+    assert metadata["distance_reference_resolved"] is False
 
 
 def test_build_trace_tags_includes_base_tag_only_when_nothing_failed() -> None:
@@ -413,6 +482,7 @@ async def test_get_recommendation_records_trace_on_success(monkeypatch) -> None:
         reranker_provider=_RERANKER_PROVIDER,
         llm_provider=llm,
         raw_query="ucuz dişçi",
+        user_id=1,
         today=_TODAY,
     )
 
@@ -443,6 +513,7 @@ async def test_get_recommendation_records_intent_fallback_tag_on_malformed_json(
         reranker_provider=_RERANKER_PROVIDER,
         llm_provider=llm,
         raw_query="ucuz dişçi",
+        user_id=1,
         today=_TODAY,
     )
 
@@ -468,6 +539,7 @@ async def test_get_recommendation_records_empty_results_tag_when_no_results(monk
         reranker_provider=_RERANKER_PROVIDER,
         llm_provider=llm,
         raw_query="ucuz dişçi",
+        user_id=1,
         today=_TODAY,
     )
 
