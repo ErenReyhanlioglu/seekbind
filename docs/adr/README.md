@@ -38,3 +38,4 @@ tarafından supersede edildi)
 | [0018](0018-calendar-service-booking-and-alternatives.md) | Calendar-service — rezervasyon, çakışma kontrolü ve alternatif önerisi | Kabul edildi, uygulandı | 2026-07-30 |
 | [0019](0019-distance-as-ranking-signal.md) | Mesafe — filtre değil, RRF ile birleşen bir sıralama sinyali | Kabul edildi, uygulandı | 2026-07-30 |
 | [0020](0020-integration-test-isolation-strategy.md) | Entegrasyon testi izolasyon stratejisi — gerçek DB, SAVEPOINT ve sahte LLM sağlayıcıları | Kabul edildi, uygulandı | 2026-07-30 |
+| [0021](0021-db-layer-standards-verification.md) | DB katmanının standartlara uygunluğunu kanıtlayan entegrasyon testleri | Kabul edildi, uygulandı | 2026-07-30 |

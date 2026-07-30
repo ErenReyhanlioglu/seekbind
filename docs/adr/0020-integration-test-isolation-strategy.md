@@ -64,8 +64,8 @@ o kararları ve yol boyunca bulunan üç gerçek altyapısal hatayı kaydediyor.
   atomikliğin kanıtı matematiksel olarak 2 ile de yeterli olurdu, ama
   10 istek çakışma ihtimalini pratikte garantiye yaklaştırıp flake
   riskini azaltıyor.
-- **LLM/embedding/reranker'a gerçek çağrı atmak.** Reddedildi — CLAUDE.md
-  açıkça yasaklıyor (maliyet + determinizm). `app.dependency_overrides`
+- **LLM/embedding/reranker'a gerçek çağrı atmak.** Reddedildi — proje kod
+  standartları açıkça yasaklıyor (maliyet + determinizm). `app.dependency_overrides`
   ile Protocol'e uyan sahte sağlayıcılar enjekte edildi; gerçek
   HTTP/routing/DI zinciri çalışıyor, zincirin ucundaki pahalı çağrı sahte.
   Sahte LLM'in intent JSON'u bilerek `price_preference` gibi alanlar

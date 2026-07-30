@@ -40,7 +40,7 @@ test kanıtı ve "SeekBind 2.0" notu için bkz. [ADR-0017](adr/0017-tool-calling
 
 ## Faz 5 — Dayanıklılık & Güvenlik
 
-- ⬜ `test/db-integration` — `tests/integration/test_db.py`; gerçek Postgres'e karşı sorgu testleri (N+1 kontrolü dahil — unit testteki mock'lu session gerçek sorgu sayısını göremez). DB modelleri/migration'lar Faz 2'de tamamlandığı için blokajı yok, `ci-setup`'tan önce burada olması mantıklı — CI'ın container wiring'ine somut bir şey verir
+- ✅ `test/db-integration` — DB katmanının proje kod standartlarına uygunluğunu kanıtlayan entegrasyon testleri (`tests/integration/test_db.py`, `test_db_query_counts.py`). Kod tabanının tamamı okunarak N+1 riski taşıyan bir yer bulunmadı (her yerde açık join, lazy relationship traversal yok) — testler bunu regresyona karşı korumalı bir garantiye çevirdi: `query_counter` fixture'ı ile gerçek SQL sorgu sayısı, karşılaştırmalı (5 vs 50 veri boyutu) yöntemle O(1) olduğu kanıtlanarak ölçüldü. Ayrıca transaction rollback (`get_db_session`) ve index kullanımı (`EXPLAIN`, gerçek 32k+ satıra karşı) doğrudan test edildi — bkz. [ADR-0021](adr/0021-db-layer-standards-verification.md)
 - ⬜ `feature/cache-layer` — embedding/sonuç cache'leme
 - ⬜ `feature/fallback-mechanism` — hata yönetimi + fallback zinciri
 - ⬜ `feature/middleware` — rate limiting + prompt injection filtresi
