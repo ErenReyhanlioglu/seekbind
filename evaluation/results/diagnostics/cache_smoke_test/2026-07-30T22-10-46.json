@@ -1,0 +1,117 @@
+{
+  "label": null,
+  "timestamp": "2026-07-30T22-10-46",
+  "toplam_senaryo": 13,
+  "gecen_senaryo": 13,
+  "basarisiz_senaryo": 0,
+  "scenarios": [
+    {
+      "name": "embedding_miss_then_hit",
+      "description": "Aynı metin iki kez embed edilirse, ikinci çağrı gerçekten Redis'ten dönmeli (çok daha hızlı, aynı vektör).",
+      "passed": true,
+      "ilk_sure_sn": 0.34,
+      "ikinci_sure_sn": 0.001,
+      "vektor_boyutu": 1536,
+      "vektorler_ayni": true
+    },
+    {
+      "name": "embedding_partial_batch_hit",
+      "description": "İki metinlik bir batch'te biri zaten cache'liyse, sadece yeni metin için gerçek çağrı atılmalı (batch yine de eksiksiz dönmeli).",
+      "passed": true,
+      "sure_sn": 0.136,
+      "sonuc_sayisi": 2
+    },
+    {
+      "name": "embedding_model_isolation",
+      "description": "Aynı metin, farklı `model` etiketli iki sağlayıcı arasında cache'i paylaşmamalı — ikisi de gerçek API'ye gitmeli.",
+      "passed": true,
+      "provider_a_sure_sn": 0.203,
+      "provider_b_sure_sn": 0.175
+    },
+    {
+      "name": "embedding_enabled_false_bypass",
+      "description": "enabled=False iken Redis'e hiç dokunulmamalı — iki çağrı da gerçek API'ye gitmeli, hiçbir anahtar oluşmamalı.",
+      "passed": true,
+      "ilk_sure_sn": 0.194,
+      "ikinci_sure_sn": 0.174,
+      "redis_anahtari_olustu_mu": false
+    },
+    {
+      "name": "embedding_ttl_expiry",
+      "description": "TTL=3sn ile cache'lenen bir anahtar, süre dolunca gerçekten silinmeli (ttl()==-2) ve bir sonraki çağrı gerçek API'ye gitmeli.",
+      "passed": true,
+      "ttl_once_sn": 3,
+      "ttl_suresi_dolduktan_sonra": -2,
+      "suresi_dolduktan_sonraki_cagri_sn": 0.208
+    },
+    {
+      "name": "embedding_redis_unreachable_fallback",
+      "description": "Redis'e ulaşılamazsa istek ÇÖKMEMELİ — sessizce gerçek sağlayıcıya düşüp geçerli bir sonuç dönmeli.",
+      "passed": true,
+      "hata": null
+    },
+    {
+      "name": "llm_miss_then_hit_deterministic",
+      "description": "temperature=0.0 ile aynı mesaj iki kez gönderilirse, ikinci çağrı cache'ten dönmeli (from_cache=True, token=0, aynı içerik).",
+      "passed": true,
+      "ilk_sure_sn": 3.838,
+      "ikinci_sure_sn": 0.001,
+      "ilk_from_cache": false,
+      "ikinci_from_cache": true,
+      "ilk_token": 186,
+      "ikinci_token": 0
+    },
+    {
+      "name": "llm_day_of_week_changes_cache_key",
+      "description": "Aynı ham sorgu, farklı `today` (gün) ile çağrılırsa render edilmiş prompt farklı olur — ikinci çağrı da cache miss olmalı (yanlış günün 'yarın' yorumu cache'den sızmamalı).",
+      "passed": true,
+      "pazartesi_from_cache": false,
+      "persembe_from_cache": false,
+      "pazartesi_gun_of_week": "salı",
+      "persembe_gun_of_week": "cuma",
+      "pazartesi_sure_sn": 2.06,
+      "persembe_sure_sn": 1.49
+    },
+    {
+      "name": "llm_non_deterministic_never_cached",
+      "description": "temperature=0.7 (örn. öneri üretimi) HİÇBİR ZAMAN cache'lenmemeli — iki çağrı da gerçek olmalı, içerik farklı çıkmalı (bu branch'te bulunup düzeltilen gerçek hatanın regresyon kanıtı).",
+      "passed": true,
+      "ilk_from_cache": false,
+      "ikinci_from_cache": false,
+      "icerikler_ayni_mi": false,
+      "ilk_metin": "İzmit'te harika bir kuaför arıyorsanız, \"Kuaförüm\" salonunu kesinlikle tavsiye ederim. Güler yüzlü ekibiyle hem rahat bir atmosfer sunuyor hem de stilinize en uygun kesim ve renkleri bulmanıza yardımcı oluyorlar. Fiyatları da oldukça makul, bu yüzden bir şans vermenizi öneririm!",
+      "ikinci_metin": "İzmit'te saç bakımı ve stilinizi yenilemek için harika bir yer arıyorsanız, Kendi Kuaför Salonu'na göz atmanızı öneririm. Sıcak bir atmosferde deneyimli ekipleriyle profesyonel hizmet sunuyorlar. Hem fiyatları uygun hem de müşteri memnuniyetine gerçekten önem veriyorlar!"
+    },
+    {
+      "name": "llm_enabled_false_bypass",
+      "description": "enabled=False iken temperature=0.0 olsa bile Redis'e hiç dokunulmamalı.",
+      "passed": true,
+      "from_cache": false,
+      "redis_anahtari_olustu_mu": false
+    },
+    {
+      "name": "llm_ttl_expiry",
+      "description": "TTL=3sn ile cache'lenen bir LLM cevabı, süre dolunca gerçekten silinmeli, bir sonraki çağrı gerçek API'ye gitmeli.",
+      "passed": true,
+      "ttl_once_sn": 3,
+      "ttl_suresi_dolduktan_sonra": -2,
+      "ikinci_cagri_from_cache": false
+    },
+    {
+      "name": "llm_redis_unreachable_fallback",
+      "description": "Redis'e ulaşılamazsa istek ÇÖKMEMELİ — sessizce gerçek sağlayıcıya düşüp geçerli bir cevap dönmeli.",
+      "passed": true,
+      "hata": null
+    },
+    {
+      "name": "full_recommend_pipeline_twice",
+      "description": "Aynı sorguyla iki gerçek /recommend isteği: intent+embedding cache sayesinde ikinci istek daha hızlı olmalı, ama öneri metni HER SEFERİNDE taze (farklı) üretilmeli.",
+      "passed": true,
+      "ilk_sure_sn": 5.647,
+      "ikinci_sure_sn": 1.996,
+      "ilk_oneri": "İzmit'te ucuz bir dişçi arıyorsanız, Diş Hekimi Tarık Can Kara iyi bir seçenek olabilir. Hem çocuklar hem de yetişkinler için geniş bir hizmet yelpazesi sunuyor ve muayene süreleri oldukça uygun. Ayrıca, fiyat aralığı da bütçenizi zorlamadan diş sağlığınızı korumanıza yardımcı olabilir. DentAtlas Ağız ve Diş Sağlığı Polikliniği de iyi bir alternatif; burada geniş kapsamlı tedavi seçenekleri mevcut ve hasta memnuniyeti yüksek. Her iki klinik de randevu alarak hizmet veriyor.",
+      "ikinci_oneri": "İzmit'te uygun fiyatlı bir dişçi arıyorsanız, Diş Hekimi Tarık Can Kara iyi bir seçenek olabilir. Hem çocuklar hem de yetişkinler için diş çekimi, protez ve çocuk diş hekimliği hizmetleri sunan bu klinik, geniş bir hasta yelpazesine hitap ediyor. Ayrıca, randevuların yaklaşık 45 dakika sürmesi sayesinde zamanınızı verimli bir şekilde kullanabilirsiniz. Diğer bir seçenek ise Özel Kocaeli Diş Polikliniği; burada da implant, ortodonti gibi çeşitli hizmetler mevcut ve fiyat aralığı oldukça makul.",
+      "oneri_metinleri_ayni_mi": false
+    }
+  ]
+}
