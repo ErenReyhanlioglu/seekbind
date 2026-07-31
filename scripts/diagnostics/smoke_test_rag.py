@@ -23,7 +23,7 @@ damgası.json'a yazılır — bkz. smoke_test_search.py'deki aynı gerekçe
 (zaman damgalı, hiçbir sonuç sessizce ezilmez).
 
 Kullanım:
-    # Sabit 16 senaryonun hepsini çalıştırır
+    # Sabit 21 senaryonun hepsini çalıştırır
     uv run python -m scripts.diagnostics.smoke_test_rag [etiket]
 
     # Sadece tek, elle verilen bir sorguyu çalıştırır (intent parsing
@@ -55,9 +55,9 @@ RESULTS_DIR: Path = Path("evaluation/results/diagnostics/rag_smoke_test")
 TIMESTAMP_FORMAT: str = "%Y-%m-%dT%H-%M-%S"
 
 
-def _print_and_record_intent(query: str, intent: ParsedIntent) -> dict:
+def _print_and_record_intent(query: str, intent: ParsedIntent, from_cache: bool) -> dict:
     """Ham intent parsing çıktısını terminale yazdırır, JSON'a kaydedilecek yapıyı döner."""
-    print(f"\n--- Intent ayrıştırma: '{query}' ---")
+    print(f"\n--- Intent ayrıştırma: '{query}' (cache'den mi: {from_cache}) ---")
     print(f"  semantic_query: {intent.semantic_query!r}")
     print(
         f"  filtreler: category={intent.category}, min_price={intent.min_price}, "
@@ -66,7 +66,7 @@ def _print_and_record_intent(query: str, intent: ParsedIntent) -> dict:
         f"near_me={intent.near_me}"
     )
     print(f"  zaman: day_of_week={intent.day_of_week}, time_of_day={intent.time_of_day}")
-    return {"query": query, "parsed_intent": intent.model_dump()}
+    return {"query": query, "parsed_intent": intent.model_dump(), "intent_cache_hit": from_cache}
 
 
 def _print_and_record_recommendation(title: str, query: str, response) -> dict:  # noqa: ANN001
@@ -154,8 +154,8 @@ async def main(label: str | None = None, custom_query: str | None = None) -> Non
             return
 
         async def run(title: str, query: str) -> None:
-            intent = await parse_intent(llm_provider, query, today)
-            intent_diagnostics.append(_print_and_record_intent(query, intent))
+            intent, intent_from_cache = await parse_intent(llm_provider, query, today)
+            intent_diagnostics.append(_print_and_record_intent(query, intent, intent_from_cache))
 
             response = await get_recommendation(
                 session=session,

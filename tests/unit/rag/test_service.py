@@ -45,6 +45,7 @@ class _FakeLLMProvider:
     cevapları döner (1. çağrı intent parse, 2. çağrı öneri üretimi)."""
 
     name = "fake"
+    model = "fake-model"
 
     def __init__(self, responses: list[str]) -> None:
         self._responses = responses
@@ -407,6 +408,7 @@ def test_build_trace_metadata_includes_all_filter_fields() -> None:
         near_me=True,
         distance_reference=(40.77, 29.92),
         intent_fallback=False,
+        intent_cache_hit=True,
         recommendation_fallback=True,
         result_count=3,
         total=10,
@@ -426,6 +428,7 @@ def test_build_trace_metadata_includes_all_filter_fields() -> None:
     assert metadata["availability_date"] == "2026-08-01"
     assert metadata["availability_time_of_day"] == "morning"
     assert metadata["intent_parsing_fallback"] is False
+    assert metadata["intent_cache_hit"] is True
     assert metadata["recommendation_fallback"] is True
     assert metadata["result_count"] == 3
     assert metadata["total"] == 10
@@ -440,6 +443,7 @@ def test_build_trace_metadata_handles_missing_availability() -> None:
         near_me=False,
         distance_reference=None,
         intent_fallback=False,
+        intent_cache_hit=False,
         recommendation_fallback=False,
         result_count=0,
         total=0,

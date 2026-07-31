@@ -31,6 +31,15 @@ JINA_RERANK_TIMEOUT_SECONDS: int = 10
 # skoru ve yine çok dilli (bkz. docs/roadmap.md "Önemli kararlar")
 JINA_RERANKER_MODEL: str = "jina-reranker-v3"
 
+# Embedding cache TTL'i (saniye) — "deploy-kaynaklı" bir cache: aynı metnin
+# aynı modeldeki embedding'i asla değişmez, TTL burada doğruluk için değil
+# sadece Redis bellek yönetimi için var. Uzun tutulur (30 gün).
+EMBEDDING_CACHE_TTL_SECONDS: int = 60 * 60 * 24 * 30
+
+# LLM completion cache TTL'i (saniye) — intent parsing gibi deterministik
+# (temperature=0.0) çağrılar için, aynı gerekçeyle uzun tutulur (7 gün).
+LLM_CACHE_TTL_SECONDS: int = 60 * 60 * 24 * 7
+
 
 class Settings(BaseSettings):
     """.env dosyasından okunan uygulama ayarları."""
@@ -93,6 +102,12 @@ class Settings(BaseSettings):
     # Jina reranker
     jina_reranker_model: str = JINA_RERANKER_MODEL
     jina_rerank_timeout_seconds: int = JINA_RERANK_TIMEOUT_SECONDS
+
+    # Redis (embedding + LLM completion cache)
+    redis_url: str
+    enable_cache: bool = True
+    embedding_cache_ttl_seconds: int = EMBEDDING_CACHE_TTL_SECONDS
+    llm_cache_ttl_seconds: int = LLM_CACHE_TTL_SECONDS
 
 
 @lru_cache

@@ -59,22 +59,32 @@ _LANGFUSE_TRACE_NAME: str = "recommend"
 
 async def _resolve_search_query_and_filters(
     llm_provider: LLMProvider, raw_query: str, today: date, session: AsyncSession
-) -> tuple[str, SearchFilters, DateAvailabilityFilter | None, RatingPreference | None, bool, bool]:
+) -> tuple[str, SearchFilters, DateAvailabilityFilter | None, RatingPreference | None, bool, bool, bool]:
     """Intent parsing dener, başarısız olursa ham sorgu + boş filtreye düşer.
 
-    Sondan bir önceki eleman (`bool`), intent parsing'in fallback'e düşüp
-    düşmediğini belirtir; son eleman (`bool`) `near_me` sinyalidir — ikisi de
-    `get_recommendation` tarafından kullanılır (biri trace metadata'sına,
-    diğeri `distance_reference` çözümlemesine).
+    Sondan iki önceki eleman (`bool`), intent parsing'in fallback'e düşüp
+    düşmediğini belirtir; sondan bir önceki eleman (`bool`) `near_me`
+    sinyalidir; son eleman (`bool`) intent parsing LLM cevabının Redis
+    cache'inden gelip gelmediğidir (bkz. `parse_intent`) — üçü de
+    `get_recommendation` tarafından kullanılır (trace metadata'sı ve
+    `distance_reference` çözümlemesi için).
     """
     try:
-        intent = await parse_intent(llm_provider, raw_query, today)
+        intent, intent_cache_hit = await parse_intent(llm_provider, raw_query, today)
     except IntentParsingError as e:
         logger.warning("Intent parsing başarısız, salt semantik aramaya düşülüyor: %s", e)
-        return raw_query, SearchFilters(), None, None, True, False
+        return raw_query, SearchFilters(), None, None, True, False, False
     filters = await build_search_filters(intent, session)
     availability = build_availability_filter(intent, today)
-    return intent.semantic_query, filters, availability, intent.rating_preference, False, intent.near_me
+    return (
+        intent.semantic_query,
+        filters,
+        availability,
+        intent.rating_preference,
+        False,
+        intent.near_me,
+        intent_cache_hit,
+    )
 
 
 async def _resolve_distance_reference(
@@ -118,6 +128,7 @@ def _build_trace_metadata(
     near_me: bool,
     distance_reference: tuple[float, float] | None,
     intent_fallback: bool,
+    intent_cache_hit: bool,
     recommendation_fallback: bool,
     result_count: int,
     total: int,
@@ -144,6 +155,7 @@ def _build_trace_metadata(
         "availability_date": availability.date.isoformat() if availability else None,
         "availability_time_of_day": availability.time_of_day if availability else None,
         "intent_parsing_fallback": intent_fallback,
+        "intent_cache_hit": intent_cache_hit,
         "recommendation_fallback": recommendation_fallback,
         "result_count": result_count,
         "total": total,
@@ -175,6 +187,7 @@ def _record_trace(
     near_me: bool,
     distance_reference: tuple[float, float] | None,
     intent_fallback: bool,
+    intent_cache_hit: bool,
     recommendation_fallback: bool,
     result_count: int,
     total: int,
@@ -198,6 +211,7 @@ def _record_trace(
             near_me=near_me,
             distance_reference=distance_reference,
             intent_fallback=intent_fallback,
+            intent_cache_hit=intent_cache_hit,
             recommendation_fallback=recommendation_fallback,
             result_count=result_count,
             total=total,
@@ -242,7 +256,7 @@ async def get_recommendation(
     çevrilmeye çalışılırsa dağınık/gereksiz veri üretir — trace'e ne
     yazılacağı bilinçli olarak `_record_trace` ile elle seçilir.
     """
-    search_query, filters, availability, rating_preference, intent_fallback, near_me = (
+    search_query, filters, availability, rating_preference, intent_fallback, near_me, intent_cache_hit = (
         await _resolve_search_query_and_filters(llm_provider, raw_query, today, session)
     )
     distance_reference = await _resolve_distance_reference(session, user_id, near_me)
@@ -273,6 +287,7 @@ async def get_recommendation(
             near_me=near_me,
             distance_reference=distance_reference,
             intent_fallback=intent_fallback,
+            intent_cache_hit=intent_cache_hit,
             recommendation_fallback=False,
             result_count=0,
             total=0,
@@ -294,6 +309,7 @@ async def get_recommendation(
         near_me=near_me,
         distance_reference=distance_reference,
         intent_fallback=intent_fallback,
+        intent_cache_hit=intent_cache_hit,
         recommendation_fallback=recommendation_fallback,
         result_count=len(search_response.results),
         total=search_response.total,

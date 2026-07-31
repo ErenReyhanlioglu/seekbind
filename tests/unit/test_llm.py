@@ -8,6 +8,8 @@ import pytest
 from openai import APIConnectionError, APIError, APITimeoutError
 
 import backend.services.llm as llm_module
+from backend.config import get_settings
+from backend.services.cache import CachedLLMProvider
 from backend.services.llm import ChatMessage, LLMServiceError, OllamaLLM, OpenAILLM, get_llm_provider
 
 _DUMMY_REQUEST = httpx.Request("POST", "https://example.com")
@@ -28,6 +30,18 @@ def _make_completion(
         total_tokens=prompt_tokens + completion_tokens,
     )
     return SimpleNamespace(choices=[choice], usage=usage, model=model)
+
+
+def test_openai_llm_model_matches_configured_setting() -> None:
+    provider = OpenAILLM()
+
+    assert provider.model == get_settings().openai_llm_model
+
+
+def test_ollama_llm_model_matches_configured_setting() -> None:
+    provider = OllamaLLM()
+
+    assert provider.model == get_settings().ollama_llm_model
 
 
 async def test_openai_complete_returns_response_with_content_and_usage() -> None:
@@ -231,6 +245,8 @@ async def test_complete_defaults_token_counts_to_zero_when_usage_missing() -> No
 
 
 def test_get_llm_provider_returns_openai_when_configured(monkeypatch: pytest.MonkeyPatch) -> None:
+    """`get_llm_provider()` artık çıplak `OpenAILLM` değil, Redis cache ile
+    sarılmış hâlini döner (bkz. backend/services/cache.py)."""
     real_settings = llm_module.get_settings()
     fake_settings = real_settings.model_copy(update={"active_llm_provider": "openai"})
     monkeypatch.setattr(llm_module, "get_settings", lambda: fake_settings)
@@ -238,12 +254,15 @@ def test_get_llm_provider_returns_openai_when_configured(monkeypatch: pytest.Mon
 
     try:
         provider = get_llm_provider()
-        assert isinstance(provider, OpenAILLM)
+        assert isinstance(provider, CachedLLMProvider)
+        assert isinstance(provider._inner, OpenAILLM)  # type: ignore[attr-defined]
     finally:
         get_llm_provider.cache_clear()
 
 
 def test_get_llm_provider_returns_ollama_when_configured(monkeypatch: pytest.MonkeyPatch) -> None:
+    """`get_llm_provider()` artık çıplak `OllamaLLM` değil, Redis cache ile
+    sarılmış hâlini döner (bkz. backend/services/cache.py)."""
     real_settings = llm_module.get_settings()
     fake_settings = real_settings.model_copy(update={"active_llm_provider": "ollama"})
     monkeypatch.setattr(llm_module, "get_settings", lambda: fake_settings)
@@ -251,6 +270,7 @@ def test_get_llm_provider_returns_ollama_when_configured(monkeypatch: pytest.Mon
 
     try:
         provider = get_llm_provider()
-        assert isinstance(provider, OllamaLLM)
+        assert isinstance(provider, CachedLLMProvider)
+        assert isinstance(provider._inner, OllamaLLM)  # type: ignore[attr-defined]
     finally:
         get_llm_provider.cache_clear()

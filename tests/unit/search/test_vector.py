@@ -12,6 +12,7 @@ class _FakeEmbeddingProvider:
     """embed_batch çağrısını gerçek OpenAI'ye gitmeden taklit eden test double'ı."""
 
     name = "fake"
+    model = "fake-model"
     dimension = 3
 
     async def embed_batch(self, texts: list[str]) -> list[list[float]]:

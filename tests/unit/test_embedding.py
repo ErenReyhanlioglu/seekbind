@@ -7,6 +7,8 @@ import httpx
 import pytest
 from openai import APIError, APITimeoutError
 
+from backend.config import get_settings
+from backend.services.cache import CachedEmbeddingProvider
 from backend.services.embedding import EmbeddingServiceError, OpenAIEmbedding, get_embedding_provider
 
 _DUMMY_REQUEST = httpx.Request("POST", "https://example.com")
@@ -20,6 +22,12 @@ def test_openai_embedding_name_is_openai() -> None:
     provider = OpenAIEmbedding()
 
     assert provider.name == "openai"
+
+
+def test_openai_embedding_model_matches_configured_setting() -> None:
+    provider = OpenAIEmbedding()
+
+    assert provider.model == get_settings().openai_embedding_model
 
 
 def test_openai_embedding_dimension_is_1536() -> None:
@@ -75,12 +83,15 @@ async def test_openai_embedding_raises_service_error_on_api_error() -> None:
         await provider.embed_batch(["metin"])
 
 
-def test_get_embedding_provider_returns_openai_embedding_instance() -> None:
+def test_get_embedding_provider_returns_openai_embedding_wrapped_in_cache() -> None:
+    """`get_embedding_provider()` artık çıplak `OpenAIEmbedding` değil,
+    Redis cache ile sarılmış hâlini döner (bkz. backend/services/cache.py)."""
     get_embedding_provider.cache_clear()
 
     try:
         provider = get_embedding_provider()
-        assert isinstance(provider, OpenAIEmbedding)
+        assert isinstance(provider, CachedEmbeddingProvider)
+        assert isinstance(provider._inner, OpenAIEmbedding)  # type: ignore[attr-defined]
     finally:
         get_embedding_provider.cache_clear()
 
