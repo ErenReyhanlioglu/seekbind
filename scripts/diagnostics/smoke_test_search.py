@@ -54,12 +54,13 @@ from backend.services.search import (
     translate_filters_to_qdrant,
     vector_search,
 )
+from scripts.diagnostics._result_paths import build_results_dir
 
 logger = logging.getLogger(__name__)
 
 DISPLAY_LIMIT: int = 40
 DIAGNOSTIC_DEPTH: int = 15
-RESULTS_DIR: Path = Path("evaluation/results/diagnostics/search_smoke_test")
+EXPERIMENT_NAME: str = "search_smoke_test"
 # Windows dosya sisteminde ":" geçersiz — ISO 8601'in saat kısmındaki
 # iki nokta üst üste yerine tire kullanan bir format gerekiyor.
 TIMESTAMP_FORMAT: str = "%Y-%m-%dT%H-%M-%S"
@@ -145,28 +146,40 @@ async def _diagnose_query(
     }
 
 
-def _write_result(scenarios: list[dict], diagnostics: list[dict], label: str | None) -> Path:
-    """Sonucu evaluation/results/diagnostics/search_smoke_test/ altına JSON olarak yazar.
+def _write_result(scenarios: list[dict], diagnostics: list[dict], label: str | None, embedder_model: str) -> Path:
+    """Sonucu evaluation/results/diagnostics/search_smoke_test/<embedder>/ altına JSON olarak yazar.
 
+    LLM katmanı yok — search_providers() hiç LLM çağırmıyor, bu yüzden
+    `build_results_dir`'e `llm_model` verilmiyor (bkz. _result_paths.py).
     Dosya adı her zaman zaman damgalı (hiçbir sonuç sessizce ezilmez);
     opsiyonel etiket verilirse ("before_reranker" gibi) dosya adının başına
     eklenir, ileride dosya listesinde "bu hangi kilometre taşıydı" diye
     aramayı kolaylaştırır.
     """
-    RESULTS_DIR.mkdir(parents=True, exist_ok=True)
+    results_dir = build_results_dir(EXPERIMENT_NAME, embedder_model)
+    results_dir.mkdir(parents=True, exist_ok=True)
     timestamp = datetime.now().strftime(TIMESTAMP_FORMAT)
     filename = f"{label}_{timestamp}.json" if label else f"{timestamp}.json"
-    output_path = RESULTS_DIR / filename
+    output_path = results_dir / filename
     payload = {"label": label, "timestamp": timestamp, "scenarios": scenarios, "diagnostics": diagnostics}
     output_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
     return output_path
 
 
-async def main(label: str | None = None, custom_query: str | None = None) -> None:
+async def main(
+    label: str | None = None,
+    custom_query: str | None = None,
+    embedding_provider: EmbeddingProvider | None = None,
+) -> None:
+    """`embedding_provider` verilmezse canlı sistemin kendi (fallback-farkında)
+    factory'si kullanılır. Belirli bir embedder'ı zorlamak isteyen bir
+    çağıran (bkz. mini ablasyon script'i) çıplak bir sağlayıcıyı doğrudan
+    geçirebilir — bu fonksiyon hiç LLM kullanmadığı için LLM parametresi yok."""
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 
     qdrant_client = get_qdrant_client()
-    embedding_provider = get_embedding_provider()
+    if embedding_provider is None:
+        embedding_provider = get_embedding_provider()
     reranker_provider: RerankerProvider = get_reranker_provider()
     session_factory = get_session_factory()
 
@@ -174,95 +187,103 @@ async def main(label: str | None = None, custom_query: str | None = None) -> Non
     diagnostics: list[dict] = []
 
     bm25_index = BM25Index()
-    async with session_factory() as session:
-        await bm25_index.refresh_if_stale(session)
-        logger.info("BM25 index kuruldu")
+    try:
+        async with session_factory() as session:
+            await bm25_index.refresh_if_stale(session)
+            logger.info("BM25 index kuruldu")
 
-        async def run(
-            title: str,
-            query: str,
-            filters: SearchFilters,
-            availability: DateAvailabilityFilter | None = None,
-        ) -> None:
-            response = await search_providers(
-                session=session,
-                qdrant_client=qdrant_client,
-                bm25_index=bm25_index,
-                embedding_provider=embedding_provider,
-                reranker_provider=reranker_provider,
-                query=query,
-                filters=filters,
-                availability=availability,
-                limit=DISPLAY_LIMIT,
-            )
-            scenarios.append(_print_and_record(title, response.results, response.total))
+            async def run(
+                title: str,
+                query: str,
+                filters: SearchFilters,
+                availability: DateAvailabilityFilter | None = None,
+            ) -> None:
+                response = await search_providers(
+                    session=session,
+                    qdrant_client=qdrant_client,
+                    bm25_index=bm25_index,
+                    embedding_provider=embedding_provider,
+                    reranker_provider=reranker_provider,
+                    query=query,
+                    filters=filters,
+                    availability=availability,
+                    limit=DISPLAY_LIMIT,
+                )
+                scenarios.append(_print_and_record(title, response.results, response.total))
 
-        if custom_query is not None:
-            # Sabit senaryolar yerine sadece elle verilen tek sorgu — hem ham
-            # BM25/vektör dökümü hem reranker sonrası final sonuç kaydedilir.
+            if custom_query is not None:
+                # Sabit senaryolar yerine sadece elle verilen tek sorgu — hem ham
+                # BM25/vektör dökümü hem reranker sonrası final sonuç kaydedilir.
+                diagnostics.append(
+                    await _diagnose_query(
+                        session, qdrant_client, bm25_index, embedding_provider, custom_query, SearchFilters()
+                    )
+                )
+                await run(f"Özel sorgu: {custom_query}", custom_query, SearchFilters())
+                output_path = _write_result(scenarios, diagnostics, label, embedding_provider.model)
+                logger.info("Sonuçlar kaydedildi: %s", output_path)
+                return
+
+            # 1) Sade semantik + fiyat filtresi
+            await run("Ucuz diş kliniği (max_price=1500)", "ucuz diş kliniği", SearchFilters(max_price=1500))
+
+            # 1b) Aynı sorgu, fiyat filtresi OLMADAN — karşılaştırma için
+            await run("Ucuz diş kliniği (filtresiz)", "ucuz diş kliniği", SearchFilters())
+
+            # 1c) Tanı: max_price=1500 ile BM25/vektör ham sonuçları
             diagnostics.append(
                 await _diagnose_query(
-                    session, qdrant_client, bm25_index, embedding_provider, custom_query, SearchFilters()
+                    session,
+                    qdrant_client,
+                    bm25_index,
+                    embedding_provider,
+                    "ucuz diş kliniği",
+                    SearchFilters(max_price=1500),
                 )
             )
-            await run(f"Özel sorgu: {custom_query}", custom_query, SearchFilters())
-            output_path = _write_result(scenarios, diagnostics, label)
-            logger.info("Sonuçlar kaydedildi: %s", output_path)
-            await reranker_provider.close()
-            return
 
-        # 1) Sade semantik + fiyat filtresi
-        await run("Ucuz diş kliniği (max_price=1500)", "ucuz diş kliniği", SearchFilters(max_price=1500))
-
-        # 1b) Aynı sorgu, fiyat filtresi OLMADAN — karşılaştırma için
-        await run("Ucuz diş kliniği (filtresiz)", "ucuz diş kliniği", SearchFilters())
-
-        # 1c) Tanı: max_price=1500 ile BM25/vektör ham sonuçları
-        diagnostics.append(
-            await _diagnose_query(
-                session, qdrant_client, bm25_index, embedding_provider, "ucuz diş kliniği", SearchFilters(max_price=1500)
+            # 2) Kategori + cinsiyet filtresi
+            await run(
+                "Kadınlara yönelik kuaför", "saç kesimi", SearchFilters(category="Kuaför", gender="female")
             )
-        )
 
-        # 2) Kategori + cinsiyet filtresi
-        await run(
-            "Kadınlara yönelik kuaför", "saç kesimi", SearchFilters(category="Kuaför", gender="female")
-        )
+            # 2b) Başka bir "ucuz X" kombinasyonu — bu bir kalıp mı yoksa tek seferlik mi görmek için
+            await run("Ucuz kuaför (max_price=1000)", "ucuz kuaför", SearchFilters(max_price=1000))
 
-        # 2b) Başka bir "ucuz X" kombinasyonu — bu bir kalıp mı yoksa tek seferlik mi görmek için
-        await run("Ucuz kuaför (max_price=1000)", "ucuz kuaför", SearchFilters(max_price=1000))
+            # 3) Hafta sonu açık filtresi
+            await run("Hafta sonu açık güzellik salonu", "güzellik salonu", SearchFilters(weekend_open_only=True))
 
-        # 3) Hafta sonu açık filtresi
-        await run("Hafta sonu açık güzellik salonu", "güzellik salonu", SearchFilters(weekend_open_only=True))
+            # 4) Konum filtresi (mesafe kontrolü için)
+            await run(
+                "İzmit merkeze 5km içinde berber",
+                "berber",
+                SearchFilters(near=NearFilter(latitude=IZMIT_MERKEZ_LAT, longitude=IZMIT_MERKEZ_LON, radius_km=5)),
+            )
 
-        # 4) Konum filtresi (mesafe kontrolü için)
-        await run(
-            "İzmit merkeze 5km içinde berber",
-            "berber",
-            SearchFilters(near=NearFilter(latitude=IZMIT_MERKEZ_LAT, longitude=IZMIT_MERKEZ_LON, radius_km=5)),
-        )
+            # 5) Tarih/saat müsaitliği (iki fazlı filtrenin gerçek testi)
+            tomorrow = date.today() + timedelta(days=1)
+            await run(
+                f"Diş kliniği, {tomorrow} sabahı müsait",
+                "diş kliniği",
+                SearchFilters(),
+                availability=DateAvailabilityFilter(date=tomorrow, time_of_day="morning"),
+            )
 
-        # 5) Tarih/saat müsaitliği (iki fazlı filtrenin gerçek testi)
-        tomorrow = date.today() + timedelta(days=1)
-        await run(
-            f"Diş kliniği, {tomorrow} sabahı müsait",
-            "diş kliniği",
-            SearchFilters(),
-            availability=DateAvailabilityFilter(date=tomorrow, time_of_day="morning"),
-        )
+            # 6) Fiyat aralığının iki ucu da verilirse
+            await run(
+                "Diş kliniği (1000-3000TL aralığı)", "diş kliniği", SearchFilters(min_price=1000, max_price=3000)
+            )
 
-        # 6) Fiyat aralığının iki ucu da verilirse
-        await run("Diş kliniği (1000-3000TL aralığı)", "diş kliniği", SearchFilters(min_price=1000, max_price=3000))
+            # 7) Muhtemelen boş dönecek bir kombinasyon — zarif davranış kontrolü
+            await run("Diş kliniği (max_price=10, muhtemelen boş)", "diş kliniği", SearchFilters(max_price=10))
 
-        # 7) Muhtemelen boş dönecek bir kombinasyon — zarif davranış kontrolü
-        await run("Diş kliniği (max_price=10, muhtemelen boş)", "diş kliniği", SearchFilters(max_price=10))
-
-    output_path = _write_result(scenarios, diagnostics, label)
-    logger.info("Sonuçlar kaydedildi: %s", output_path)
-    logger.info("Smoke test tamamlandı.")
-
-    # FastAPI lifespan yok — reranker'ın httpx.AsyncClient'ını burada elle kapatıyoruz.
-    await reranker_provider.close()
+        output_path = _write_result(scenarios, diagnostics, label, embedding_provider.model)
+        logger.info("Sonuçlar kaydedildi: %s", output_path)
+        logger.info("Smoke test tamamlandı.")
+    finally:
+        # FastAPI lifespan yok — reranker'ın httpx.AsyncClient'ını burada elle
+        # kapatıyoruz (finally: bir senaryo ortasında istisna fırlasa bile).
+        await reranker_provider.close()
 
 
 def _parse_args() -> argparse.Namespace:

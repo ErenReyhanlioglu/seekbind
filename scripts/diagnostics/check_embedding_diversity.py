@@ -1,16 +1,22 @@
 """Embedding'lerin kategori-içi/kategoriler-arası kosinüs benzerliğini ölçer.
 
 LLM'in ürettiği açıklamaların birbirine çok benzemesi ("mode collapse")
-riskini tespit etmek için — bkz. docs/roadmap.md. Farklı embedding
-sağlayıcıları karşılaştırılırken (Faz 6) de aynı script, farklı
-collection adıyla tekrar çalıştırılır.
+riskini tespit etmek için — bkz. docs/roadmap.md. Birden fazla collection
+verilirse (örn. farklı embedding sağlayıcılarının sonuçları, bkz.
+feature/fallback-mechanism/Faz 6), her biri ayrı ayrı analiz edilir VE
+aralarında bir karşılaştırma raporu üretilir — sonuçları elle diff'lemeye
+gerek kalmaz.
+
+Kullanım:
+    uv run python -m scripts.diagnostics.check_embedding_diversity
+    uv run python -m scripts.diagnostics.check_embedding_diversity --collections businesses_openai businesses_ollama-qwen3-embedding-0-6b
 """
 
+import argparse
 import asyncio
 import json
 import logging
 import random
-import sys
 from collections import defaultdict
 from datetime import datetime
 from pathlib import Path
@@ -22,7 +28,7 @@ from backend.db.qdrant import get_qdrant_client
 
 logger = logging.getLogger(__name__)
 
-DEFAULT_COLLECTION_NAME: str = "businesses_openai"
+DEFAULT_COLLECTIONS: tuple[str, ...] = ("businesses_openai",)
 CROSS_CATEGORY_SAMPLE_SIZE: int = 2000
 HIGH_SIMILARITY_WARNING_THRESHOLD: float = 0.95
 SCROLL_PAGE_SIZE: int = 100
@@ -88,8 +94,9 @@ def average_cross_category_similarity(grouped: VectorsByCategory, sample_size: i
     return sum(similarities) / len(similarities)
 
 
-def report(within: dict[str, float], cross: float) -> None:
-    """Sonuçları okunabilir şekilde loglar, şüpheli kategorileri işaretler."""
+def report(collection_name: str, within: dict[str, float], cross: float) -> None:
+    """Tek bir collection'ın sonuçlarını okunabilir şekilde loglar, şüpheli kategorileri işaretler."""
+    logger.info("--- %s ---", collection_name)
     logger.info("Kategoriler arası ortalama benzerlik: %.4f", cross)
     logger.info("Kategori-içi ortalama benzerlikler (yüksekten düşüğe):")
     for category, score in sorted(within.items(), key=lambda item: -item[1]):
@@ -98,7 +105,7 @@ def report(within: dict[str, float], cross: float) -> None:
 
 
 def build_result(collection_name: str, within: dict[str, float], cross: float, total_vectors: int) -> dict:
-    """Sonuçları JSON'a yazılacak yapıya çevirir."""
+    """Tek bir collection'ın sonuçlarını JSON'a yazılacak yapıya çevirir."""
     flagged = [c for c, score in within.items() if score > HIGH_SIMILARITY_WARNING_THRESHOLD]
     return {
         "collection_name": collection_name,
@@ -111,40 +118,91 @@ def build_result(collection_name: str, within: dict[str, float], cross: float, t
     }
 
 
-def write_result(result: dict, collection_name: str) -> Path:
-    """Sonucu evaluation/results/diagnostics/embedding_diversity/ altına JSON olarak yazar.
+def build_comparison(results: list[dict]) -> dict:
+    """Birden fazla collection'ın sonuçlarını yan yana karşılaştırır — elle
+    diff'lemeye gerek kalmadan hangi sağlayıcının hangi kategoride daha
+    ayrışık (ya da daha mode-collapse riskli) olduğu tek bakışta görülsün diye."""
+    all_categories = sorted({category for r in results for category in r["within_category_average_similarity"]})
+    within_by_category = {
+        category: {r["collection_name"]: r["within_category_average_similarity"].get(category) for r in results}
+        for category in all_categories
+    }
+    return {
+        "collections": [r["collection_name"] for r in results],
+        "cross_category_average_similarity_by_collection": {
+            r["collection_name"]: r["cross_category_average_similarity"] for r in results
+        },
+        "within_category_average_similarity_by_category": within_by_category,
+    }
 
-    Dosya adı zaman damgalı (smoke_test_search.py ile aynı gerekçe) — bu
-    script farklı embedding modelleri karşılaştırılırken (Faz 6) tekrar
-    tekrar çalıştırılacak, önceki bir çalıştırmanın sonucu sessizce
-    kaybolmamalı. collection_name zaten "hangi model" sorusuna cevap
-    veriyor, ayrı bir etikete gerek yok.
-    """
+
+def report_comparison(comparison: dict) -> None:
+    """Karşılaştırma tablosunu okunabilir şekilde loglar."""
+    logger.info("=== KARŞILAŞTIRMA (%s) ===", ", ".join(comparison["collections"]))
+    logger.info("Kategoriler arası ortalama benzerlik:")
+    for collection_name, cross in comparison["cross_category_average_similarity_by_collection"].items():
+        logger.info("  %s: %.4f", collection_name, cross)
+    logger.info("Kategori-içi ortalama benzerlik (collection'a göre):")
+    for category, by_collection in comparison["within_category_average_similarity_by_category"].items():
+        values = "  ".join(
+            f"{name}={score:.4f}" if score is not None else f"{name}=—" for name, score in by_collection.items()
+        )
+        logger.info("  %s: %s", category, values)
+
+
+def write_output(results: list[dict], comparison: dict | None) -> Path:
+    """Tüm collection'ların sonuçlarını (varsa karşılaştırmayla birlikte) TEK
+    bir zaman damgalı JSON dosyasına yazar — birden fazla ayrı dosyayı elle
+    eşleştirmek yerine tek bir yerden okunabilsin diye."""
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
     timestamp = datetime.now().strftime(TIMESTAMP_FORMAT)
-    output_path = RESULTS_DIR / f"{collection_name}_{timestamp}.json"
-    output_path.write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8")
+    suffix = "_".join(r["collection_name"] for r in results) if len(results) == 1 else "comparison"
+    output_path = RESULTS_DIR / f"{suffix}_{timestamp}.json"
+    payload: dict = {"results": results}
+    if comparison is not None:
+        payload["comparison"] = comparison
+    output_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
     return output_path
 
 
-async def main(collection_name: str = DEFAULT_COLLECTION_NAME) -> None:
-    """Verilen collection için kategori-içi/kategoriler-arası benzerlik analizini çalıştırır."""
+async def main(collection_names: tuple[str, ...] = DEFAULT_COLLECTIONS) -> None:
+    """Verilen collection'lar için kategori-içi/kategoriler-arası benzerlik
+    analizini çalıştırır; birden fazla collection verilirse ayrıca bir
+    karşılaştırma raporu üretir."""
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 
     client = get_qdrant_client()
-    grouped = await fetch_vectors_by_category(client, collection_name)
-    total_vectors = sum(len(v) for v in grouped.values())
-    logger.info("'%s': %d kategori, toplam %d vektör okundu", collection_name, len(grouped), total_vectors)
+    results: list[dict] = []
+    for collection_name in collection_names:
+        grouped = await fetch_vectors_by_category(client, collection_name)
+        total_vectors = sum(len(v) for v in grouped.values())
+        logger.info("'%s': %d kategori, toplam %d vektör okundu", collection_name, len(grouped), total_vectors)
 
-    within = average_within_category_similarity(grouped)
-    cross = average_cross_category_similarity(grouped, CROSS_CATEGORY_SAMPLE_SIZE)
-    report(within, cross)
+        within = average_within_category_similarity(grouped)
+        cross = average_cross_category_similarity(grouped, CROSS_CATEGORY_SAMPLE_SIZE)
+        report(collection_name, within, cross)
+        results.append(build_result(collection_name, within, cross, total_vectors))
 
-    result = build_result(collection_name, within, cross, total_vectors)
-    output_path = write_result(result, collection_name)
+    comparison: dict | None = None
+    if len(results) > 1:
+        comparison = build_comparison(results)
+        report_comparison(comparison)
+
+    output_path = write_output(results, comparison)
     logger.info("Sonuçlar kaydedildi: %s", output_path)
 
 
+def _parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument(
+        "--collections",
+        nargs="+",
+        default=list(DEFAULT_COLLECTIONS),
+        help="Analiz edilecek Qdrant collection adları (birden fazlaysa karşılaştırma raporu da üretilir)",
+    )
+    return parser.parse_args()
+
+
 if __name__ == "__main__":
-    collection_arg = sys.argv[1] if len(sys.argv) > 1 else DEFAULT_COLLECTION_NAME
-    asyncio.run(main(collection_arg))
+    args = _parse_args()
+    asyncio.run(main(tuple(args.collections)))
