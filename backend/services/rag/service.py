@@ -25,6 +25,11 @@ tamamen `llm_provider`/`embedding_provider` katmanında şeffaftır (bkz.
 her iki sağlayıcı da başarısız olursa yine kendi mevcut iki katmanlı
 (same-provider) düşüşüne (yukarıdaki `_resolve_search_query_and_filters`/
 `_generate_recommendation_with_fallback`) düşer.
+
+Prompt injection tespiti (bkz. `backend.middleware.prompt_injection`,
+ADR-0025) `get_recommendation()`'ın en başında, her iki LLM çağrısından önce
+yapılır — intent parsing için sadece log+flag, öneri üretimi için ise
+`generate_recommendation()` hiç çağrılmadan sabit fallback mesajına atlanır.
 """
 
 import logging
@@ -35,6 +40,7 @@ from qdrant_client import AsyncQdrantClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.api.schemas import ProviderResult, RecommendationResponse
+from backend.middleware.prompt_injection import detect_prompt_injection
 from backend.services.embedding import EmbeddingProvider
 from backend.services.llm import LLMProvider
 from backend.services.rag.intent import (
@@ -134,6 +140,7 @@ def _build_trace_metadata(
     intent_fallback: bool,
     intent_cache_hit: bool,
     recommendation_fallback: bool,
+    prompt_injection_detected: bool,
     result_count: int,
     total: int,
     limit: int,
@@ -161,6 +168,7 @@ def _build_trace_metadata(
         "intent_parsing_fallback": intent_fallback,
         "intent_cache_hit": intent_cache_hit,
         "recommendation_fallback": recommendation_fallback,
+        "prompt_injection_detected": prompt_injection_detected,
         "result_count": result_count,
         "total": total,
         "limit": limit,
@@ -168,13 +176,17 @@ def _build_trace_metadata(
     }
 
 
-def _build_trace_tags(*, intent_fallback: bool, recommendation_fallback: bool, empty_results: bool) -> list[str]:
+def _build_trace_tags(
+    *, intent_fallback: bool, recommendation_fallback: bool, prompt_injection_detected: bool, empty_results: bool
+) -> list[str]:
     """Langfuse arayüzünde filtrelemeyi kolaylaştıran etiketler üretir."""
     tags = [_LANGFUSE_TRACE_NAME]
     if intent_fallback:
         tags.append("intent_fallback")
     if recommendation_fallback:
         tags.append("recommendation_fallback")
+    if prompt_injection_detected:
+        tags.append("prompt_injection_suspected")
     if empty_results:
         tags.append("empty_results")
     return tags
@@ -193,6 +205,7 @@ def _record_trace(
     intent_fallback: bool,
     intent_cache_hit: bool,
     recommendation_fallback: bool,
+    prompt_injection_detected: bool,
     result_count: int,
     total: int,
     limit: int,
@@ -205,6 +218,7 @@ def _record_trace(
         tags=_build_trace_tags(
             intent_fallback=intent_fallback,
             recommendation_fallback=recommendation_fallback,
+            prompt_injection_detected=prompt_injection_detected,
             empty_results=result_count == 0,
         ),
         metadata=_build_trace_metadata(
@@ -217,6 +231,7 @@ def _record_trace(
             intent_fallback=intent_fallback,
             intent_cache_hit=intent_cache_hit,
             recommendation_fallback=recommendation_fallback,
+            prompt_injection_detected=prompt_injection_detected,
             result_count=result_count,
             total=total,
             limit=limit,
@@ -260,6 +275,10 @@ async def get_recommendation(
     çevrilmeye çalışılırsa dağınık/gereksiz veri üretir — trace'e ne
     yazılacağı bilinçli olarak `_record_trace` ile elle seçilir.
     """
+    injection_detected = detect_prompt_injection(raw_query)
+    if injection_detected:
+        logger.warning("Prompt injection kalıbı tespit edildi (log + flag, aramaya devam ediliyor)")
+
     search_query, filters, availability, rating_preference, intent_fallback, near_me, intent_cache_hit = (
         await _resolve_search_query_and_filters(llm_provider, raw_query, today, session)
     )
@@ -293,6 +312,7 @@ async def get_recommendation(
             intent_fallback=intent_fallback,
             intent_cache_hit=intent_cache_hit,
             recommendation_fallback=False,
+            prompt_injection_detected=injection_detected,
             result_count=0,
             total=0,
             limit=limit,
@@ -300,9 +320,12 @@ async def get_recommendation(
         )
         return RecommendationResponse(recommendation=EMPTY_RESULTS_MESSAGE, results=[], total=0)
 
-    recommendation_text, recommendation_fallback = await _generate_recommendation_with_fallback(
-        llm_provider, raw_query, search_response.results, rating_preference
-    )
+    if injection_detected:
+        recommendation_text, recommendation_fallback = RECOMMENDATION_FALLBACK_MESSAGE, True
+    else:
+        recommendation_text, recommendation_fallback = await _generate_recommendation_with_fallback(
+            llm_provider, raw_query, search_response.results, rating_preference
+        )
     _record_trace(
         raw_query=raw_query,
         output=recommendation_text,
@@ -315,6 +338,7 @@ async def get_recommendation(
         intent_fallback=intent_fallback,
         intent_cache_hit=intent_cache_hit,
         recommendation_fallback=recommendation_fallback,
+        prompt_injection_detected=injection_detected,
         result_count=len(search_response.results),
         total=search_response.total,
         limit=limit,

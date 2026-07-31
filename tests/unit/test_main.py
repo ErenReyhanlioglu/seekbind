@@ -8,6 +8,7 @@ from fastapi.middleware.gzip import GZipMiddleware
 
 import backend.main as main_module
 from backend.main import create_app, lifespan
+from backend.middleware.rate_limit import RateLimitMiddleware
 
 
 class _FakeSessionContextManager:
@@ -40,6 +41,18 @@ def test_create_app_adds_gzip_middleware() -> None:
 
     middleware_classes = [middleware.cls for middleware in app.user_middleware]
     assert GZipMiddleware in middleware_classes
+
+
+def test_create_app_adds_rate_limit_middleware_before_gzip() -> None:
+    """`app.user_middleware`'de son eklenen en başta durur (Starlette LIFO
+    sarmalama sırası) — `RateLimitMiddleware` GZip'ten SONRA eklendiği için
+    listede GZip'ten önceki indekste olmalı, isteği ilk o karşılasın diye
+    (GZip'in hiç çalışması gerekmesin rate limit reddederken)."""
+    app = create_app()
+
+    middleware_classes: list[object] = [middleware.cls for middleware in app.user_middleware]
+    assert RateLimitMiddleware in middleware_classes
+    assert middleware_classes.index(RateLimitMiddleware) < middleware_classes.index(GZipMiddleware)
 
 
 def _patch_lifespan_dependencies(monkeypatch, fake_session: AsyncMock) -> dict[str, MagicMock]:
