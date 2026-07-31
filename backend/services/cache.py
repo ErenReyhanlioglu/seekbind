@@ -118,6 +118,9 @@ class CachedEmbeddingProvider:
 
         return [vector for vector in results if vector is not None]
 
+    async def close(self) -> None:
+        await self._inner.close()
+
 
 class CachedLLMProvider:
     """`LLMProvider` Protocol'üne uyar, gerçek sağlayıcıyı Redis cache ile sarar."""

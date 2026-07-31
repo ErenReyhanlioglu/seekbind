@@ -20,7 +20,11 @@ nest olur (manuel `trace_id` taşımaya gerek yok). İsteğin tamamına ait öze
 trace metadata'sına yazılır.
 
 Sağlayıcılar arası otomatik fallback (OpenAI hata verirse Ollama'ya geçme)
-bilinçli olarak burada değil — bkz. docs/roadmap.md `feature/fallback-mechanism`.
+tamamen `llm_provider`/`embedding_provider` katmanında şeffaftır (bkz.
+`backend.services.fallback`) — bu modül fallback'in var olduğunu hiç bilmez,
+her iki sağlayıcı da başarısız olursa yine kendi mevcut iki katmanlı
+(same-provider) düşüşüne (yukarıdaki `_resolve_search_query_and_filters`/
+`_generate_recommendation_with_fallback`) düşer.
 """
 
 import logging

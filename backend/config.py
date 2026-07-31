@@ -67,8 +67,7 @@ class Settings(BaseSettings):
     openai_llm_model: str  # runtime aday — gpt-4o-mini (bkz. docs/adr/0008-llm-comparison-phase-4.md)
     openai_enrichment_llm_model: str  # veri zenginleştirme, ADR-0001 ile sabit — gpt-4.1-mini
 
-    # Ollama (yerel sağlayıcı — Qwen3 7B / Turkish-LLM 7B, hangisi test
-    # ediliyorsa OLLAMA_LLM_MODEL'e elle yazılır)
+    # Ollama (yerel sağlayıcı — fallback hedefi, bkz. docs/adr/0023-ablation-candidate-models.md)
     ollama_base_url: str
     ollama_embedding_model: str
     ollama_llm_model: str
@@ -108,6 +107,9 @@ class Settings(BaseSettings):
     enable_cache: bool = True
     embedding_cache_ttl_seconds: int = EMBEDDING_CACHE_TTL_SECONDS
     llm_cache_ttl_seconds: int = LLM_CACHE_TTL_SECONDS
+
+    # Sağlayıcılar arası fallback (OpenAI -> Ollama, bkz. docs/adr/0024-fallback-mechanism.md)
+    enable_fallback: bool = True
 
 
 @lru_cache
