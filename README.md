@@ -20,8 +20,9 @@ SeekBind, [DateBind](https://datebind.com) randevu platformu için geliştirilen
 - Takvim slotları, hizmet listesi ve fiyat bilgileri sentetik olarak üretilmiştir
 
 **AI Katmanı**
-- Embedding: OpenAI `text-embedding-3-small`, `embeddingmagibu-200m` (Türkçe özel), `qwen3-embedding:0.6B`
-- LLM: `gpt-4.1-mini`, `Qwen3 7B`, `Turkish-LLM 7B`
+- Runtime LLM (arama + öneri): `gpt-4o-mini` (OpenAI), `qwen3:4b-instruct-2507-q4_K_M` (Ollama, yerel)
+- Runtime Embedding: `text-embedding-3-small` (OpenAI), `qwen3-embedding:0.6b` (Ollama, yerel)
+- Veri zenginleştirme + RAGAS evaluator: `gpt-4.1-mini`
 - Arama: Semantic Search + Hybrid Search (BM25 + vektör) + Reranking
 - RAG (Retrieval Augmented Generation) + Tool Calling mimarisi
 

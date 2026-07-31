@@ -24,8 +24,8 @@ tarafından supersede edildi)
 | [0004](0004-bayesian-weighted-rating.md) | Bayesian düzeltmeli `weighted_rating` | Kabul edildi | 2026-07-24 |
 | [0005](0005-rule-based-tags.md) | Kural tabanlı `tags` üretimi | Kabul edildi | 2026-07-24 |
 | [0006](0006-llm-based-keywords.md) | LLM tabanlı `keywords` üretimi | Kabul edildi | 2026-07-24 |
-| [0007](0007-embedding-model-comparison.md) | Embedding modeli karşılaştırması | Planlandı | 2026-07-24 |
-| [0008](0008-llm-comparison-phase-4.md) | Runtime LLM karşılaştırması (Faz 4) | Planlandı | 2026-07-28 |
+| [0007](0007-embedding-model-comparison.md) | Embedding modeli karşılaştırması | Yerini aldı (bkz. 0023) | 2026-07-24 |
+| [0008](0008-llm-comparison-phase-4.md) | Runtime LLM karşılaştırması (Faz 4) | Yerini aldı (bkz. 0023) | 2026-07-28 |
 | [0009](0009-ragas-evaluator-model.md) | RAGAS evaluator modeli | Kabul edildi | 2026-07-28 |
 | [0010](0010-hybrid-search-with-rrf.md) | Hybrid search (BM25 + vektör, RRF) | Kabul edildi | 2026-07-24 |
 | [0011](0011-hard-filter-vs-semantic-separation.md) | Kesin filtre / semantik ayrımı | Kabul edildi, uygulandı | 2026-07-29 |
@@ -40,3 +40,5 @@ tarafından supersede edildi)
 | [0020](0020-integration-test-isolation-strategy.md) | Entegrasyon testi izolasyon stratejisi — gerçek DB, SAVEPOINT ve sahte LLM sağlayıcıları | Kabul edildi, uygulandı | 2026-07-30 |
 | [0021](0021-db-layer-standards-verification.md) | DB katmanının standartlara uygunluğunu kanıtlayan entegrasyon testleri | Kabul edildi, uygulandı | 2026-07-30 |
 | [0022](0022-embedding-llm-cache-layer.md) | Redis destekli embedding + LLM completion cache katmanı | Kabul edildi, uygulandı | 2026-07-30 |
+| [0023](0023-ablation-candidate-models.md) | Ablasyon aday modelleri — nihai seçim (LLM + embedding) | Kabul edildi | 2026-07-31 |
+| [0024](0024-fallback-mechanism.md) | Sağlayıcılar arası otomatik fallback (LLM + embedding) | Kabul edildi, uygulandı | 2026-07-31 |

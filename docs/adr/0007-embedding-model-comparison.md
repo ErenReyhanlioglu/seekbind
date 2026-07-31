@@ -1,7 +1,7 @@
 # ADR-0007: Embedding modeli karşılaştırması
 
-**Durum:** Planlandı (henüz karar verilmedi)
-**Tarih:** 2026-07-24
+**Durum:** Yerini aldı ([ADR-0023](0023-ablation-candidate-models.md))
+**Tarih:** 2026-07-24 (ilk bağlam) · 2026-07-31 ([ADR-0023](0023-ablation-candidate-models.md) tarafından supersede edildi)
 
 ## Bağlam
 
@@ -13,8 +13,10 @@ performans verdiği henüz karşılaştırılmadı.
 
 ## Karar
 
-Henüz verilmedi. Karşılaştırma yapılacak, sonucuna göre bu ADR
-güncellenecek ya da yeni bir ADR ile supersede edilecek.
+Bu ADR'nin aday listesi [ADR-0023](0023-ablation-candidate-models.md)
+tarafından kesinleştirildi (gerçek Ollama altyapısına karşı doğrulanarak)
+— nihai aday kümesi ve gerekçesi için oraya bakın. Karşılaştırmanın
+sonucu (hangi embedder kazanacak) hâlâ Faz 6/RAGAS'a bağlı.
 
 ## Sonuçlar
 
