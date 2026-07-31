@@ -104,7 +104,13 @@ class ParsedIntent(BaseModel):
             data["gender"] = None
 
         category = data.get("category")
-        if category is not None and category not in VALID_CATEGORIES:
+        # isinstance kontrolü önce: VALID_CATEGORIES bir frozenset, `in` üyelik
+        # testi hash gerektiriyor — LLM (özellikle çoklu kategori istenen bir
+        # sorguda, örn. "hem dişçi hem kuaför") category'yi tek bir string
+        # yerine bir liste döndürürse, isinstance kontrolü olmadan
+        # `category not in VALID_CATEGORIES` TypeError fırlatırdı (gerçek bir
+        # ablasyon çalıştırmasında qwen3:4b-instruct-2507-q4_K_M'de bulundu).
+        if category is not None and (not isinstance(category, str) or category not in VALID_CATEGORIES):
             logger.warning("Geçersiz category değeri düşürüldü: %r", category)
             data["category"] = None
 
