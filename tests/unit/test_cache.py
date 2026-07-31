@@ -82,6 +82,9 @@ class _FakeEmbeddingProvider:
         self.last_texts = list(texts)
         return [[0.1, 0.2, 0.3] for _ in texts]
 
+    async def close(self) -> None:
+        pass
+
 
 class _FakeLLMProvider:
     name = "openai"

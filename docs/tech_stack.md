@@ -7,6 +7,7 @@ FastAPI
 React (21s dev MCP)    
 OpenAI Embedding       
 GPT-4o-mini            
+Ollama                 
 Semantic Search        
 RAG                    
 Tool Calling           

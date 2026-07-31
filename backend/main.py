@@ -13,6 +13,7 @@ from backend.core.monitoring import get_langfuse_client
 from backend.db.qdrant import get_qdrant_client
 from backend.db.redis import get_redis_client
 from backend.db.session import get_engine, get_session_factory
+from backend.services.embedding import get_embedding_provider
 from backend.services.llm import get_llm_provider
 from backend.services.search import get_bm25_index, get_reranker_provider, periodic_refresh_loop
 
@@ -46,6 +47,7 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     await get_redis_client().aclose()
     await get_reranker_provider().close()
     await get_llm_provider().close()
+    await get_embedding_provider().close()
     get_langfuse_client().flush()
 
 

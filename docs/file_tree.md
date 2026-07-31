@@ -45,7 +45,7 @@ seekbind/
 │   │
 │   ├── services/
 │   │   ├── embedding.py          — Protocol ile soyutlanmış embedding sağlayıcıları (şu an: OpenAI)
-│   │   ├── llm.py                — Protocol ile soyutlanmış LLM sağlayıcıları; gpt-4o-mini / Qwen3 / Turkish-LLM seçimi (ADR-0008)
+│   │   ├── llm.py                — Protocol ile soyutlanmış LLM sağlayıcıları; gpt-4o-mini / qwen3:4b-instruct-2507-q4_K_M seçimi (ADR-0008, ADR-0023, ADR-0024)
 │   │   ├── tools.py              — tool calling fonksiyonları
 │   │   ├── search/                — hybrid (semantic + lexical) arama, 300 satır kuralı için pakete bölündü
 │   │   │   ├── __init__.py       — public re-export'lar (search_providers dahil)

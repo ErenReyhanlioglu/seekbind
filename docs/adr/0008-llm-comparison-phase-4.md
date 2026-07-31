@@ -1,9 +1,8 @@
 # ADR-0008: Runtime LLM karşılaştırması (Faz 4)
 
-**Durum:** Planlandı (OpenAI tarafındaki aday netleşti, nihai karar
-henüz verilmedi)
+**Durum:** Yerini aldı ([ADR-0023](0023-ablation-candidate-models.md))
 **Tarih:** 2026-07-24 (ilk bağlam) · 2026-07-28 (OpenAI adayı
-gpt-4o-mini olarak netleşti)
+gpt-4o-mini olarak netleşti) · 2026-07-31 ([ADR-0023](0023-ablation-candidate-models.md) tarafından supersede edildi)
 
 ## Bağlam
 
@@ -24,10 +23,13 @@ nedeniyle OpenAI tarafındaki aday `gpt-4.1-mini`'den `gpt-4o-mini`'ye
 ## Karar
 
 OpenAI tarafındaki runtime adayı: **`gpt-4o-mini`** — geliştirme
-boyunca ve `Qwen3 7B` / `Turkish-LLM 7B` ile yapılacak karşılaştırmada
-bu kullanılacak. Nihai runtime seçimi (üçü arasında) henüz
-verilmedi, `feature/rag-pipeline` / `feature/ragas-evaluation`
-kapsamındaki karşılaştırma sonucuna göre verilecek.
+boyunca bu kullanıldı. Ollama tarafındaki aday listesi (`Qwen3 7B` /
+`Turkish-LLM 7B`) sonradan gerçek donanıma karşı test edilip
+[ADR-0023](0023-ablation-candidate-models.md) ile kesinleştirildi
+(`Qwen3 4B`, `Turkish-LLM` düşürüldü) — nihai aday kümesi ve gerekçesi
+için oraya bakın. Nihai runtime seçimi (adaylar arasında) henüz
+verilmedi, `feature/ragas-evaluation` kapsamındaki karşılaştırma
+sonucuna göre verilecek.
 
 ## Sonuçlar
 

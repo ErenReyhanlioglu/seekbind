@@ -1,0 +1,65 @@
+{
+  "label": null,
+  "timestamp": "2026-07-31T19-48-36",
+  "toplam_senaryo": 8,
+  "gecen_senaryo": 8,
+  "basarisiz_senaryo": 0,
+  "scenarios": [
+    {
+      "name": "llm_full_stack_baseline",
+      "description": "Birincil (OpenAI) sağlıklıyken gerçek get_llm_provider() üzerinden normal bir cevap dönmeli.",
+      "passed": true,
+      "provider": "openai",
+      "icerik": "Merhaba!"
+    },
+    {
+      "name": "llm_forced_primary_failure_uses_real_ollama",
+      "description": "Birincil gerçekten ulaşılamaz olduğunda gerçek Ollama devreye girmeli.",
+      "passed": true,
+      "provider": "ollama",
+      "hata": null
+    },
+    {
+      "name": "llm_fallback_intent_parsing_produces_clean_json",
+      "description": "Fallback yoluyla gerçek qwen3:4b-instruct-2507'e giden response_format=json_object isteği temiz JSON dönmeli, thinking izi content'e karışmamalı, gerçek parse_intent() de başarılı olmalı.",
+      "passed": true,
+      "thinking_izi_sizdi_mi": false,
+      "gecerli_json_mi": true,
+      "intent_basarili_mi": true,
+      "ham_icerik": "{\"tamam\": true}",
+      "hata": null
+    },
+    {
+      "name": "llm_enabled_false_kill_switch_propagates_raw_failure",
+      "description": "enabled=False iken birincil başarısız olursa fallback hiç denenmemeli, hata olduğu gibi dışarı sızmalı.",
+      "passed": true,
+      "hata": "openai LLM'e bağlanılamadı"
+    },
+    {
+      "name": "embedding_full_stack_baseline",
+      "description": "Birincil (OpenAI) sağlıklıyken gerçek get_embedding_provider() üzerinden normal (1536 boyut) bir vektör dönmeli.",
+      "passed": true,
+      "saglayici_adi": "openai",
+      "boyut": 1536
+    },
+    {
+      "name": "embedding_forced_primary_failure_uses_real_ollama",
+      "description": "Birincil gerçekten ulaşılamaz olduğunda gerçek Ollama devreye girmeli (1024 boyut, doğru .name).",
+      "passed": true,
+      "boyut": 1024,
+      "hata": null
+    },
+    {
+      "name": "embedding_enabled_false_kill_switch_propagates_raw_failure",
+      "description": "enabled=False iken birincil başarısız olursa fallback hiç denenmemeli, hata olduğu gibi dışarı sızmalı.",
+      "passed": true,
+      "hata": "openai embedding API hatası: Connection error."
+    },
+    {
+      "name": "close_sequence_does_not_raise",
+      "description": "Fallback wrapper'ların close()'u, hem birincil hem ikincil client'ı hatasız kapatmalı.",
+      "passed": true,
+      "hata": null
+    }
+  ]
+}

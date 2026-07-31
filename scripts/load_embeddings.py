@@ -7,19 +7,26 @@ silmeye gerek kalmaz. business.id, Qdrant point ID'si olarak
 kullanılır (kalıcı kimlik → upsert doğal, truncate-and-load'a gerek yok).
 """
 
+import argparse
 import asyncio
 import logging
+from typing import Literal
 
 from qdrant_client import AsyncQdrantClient
 from qdrant_client.models import Distance, GeoPoint, PayloadSchemaType, PointStruct, VectorParams
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from backend.config import get_settings
 from backend.db.models import Business
 from backend.db.qdrant import get_qdrant_client
+from backend.db.redis import get_redis_client
 from backend.db.session import get_session_factory
+from backend.services.cache import CachedEmbeddingProvider
 from backend.services.embedding import (
     EmbeddingProvider,
+    OllamaEmbedding,
+    OpenAIEmbedding,
     get_embedding_provider,
     get_qdrant_collection_name,
 )
@@ -27,6 +34,27 @@ from backend.services.embedding import (
 logger = logging.getLogger(__name__)
 
 EMBEDDING_BATCH_SIZE: int = 50
+
+
+def _build_provider(provider_name: Literal["openai", "ollama"]) -> EmbeddingProvider:
+    """CLI'den seçilen sağlayıcıyı (cache'lenmiş olarak) döner.
+
+    `openai` -> `get_embedding_provider(allow_fallback=False)` ile birebir
+    aynı (canlı sistemin kullandığı yol). `ollama` sadece bu script'e özgü
+    bir seçenek — canlı sistemde "aktif embedding sağlayıcısı" diye bir ayar
+    bilinçli olarak yok (bkz. ADR-0023), ama Ollama'nın fallback collection'ını
+    (`businesses_ollama-*`) doldurmak için bu script'in Ollama'ya elle
+    yönlendirilebilmesi gerekiyor.
+    """
+    if provider_name == "ollama":
+        settings = get_settings()
+        return CachedEmbeddingProvider(
+            OllamaEmbedding(),
+            get_redis_client(),
+            enabled=settings.enable_cache,
+            ttl_seconds=settings.embedding_cache_ttl_seconds,
+        )
+    return get_embedding_provider(allow_fallback=False)
 
 
 def build_embedding_text(business: Business) -> str:
@@ -134,11 +162,20 @@ async def embed_and_upsert_batch(
     await client.upsert(collection_name=collection_name, points=points)
 
 
-async def main() -> None:
-    """Tüm işletmeleri embed edip Qdrant'a yükler."""
+async def main(provider_name: Literal["openai", "ollama"] = "openai") -> None:
+    """Tüm işletmeleri embed edip Qdrant'a yükler.
+
+    `provider_name="openai"` (varsayılan): canlı sistemin de kullandığı yol,
+    fallback KAPALI (bkz. `_build_provider` docstring'i — OpenAI geçici
+    ulaşılamazken bir kısım vektörün sessizce Ollama'nın farklı anlamsal
+    uzayından aynı collection'a yazılması testle yakalanamayan kalıcı bir
+    veri bozulması olurdu, toplu yükleme fail-fast başarısız olmalı).
+    `provider_name="ollama"`: sadece bu script'e özgü, fallback collection'ını
+    (`businesses_ollama-*`) elle doldurmak için.
+    """
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 
-    provider = get_embedding_provider()
+    provider = _build_provider(provider_name)
     qdrant_client = get_qdrant_client()
     collection_name = get_qdrant_collection_name(provider)
 
@@ -158,5 +195,17 @@ async def main() -> None:
     logger.info("Tamamlandı. %d işletme '%s' collection'ına yüklendi", len(businesses), collection_name)
 
 
+def _parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--provider",
+        choices=["openai", "ollama"],
+        default="openai",
+        help="Hangi embedding sağlayıcısıyla yüklenecek (varsayılan: openai)",
+    )
+    return parser.parse_args()
+
+
 if __name__ == "__main__":
-    asyncio.run(main())
+    args = _parse_args()
+    asyncio.run(main(provider_name=args.provider))

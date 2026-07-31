@@ -9,7 +9,9 @@ prompt injection kontrolüne karar vermez, sadece mesaj listesi alıp
 tamamlama üretir. Bu kararlar `feature/rag-pipeline`'ın kapsamındadır.
 
 Sağlayıcılar arası otomatik fallback (OpenAI hata verirse Ollama'ya geçme)
-bilinçli olarak burada değil — bkz. docs/roadmap.md `feature/fallback-mechanism`.
+`backend.services.fallback.FallbackLLMProvider` içinde, bu modülün dışında
+yaşar (bkz. `get_llm_provider`) — çağıranlar (routes.py, rag/service.py)
+fallback'in var olduğunu hiç bilmez, Protocol arayüzü değişmez.
 """
 
 import asyncio
@@ -209,7 +211,7 @@ _OLLAMA_DUMMY_API_KEY: str = "ollama"  # Ollama'nın OpenAI-uyumlu endpoint'i do
 
 class OllamaLLM:
     """Ollama'nın OpenAI-uyumlu /v1 endpoint'iyle (config'teki OLLAMA_LLM_MODEL
-    — Qwen3 7B veya Turkish-LLM 7B, hangisi env'de tanımlıysa) tamamlama üretimi.
+    — ADR-0023/ADR-0024: qwen3:4b-instruct-2507-q4_K_M, fallback hedefi) tamamlama üretimi.
 
     Ayrı bir `ollama` paketi gerekmiyor — `embedding.py`'deki gibi aynı
     OpenAI client sınıfı yeniden kullanılıyor, sadece base_url farklı.
@@ -265,11 +267,16 @@ class OllamaLLM:
 @lru_cache
 def get_llm_provider() -> LLMProvider:
     """Config'teki ACTIVE_LLM_PROVIDER'a göre kullanılacak LLM sağlayıcısını
-    (Redis cache ile sarılmış olarak) döner.
+    (Redis cache + fallback ile sarılmış olarak) döner.
 
-    `CachedLLMProvider` import'u bilerek fonksiyon içinde — `cache.py` bu
-    modülden `ChatMessage`/`LLMResponse`'ı çalışma zamanında kullanıyor, bu
-    modülün factory'si de `cache.py`'den `CachedLLMProvider`'a ihtiyaç
+    `ACTIVE_LLM_PROVIDER=ollama` iken fallback hiç kurulmaz — roadmap'in
+    yönü hep birincil(openai)->ikincil(ollama); tersi, "sadece yerel çalış"
+    diye bilinçli seçim yapan birine sessizce OpenAI trafiği/maliyeti
+    bindirir, bu niyeti ihlal eder (bkz. `backend.services.fallback`).
+
+    `CachedLLMProvider`/`FallbackLLMProvider` import'ları bilerek fonksiyon
+    içinde — `cache.py`/`fallback.py` bu modülden `ChatMessage`/`LLMResponse`'ı
+    çalışma zamanında kullanıyor, bu modülün factory'si de onlara ihtiyaç
     duyunca modül-seviyesinde bir devridaim (circular import) oluşurdu.
     Fonksiyon çağrılana kadar erteleyince (bu modül tamamen yüklendikten
     sonra) sorun ortadan kalkıyor.
@@ -277,10 +284,14 @@ def get_llm_provider() -> LLMProvider:
     from backend.services.cache import CachedLLMProvider
 
     settings = get_settings()
-    inner = OllamaLLM() if settings.active_llm_provider == "ollama" else OpenAILLM()
-    return CachedLLMProvider(
-        inner,
-        get_redis_client(),
-        enabled=settings.enable_cache,
-        ttl_seconds=settings.llm_cache_ttl_seconds,
-    )
+    redis_client = get_redis_client()
+    cache_kwargs = {"enabled": settings.enable_cache, "ttl_seconds": settings.llm_cache_ttl_seconds}
+
+    if settings.active_llm_provider == "ollama":
+        return CachedLLMProvider(OllamaLLM(), redis_client, **cache_kwargs)
+
+    from backend.services.fallback import FallbackLLMProvider
+
+    primary = CachedLLMProvider(OpenAILLM(), redis_client, **cache_kwargs)
+    secondary = CachedLLMProvider(OllamaLLM(), redis_client, **cache_kwargs)
+    return FallbackLLMProvider(primary, secondary, enabled=settings.enable_fallback)

@@ -218,6 +218,21 @@ async def test_parse_intent_drops_invalid_category_but_keeps_other_fields() -> N
     assert intent.min_price == 100
 
 
+async def test_parse_intent_drops_non_string_category_instead_of_raising() -> None:
+    """Gerçek bir ablasyon çalıştırmasında bulunan regresyon: LLM (çoklu
+    kategori istenen bir sorguda, örn. "hem dişçi hem kuaför") category'yi
+    tek bir string yerine bir liste döndürebilir — `VALID_CATEGORIES`
+    frozenset üyelik testi (`in`) hash gerektirdiği için isinstance kontrolü
+    olmadan TypeError fırlatırdı (bkz. rag/intent.py _coerce_invalid_enums)."""
+    provider = _FakeLLMProvider(
+        content='{"semantic_query": "dişçi ve kuaför", "category": ["Diş Kliniği", "Kuaför"]}'
+    )
+
+    intent, _ = await parse_intent(provider, "hem dişçi hem kuaför istiyorum", _TUESDAY)
+
+    assert intent.category is None
+
+
 async def test_parse_intent_drops_invalid_gender_but_keeps_other_fields() -> None:
     provider = _FakeLLMProvider(content='{"semantic_query": "kuaför", "gender": "erkek", "max_price": 300}')
 

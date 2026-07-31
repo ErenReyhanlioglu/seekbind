@@ -262,6 +262,9 @@ class _FakeEmbeddingProvider:
     async def embed_batch(self, texts: list[str]) -> list[list[float]]:
         return [[0.1, 0.2, 0.3] for _ in texts]
 
+    async def close(self) -> None:
+        pass
+
 
 class _IdentityRerankerProvider:
     """Sırayı değiştirmeden döner — bu testler reranking mantığını değil,
