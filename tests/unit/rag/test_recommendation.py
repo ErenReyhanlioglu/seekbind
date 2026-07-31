@@ -11,6 +11,7 @@ class _FakeLLMProvider:
     """LLMProvider Protocol'üne uyan, elle yazılmış test double'ı."""
 
     name = "fake"
+    model = "fake-model"
 
     def __init__(self, content: str = "", error: Exception | None = None) -> None:
         self._content = content

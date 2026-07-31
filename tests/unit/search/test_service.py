@@ -256,6 +256,7 @@ def test_apply_final_sort_appends_businesses_excluded_from_every_signal() -> Non
 
 class _FakeEmbeddingProvider:
     name = "fake"
+    model = "fake-model"
     dimension = 3
 
     async def embed_batch(self, texts: list[str]) -> list[list[float]]:

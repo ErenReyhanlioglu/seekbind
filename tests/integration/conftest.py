@@ -81,6 +81,7 @@ class _FakeLLMProvider:
     """
 
     name = "fake"
+    model = "fake-model"
 
     def __init__(self, intent_json: str, recommendation_text: str) -> None:
         self._intent_json = intent_json
@@ -125,6 +126,7 @@ class _FakeEmbeddingProvider:
     """
 
     name = "openai"
+    model = "fake-embedding-model"
     dimension = 1536
 
     async def embed_batch(self, texts: list[str]) -> list[list[float]]:

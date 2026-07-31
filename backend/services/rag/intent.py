@@ -170,8 +170,12 @@ def build_availability_filter(intent: ParsedIntent, today: date) -> DateAvailabi
     )
 
 
-async def parse_intent(llm_provider: LLMProvider, raw_query: str, today: date) -> ParsedIntent:
+async def parse_intent(llm_provider: LLMProvider, raw_query: str, today: date) -> tuple[ParsedIntent, bool]:
     """Serbest metin sorguyu LLM ile yapılandırılmış `ParsedIntent`'e ayrıştırır.
+
+    İkinci eleman (`bool`), LLM cevabının Redis cache'inden mi geldiğini
+    belirtir (bkz. `backend.services.cache.CachedLLMProvider`) — çağıran
+    (`backend.services.rag.service`) bunu trace metadata'sına yazar.
 
     Başarısız olursa (LLM hatası, bozuk/beklenmedik şekilli JSON,
     `semantic_query` eksik/boş) `IntentParsingError` fırlatır — çağıran
@@ -207,6 +211,7 @@ async def parse_intent(llm_provider: LLMProvider, raw_query: str, today: date) -
         raise IntentParsingError("Intent parsing yanıtı bir JSON nesnesi değil")
 
     try:
-        return ParsedIntent(**payload)
+        intent = ParsedIntent(**payload)
     except ValidationError as e:
         raise IntentParsingError("Intent parsing yanıtı beklenen şemaya uymuyor") from e
+    return intent, response.from_cache

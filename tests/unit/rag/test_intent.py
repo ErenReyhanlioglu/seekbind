@@ -23,10 +23,12 @@ class _FakeLLMProvider:
     """LLMProvider Protocol'üne uyan, elle yazılmış test double'ı."""
 
     name = "fake"
+    model = "fake-model"
 
-    def __init__(self, content: str = "", error: Exception | None = None) -> None:
+    def __init__(self, content: str = "", error: Exception | None = None, from_cache: bool = False) -> None:
         self._content = content
         self._error = error
+        self._from_cache = from_cache
         self.last_response_format: dict[str, str] | None = None
         self.last_langfuse_name: str | None = None
         self.last_langfuse_metadata: dict[str, object] | None = None
@@ -54,6 +56,7 @@ class _FakeLLMProvider:
             completion_tokens=1,
             total_tokens=2,
             finish_reason="stop",
+            from_cache=self._from_cache,
         )
 
     async def close(self) -> None:
@@ -89,7 +92,7 @@ async def test_parse_intent_returns_parsed_intent_on_valid_json_response() -> No
         '"day_of_week": "salı", "time_of_day": "morning"}'
     )
 
-    intent = await parse_intent(provider, "salı sabahı ucuz dişçi", _TUESDAY)
+    intent, _ = await parse_intent(provider, "salı sabahı ucuz dişçi", _TUESDAY)
 
     assert intent.semantic_query == "dişçi"
     assert intent.category == "Diş Kliniği"
@@ -99,6 +102,19 @@ async def test_parse_intent_returns_parsed_intent_on_valid_json_response() -> No
     assert intent.day_of_week == "salı"
     assert intent.time_of_day == "morning"
     assert provider.last_response_format == {"type": "json_object"}
+
+
+async def test_parse_intent_returns_cache_hit_flag_from_llm_response() -> None:
+    """`parse_intent()`'in ikinci dönüş elemanı, `LLMResponse.from_cache`'i
+    olduğu gibi taşımalı (bkz. `CachedLLMProvider`)."""
+    cached_provider = _FakeLLMProvider(content='{"semantic_query": "dişçi"}', from_cache=True)
+    fresh_provider = _FakeLLMProvider(content='{"semantic_query": "dişçi"}', from_cache=False)
+
+    _, cached_hit = await parse_intent(cached_provider, "dişçi", _TUESDAY)
+    _, fresh_hit = await parse_intent(fresh_provider, "dişçi", _TUESDAY)
+
+    assert cached_hit is True
+    assert fresh_hit is False
 
 
 async def test_parse_intent_raises_intent_parsing_error_on_malformed_json() -> None:
@@ -147,7 +163,7 @@ async def test_parse_intent_drops_invalid_time_of_day_but_keeps_other_fields() -
         content='{"semantic_query": "dişçi", "time_of_day": "gece_yarisi", "category": "Diş Kliniği"}'
     )
 
-    intent = await parse_intent(provider, "dişçi", _TUESDAY)
+    intent, _ = await parse_intent(provider, "dişçi", _TUESDAY)
 
     assert intent.time_of_day is None
     assert intent.category == "Diş Kliniği"
@@ -158,7 +174,7 @@ async def test_parse_intent_drops_invalid_price_preference_but_keeps_other_field
         content='{"semantic_query": "dişçi", "price_preference": "biraz_ucuz", "category": "Diş Kliniği"}'
     )
 
-    intent = await parse_intent(provider, "dişçi", _TUESDAY)
+    intent, _ = await parse_intent(provider, "dişçi", _TUESDAY)
 
     assert intent.price_preference is None
     assert intent.category == "Diş Kliniği"
@@ -167,7 +183,7 @@ async def test_parse_intent_drops_invalid_price_preference_but_keeps_other_field
 async def test_parse_intent_extracts_valid_price_preference() -> None:
     provider = _FakeLLMProvider(content='{"semantic_query": "ucuz dişçi", "price_preference": "cheap"}')
 
-    intent = await parse_intent(provider, "ucuz dişçi", _TUESDAY)
+    intent, _ = await parse_intent(provider, "ucuz dişçi", _TUESDAY)
 
     assert intent.price_preference == "cheap"
 
@@ -177,7 +193,7 @@ async def test_parse_intent_drops_invalid_rating_preference_but_keeps_other_fiel
         content='{"semantic_query": "dişçi", "rating_preference": "en_iyi", "category": "Diş Kliniği"}'
     )
 
-    intent = await parse_intent(provider, "dişçi", _TUESDAY)
+    intent, _ = await parse_intent(provider, "dişçi", _TUESDAY)
 
     assert intent.rating_preference is None
     assert intent.category == "Diş Kliniği"
@@ -186,7 +202,7 @@ async def test_parse_intent_drops_invalid_rating_preference_but_keeps_other_fiel
 async def test_parse_intent_extracts_valid_rating_preference() -> None:
     provider = _FakeLLMProvider(content='{"semantic_query": "en kötü dişçi", "rating_preference": "low"}')
 
-    intent = await parse_intent(provider, "en kötü dişçi", _TUESDAY)
+    intent, _ = await parse_intent(provider, "en kötü dişçi", _TUESDAY)
 
     assert intent.rating_preference == "low"
 
@@ -196,7 +212,7 @@ async def test_parse_intent_drops_invalid_category_but_keeps_other_fields() -> N
         content='{"semantic_query": "dişçi", "category": "Uydurma Kategori", "min_price": 100}'
     )
 
-    intent = await parse_intent(provider, "dişçi", _TUESDAY)
+    intent, _ = await parse_intent(provider, "dişçi", _TUESDAY)
 
     assert intent.category is None
     assert intent.min_price == 100
@@ -205,7 +221,7 @@ async def test_parse_intent_drops_invalid_category_but_keeps_other_fields() -> N
 async def test_parse_intent_drops_invalid_gender_but_keeps_other_fields() -> None:
     provider = _FakeLLMProvider(content='{"semantic_query": "kuaför", "gender": "erkek", "max_price": 300}')
 
-    intent = await parse_intent(provider, "kuaför", _TUESDAY)
+    intent, _ = await parse_intent(provider, "kuaför", _TUESDAY)
 
     assert intent.gender is None
     assert intent.max_price == 300
@@ -214,7 +230,7 @@ async def test_parse_intent_drops_invalid_gender_but_keeps_other_fields() -> Non
 async def test_parse_intent_normalizes_capitalized_day_of_week() -> None:
     provider = _FakeLLMProvider(content='{"semantic_query": "dişçi", "day_of_week": "Salı"}')
 
-    intent = await parse_intent(provider, "salı dişçi", _TUESDAY)
+    intent, _ = await parse_intent(provider, "salı dişçi", _TUESDAY)
 
     assert intent.day_of_week == "salı"
 
@@ -222,7 +238,7 @@ async def test_parse_intent_normalizes_capitalized_day_of_week() -> None:
 async def test_parse_intent_drops_unrecognized_day_of_week() -> None:
     provider = _FakeLLMProvider(content='{"semantic_query": "dişçi", "day_of_week": "yakında"}')
 
-    intent = await parse_intent(provider, "dişçi", _TUESDAY)
+    intent, _ = await parse_intent(provider, "dişçi", _TUESDAY)
 
     assert intent.day_of_week is None
 

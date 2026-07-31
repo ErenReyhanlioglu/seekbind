@@ -26,6 +26,7 @@ from pydantic import BaseModel
 
 from backend.config import get_settings
 from backend.core.monitoring import get_langfuse_client
+from backend.db.redis import get_redis_client
 
 
 class LLMServiceError(Exception):
@@ -53,6 +54,11 @@ class LLMResponse(BaseModel):
     completion_tokens: int
     total_tokens: int
     finish_reason: str | None
+    # Gerçek sağlayıcılar (OpenAILLM/OllamaLLM) her zaman False döner;
+    # CachedLLMProvider cache hit'te True set eder — Langfuse'ta gerçek
+    # olmayan bir çağrının token sayısı harcama gibi görünmesin diye
+    # (bkz. backend.services.cache), cache hit'te token sayıları 0'a çekilir.
+    from_cache: bool = False
 
 
 class LLMProvider(Protocol):
@@ -61,6 +67,16 @@ class LLMProvider(Protocol):
     @property
     def name(self) -> str:
         """Kısa sağlayıcı adı (örn. 'openai', 'ollama')."""
+        ...
+
+    @property
+    def model(self) -> str:
+        """Kullanılan gerçek model adı (örn. 'gpt-4o-mini', 'qwen3:7b').
+
+        `name`'den ayrı: cache anahtarının doğruluğu için gerekli (bkz.
+        `backend.services.cache`, `backend.services.embedding.EmbeddingProvider.model`
+        ile aynı gerekçe).
+        """
         ...
 
     async def complete(
@@ -156,6 +172,10 @@ class OpenAILLM:
     def name(self) -> str:
         return "openai"
 
+    @property
+    def model(self) -> str:
+        return self._model
+
     async def complete(
         self,
         messages: list[ChatMessage],
@@ -210,6 +230,10 @@ class OllamaLLM:
     def name(self) -> str:
         return "ollama"
 
+    @property
+    def model(self) -> str:
+        return self._model
+
     async def complete(
         self,
         messages: list[ChatMessage],
@@ -240,8 +264,23 @@ class OllamaLLM:
 
 @lru_cache
 def get_llm_provider() -> LLMProvider:
-    """Config'teki ACTIVE_LLM_PROVIDER'a göre kullanılacak LLM sağlayıcısını döner."""
+    """Config'teki ACTIVE_LLM_PROVIDER'a göre kullanılacak LLM sağlayıcısını
+    (Redis cache ile sarılmış olarak) döner.
+
+    `CachedLLMProvider` import'u bilerek fonksiyon içinde — `cache.py` bu
+    modülden `ChatMessage`/`LLMResponse`'ı çalışma zamanında kullanıyor, bu
+    modülün factory'si de `cache.py`'den `CachedLLMProvider`'a ihtiyaç
+    duyunca modül-seviyesinde bir devridaim (circular import) oluşurdu.
+    Fonksiyon çağrılana kadar erteleyince (bu modül tamamen yüklendikten
+    sonra) sorun ortadan kalkıyor.
+    """
+    from backend.services.cache import CachedLLMProvider
+
     settings = get_settings()
-    if settings.active_llm_provider == "ollama":
-        return OllamaLLM()
-    return OpenAILLM()
+    inner = OllamaLLM() if settings.active_llm_provider == "ollama" else OpenAILLM()
+    return CachedLLMProvider(
+        inner,
+        get_redis_client(),
+        enabled=settings.enable_cache,
+        ttl_seconds=settings.llm_cache_ttl_seconds,
+    )
