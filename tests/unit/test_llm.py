@@ -10,6 +10,7 @@ from openai import APIConnectionError, APIError, APITimeoutError
 import backend.services.llm as llm_module
 from backend.config import get_settings
 from backend.services.cache import CachedLLMProvider
+from backend.services.fallback import FallbackLLMProvider
 from backend.services.llm import ChatMessage, LLMServiceError, OllamaLLM, OpenAILLM, get_llm_provider
 
 _DUMMY_REQUEST = httpx.Request("POST", "https://example.com")
@@ -244,9 +245,12 @@ async def test_complete_defaults_token_counts_to_zero_when_usage_missing() -> No
     assert response.total_tokens == 0
 
 
-def test_get_llm_provider_returns_openai_when_configured(monkeypatch: pytest.MonkeyPatch) -> None:
-    """`get_llm_provider()` artık çıplak `OpenAILLM` değil, Redis cache ile
-    sarılmış hâlini döner (bkz. backend/services/cache.py)."""
+def test_get_llm_provider_returns_openai_primary_wrapped_in_fallback_and_cache(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """`get_llm_provider()` artık çıplak `OpenAILLM` değil, Redis cache +
+    Ollama fallback ile sarılmış hâlini döner (bkz. backend/services/cache.py,
+    backend/services/fallback.py)."""
     real_settings = llm_module.get_settings()
     fake_settings = real_settings.model_copy(update={"active_llm_provider": "openai"})
     monkeypatch.setattr(llm_module, "get_settings", lambda: fake_settings)
@@ -254,8 +258,13 @@ def test_get_llm_provider_returns_openai_when_configured(monkeypatch: pytest.Mon
 
     try:
         provider = get_llm_provider()
-        assert isinstance(provider, CachedLLMProvider)
-        assert isinstance(provider._inner, OpenAILLM)  # type: ignore[attr-defined]
+        assert isinstance(provider, FallbackLLMProvider)
+        primary = provider._primary  # type: ignore[attr-defined]
+        assert isinstance(primary, CachedLLMProvider)
+        assert isinstance(primary._inner, OpenAILLM)  # type: ignore[attr-defined]
+        secondary = provider._secondary  # type: ignore[attr-defined]
+        assert isinstance(secondary, CachedLLMProvider)
+        assert isinstance(secondary._inner, OllamaLLM)  # type: ignore[attr-defined]
     finally:
         get_llm_provider.cache_clear()
 

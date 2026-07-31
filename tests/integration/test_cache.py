@@ -40,6 +40,9 @@ class _FakeEmbeddingProvider:
         self.call_count += 1
         return [[0.1, 0.2, 0.3] for _ in texts]
 
+    async def close(self) -> None:
+        pass
+
 
 class _FakeLLMProvider:
     name = _NAME

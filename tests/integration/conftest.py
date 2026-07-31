@@ -132,6 +132,9 @@ class _FakeEmbeddingProvider:
     async def embed_batch(self, texts: list[str]) -> list[list[float]]:
         return [[0.1] * self.dimension for _ in texts]
 
+    async def close(self) -> None:
+        pass
+
 
 class _IdentityRerankerProvider:
     """`RerankerProvider` Protocol'üne uyan test double'ı — sırayı değiştirmeden döner."""
