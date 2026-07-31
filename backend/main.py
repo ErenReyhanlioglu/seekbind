@@ -13,6 +13,7 @@ from backend.core.monitoring import get_langfuse_client
 from backend.db.qdrant import get_qdrant_client
 from backend.db.redis import get_redis_client
 from backend.db.session import get_engine, get_session_factory
+from backend.middleware.rate_limit import RateLimitMiddleware
 from backend.services.embedding import get_embedding_provider
 from backend.services.llm import get_llm_provider
 from backend.services.search import get_bm25_index, get_reranker_provider, periodic_refresh_loop
@@ -55,6 +56,7 @@ def create_app() -> FastAPI:
     """FastAPI uygulamasını oluşturur."""
     app = FastAPI(title="SeekBind API", lifespan=lifespan)
     app.add_middleware(GZipMiddleware, minimum_size=500)
+    app.add_middleware(RateLimitMiddleware)  # GZip'ten SONRA — en dışta, isteği ilk karşılayan
     app.include_router(router)
     return app
 
