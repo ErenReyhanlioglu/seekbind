@@ -21,11 +21,14 @@ dependencies = [
 
 [dependency-groups]
 dev = [
+    "black>=26.5.1",
+    "coverage>=7.15.2",
     "httpx>=0.28.1",
     "pyright>=1.1.411",
     "pytest>=9.1.1",
     "pytest-asyncio>=1.4.0",
     "pytest-cov>=7.1.0",
+    "ruff>=0.16.1",
 ]
 
 [tool.pytest.ini_options]
@@ -42,5 +45,52 @@ asyncio_default_test_loop_scope = "session"
 markers = [
     "integration: gerçek Postgres/Qdrant'a karşı çalışır, docker-compose servislerinin ayakta olmasını gerektirir (varsayılan çalıştırmada hariç tutulur)",
     "requires_ollama: gerçek, yerel bir Ollama sunucusu (docker-compose değil, native kurulum) gerektirir — feature/ci-setup bu testleri ayrıca ele almalı",
+    "requires_seed_data: gerçek, üretim ölçeğinde seed edilmiş Postgres/Qdrant verisi (478 işletme + businesses_openai embedding'leri) gerektirir — CI'da bu veri seed edilmiyor (bkz. docs/adr/0026-ci-pipeline-scope.md), elle çalıştırılır",
 ]
 addopts = "-m 'not integration'"
+
+[tool.ruff]
+line-length = 88
+target-version = "py312"
+extend-exclude = ["alembic/versions"]
+
+[tool.ruff.lint]
+# E: pycodestyle, F: pyflakes, I: import sıralaması (isort'un yerine geçer),
+# C90: mccabe siklomatik karmaşıklık (bkz. CLAUDE.md — feature/ci-setup notu)
+select = ["E", "F", "I", "C90"]
+# E501 (satır uzunluğu) black tarafından zaten yönetiliyor — ikisi birden
+# açık olursa black'in bilerek sarmadığı satırlarda (uzun string/yorum/URL)
+# yanlış pozitif üretir, resmi ruff+black birlikte kullanım önerisi bu
+# kuralı ruff tarafında kapatmaktır.
+ignore = ["E501"]
+
+[tool.ruff.lint.mccabe]
+# mccabe'nin kendi klasik eşiği — CLAUDE.md'nin "30 satır, aşırı iç içe
+# geçmeden kaçın" sezgiselini somutlaştırır.
+max-complexity = 10
+
+[tool.black]
+line-length = 88
+target-version = ["py312"]
+extend-exclude = "alembic/versions"
+
+[tool.coverage.run]
+source = ["backend"]
+# unit-test ve integration-test job'ları ayrı GitHub Actions runner'larında
+# coverage verisi üretiyor; coverage-report job'ı bunları `coverage combine`
+# ile birleştiriyor. relative_files, dosya yollarının ayrı checkout'lar
+# arasında eşleştirilebilir olmasını sağlar (coverage.py'nin resmi CI
+# birleştirme önerisi).
+#
+# NOT: `parallel = true` burada bilerek YOK — yerelde denendi, pytest-cov
+# (coverage'ın parallel-suffix mekanizmasını görmezden gelip) tek bir düz
+# `.coverage` dosyası üretiyor, `.coverage.<suffix>` değil. Bunun yerine her
+# CI job'u kendi dosya adını `COVERAGE_FILE` env değişkeniyle açıkça
+# belirliyor (`.coverage.unit` / `.coverage.integration`, bkz.
+# .github/workflows/ci.yml) — `coverage combine` bu ikisini de
+# `.coverage.*` deseniyle buluyor.
+relative_files = true
+
+[tool.coverage.report]
+fail_under = 90
+show_missing = true

@@ -11,8 +11,8 @@ import os
 from functools import lru_cache
 
 # langfuse paketi Langfuse sınıfını __all__ ile dışa vurmuyor (bkz.
-# langfuse/__init__.py: sadece "from .client import Langfuse # noqa"), bu
-# yüzden Pylance "private import" sanıyor. Ama bu, kurulu v2.60.10'un kendi
+# langfuse/__init__.py: sadece "from .client import Langfuse" + bir bastırma
+# yorumu), bu yüzden Pylance "private import" sanıyor. Ama bu, kurulu v2.60.10'un kendi
 # kaynak kodunun (client.py) hata mesajında referans verdiği, versiyon-uygun
 # resmi kullanım şekli — https://langfuse.com/docs/sdk/python/low-level-sdk
 # ("get_client()" o sayfadaki daha yeni v3+ API'si, bu projede kullanılmıyor
@@ -35,8 +35,12 @@ def get_langfuse_client() -> Langfuse:
     "low-level SDK" kurulum deseni budur.
     """
     settings = get_settings()
-    os.environ.setdefault("LANGFUSE_PUBLIC_KEY", settings.langfuse_public_key.get_secret_value())
-    os.environ.setdefault("LANGFUSE_SECRET_KEY", settings.langfuse_secret_key.get_secret_value())
+    os.environ.setdefault(
+        "LANGFUSE_PUBLIC_KEY", settings.langfuse_public_key.get_secret_value()
+    )
+    os.environ.setdefault(
+        "LANGFUSE_SECRET_KEY", settings.langfuse_secret_key.get_secret_value()
+    )
     os.environ.setdefault("LANGFUSE_HOST", settings.langfuse_host)
     return Langfuse(
         public_key=settings.langfuse_public_key.get_secret_value(),

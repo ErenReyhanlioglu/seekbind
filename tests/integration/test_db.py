@@ -43,26 +43,40 @@ async def test_get_db_session_rolls_back_on_exception() -> None:
         await session.flush()
 
         with pytest.raises(_SimulatedRouteFailure):
-            await generator.athrow(_SimulatedRouteFailure("simüle edilmiş route hatası"))
+            await generator.athrow(
+                _SimulatedRouteFailure("simüle edilmiş route hatası")
+            )
 
         async with get_session_factory()() as fresh_session:
             leftover = (
-                await fresh_session.execute(select(UserProfile).where(UserProfile.name == marker_name))
+                await fresh_session.execute(
+                    select(UserProfile).where(UserProfile.name == marker_name)
+                )
             ).scalar_one_or_none()
         assert leftover is None
     finally:
         # Savunma amaçlı: rollback beklenildiği gibi çalışmasa bile dev DB'de iz kalmasın.
         async with get_session_factory()() as cleanup_session:
-            await cleanup_session.execute(delete(UserProfile).where(UserProfile.name == marker_name))
+            await cleanup_session.execute(
+                delete(UserProfile).where(UserProfile.name == marker_name)
+            )
             await cleanup_session.commit()
 
 
-async def test_appointment_slot_composite_index_is_used(savepoint_session: AsyncSession) -> None:
+@pytest.mark.requires_seed_data
+async def test_appointment_slot_composite_index_is_used(
+    savepoint_session: AsyncSession,
+) -> None:
     """`fetch_available_business_ids()`'in (search/availability.py) ürettiği
     sorgu paterni, gerçekten `ix_slots_business_start_booked` bileşik
     index'ini kullanıyor mu — Seq Scan'e düşmüyor mu, gerçek dev veriye
     (32k+ satır) karşı `EXPLAIN` ile doğrulanır (bkz. `docs/database_schema.md`
     "İndexlenen kolonlar").
+
+    `requires_seed_data` ile işaretli — Postgres planner'ı maliyet-bazlı karar
+    veriyor, küçük/boş bir tabloda index kullanmamak (Seq Scan) hata değil
+    doğru davranış, bu yüzden throwaway veriyle taklit edilemez, gerçek
+    hacimli dev veri gerektiriyor (bkz. docs/adr/0026-ci-pipeline-scope.md).
     """
     business_ids = list(range(1, 31))
     stmt = (
@@ -75,7 +89,9 @@ async def test_appointment_slot_composite_index_is_used(savepoint_session: Async
         )
         .distinct()
     )
-    compiled = stmt.compile(dialect=postgresql.dialect(), compile_kwargs={"literal_binds": True})
+    compiled = stmt.compile(
+        dialect=postgresql.dialect(), compile_kwargs={"literal_binds": True}
+    )
     result = await savepoint_session.execute(text(f"EXPLAIN (FORMAT JSON) {compiled}"))
     plan = result.scalar_one()
     plan_text = str(plan)

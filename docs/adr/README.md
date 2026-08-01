@@ -43,3 +43,4 @@ tarafından supersede edildi)
 | [0023](0023-ablation-candidate-models.md) | Ablasyon aday modelleri — nihai seçim (LLM + embedding) | Kabul edildi | 2026-07-31 |
 | [0024](0024-fallback-mechanism.md) | Sağlayıcılar arası otomatik fallback (LLM + embedding) | Kabul edildi, uygulandı | 2026-07-31 |
 | [0025](0025-prompt-injection-detection-strategy.md) | Prompt injection tespiti — kalıp bazlı filtre | Kabul edildi | 2026-07-31 |
+| [0026](0026-ci-pipeline-scope.md) | CI pipeline kapsamı — lint, unit + kısmi entegrasyon, birleşik coverage gate'i, build | Kabul edildi | 2026-08-01 |

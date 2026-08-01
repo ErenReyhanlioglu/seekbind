@@ -1,0 +1,244 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    name: Lint (black + ruff)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+
+      - run: uv sync --locked
+
+      - name: black --check
+        run: uv run black --check .
+
+      - name: ruff check
+        run: uv run ruff check .
+
+  unit-test:
+    name: Unit tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+
+      - run: uv sync --locked
+
+      # backend/config.py::Settings tüm alanları zorunlu tutuyor; unit
+      # testlerin bir kısmı (örn. tests/unit/test_embedding.py,
+      # tests/unit/test_llm.py) gerçek OpenAIEmbedding()/OpenAILLM()/
+      # OllamaLLM()'i hiç mock'lamadan çağırıyor, bunlar da get_settings()'i
+      # doğrudan çağırıyor — bu yüzden unit-test job'ı da integration-test
+      # kadar dolu (ama sahte) bir env'e ihtiyaç duyuyor.
+      - name: Load CI env vars
+        run: cat .env.ci >> "$GITHUB_ENV"
+
+      - name: Run unit tests with coverage
+        # NOT 1: coverage'ın "parallel" modu yerine COVERAGE_FILE ile açıkça
+        # adlandırılıyor — yerelde denendi, pytest-cov parallel-suffix
+        # mekanizmasını uygulamıyor, düz `.coverage` üretiyor (bkz.
+        # pyproject.toml [tool.coverage.run] notu). Bu job'ın dosyası
+        # integration-test'inkiyle (.coverage.integration) çakışmasın diye.
+        # NOT 2: --cov-fail-under=0 ile pyproject.toml'daki fail_under=90
+        # BU job'da bilerek devre dışı — bu job sadece tek başına unit
+        # coverage'ını (integration'sız, yapısal olarak %90'ın altında
+        # kalabilir/kalmaz ama bu job'ın kararı değil) üretiyor, asıl %90
+        # eşiği sadece coverage-report job'ında (unit+integration birleşmiş
+        # haliyle) uygulanır. Yerelde denenmeden bu satır olmasaydı, iki
+        # job da (özellikle integration-test, tek başına ~%70) coverage
+        # verisi doğru üretilse bile job'ın kendisi sahte bir "fail" ile
+        # kırmızı olurdu.
+        run: uv run pytest --cov=backend --cov-report= --cov-fail-under=0
+        env:
+          COVERAGE_FILE: .coverage.unit
+
+      - name: Upload coverage data
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-data-unit
+          path: .coverage.unit
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 7
+
+  integration-test:
+    name: Integration tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    services:
+      postgres:
+        image: postgres:16-alpine
+        # NOT: .env.ci'deki DATABASE_URL/POSTGRES_* ile birebir eşleşmeli —
+        # services: container'ları job step'lerinden ÖNCE ayağa kalkar, bu
+        # yüzden "cat .env.ci >> $GITHUB_ENV" burayı besleyemez, elle senkron
+        # tutulur.
+        env:
+          POSTGRES_USER: ci_user
+          POSTGRES_PASSWORD: ci_password
+          POSTGRES_DB: seekbind_ci
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U ci_user"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+      # qdrant/qdrant imajında curl/wget yok (bilinçli üst-akış güvenlik
+      # kararı, bkz. qdrant/qdrant#3491) — docker-compose.yml'de de aynı
+      # sebeple qdrant için healthcheck tanımlı değil. Docker seviyesinde
+      # --health-cmd yazılamıyor, aşağıdaki "Wait for Qdrant" step'inde
+      # runner'ın KENDİ curl'üyle (container içinden değil, host'tan,
+      # published porta) kontrol ediliyor.
+      qdrant:
+        image: qdrant/qdrant:latest
+        ports:
+          - 6333:6333
+          - 6334:6334
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+
+      - run: uv sync --locked
+
+      - name: Load CI env vars
+        run: cat .env.ci >> "$GITHUB_ENV"
+
+      - name: Wait for Qdrant to be ready
+        run: |
+          for i in $(seq 1 30); do
+            if curl -sf http://localhost:6333/readyz > /dev/null; then
+              echo "Qdrant hazır."
+              exit 0
+            fi
+            echo "Qdrant bekleniyor... ($i/30)"
+            sleep 2
+          done
+          echo "Qdrant 60 saniye içinde hazır olmadı." >&2
+          exit 1
+
+      - name: Run DB migrations
+        run: uv run alembic upgrade head
+
+      # business_types Alembic migration'larıyla değil sadece
+      # scripts/seed_db.py::seed_business_types() ile doluyor —
+      # businesses.type_normalized buna FK ile bağlı, throwaway işletme
+      # oluşturan testler (test_book.py vb.) bu tablo boşken FK ihlaliyle
+      # başarısız olur (bkz. docs/adr/0026-ci-pipeline-scope.md). Bu TAMAMEN
+      # sabit, 27 satırlık bir referans listesi — gerçek işletme verisiyle
+      # (478 kayıt, SerpAPI/OpenAI maliyeti) hiç ilgisi yok, o hâlâ seed
+      # edilmiyor.
+      - name: Seed reference data (business_types)
+        run: |
+          uv run python -c "
+          import asyncio
+          from backend.db.session import get_session_factory
+          from scripts.seed_db import seed_business_types
+
+          async def main() -> None:
+              async with get_session_factory()() as session:
+                  await seed_business_types(session)
+                  await session.commit()
+
+          asyncio.run(main())
+          "
+
+      # near_me/test_recommend.py ve test_db.py::test_appointment_slot_composite_index_is_used
+      # (requires_seed_data, gerçek büyük hacimli veri gerektiriyor) ile
+      # Ollama fallback testleri (requires_ollama) bilinçli olarak hariç —
+      # bkz. docs/adr/0026-ci-pipeline-scope.md. Bu job (business_types
+      # dışında) veri seed etmiyor, boş bir Postgres'e karşı çalışıyor.
+      # --cov-fail-under=0: bkz. unit-test job'ındaki aynı notun tam eşleniği
+      # — bu job'ın kendi başına ürettiği coverage (~%70) yapısal olarak
+      # %90'ın altında kalıyor (test_recommend.py/requires_seed_data hariç
+      # tutulduğu için), asıl eşik sadece coverage-report job'ında uygulanır.
+      - name: Run integration tests with coverage
+        run: >-
+          uv run pytest -m "integration and not requires_ollama and not requires_seed_data"
+          --cov=backend --cov-report= --cov-fail-under=0
+        env:
+          COVERAGE_FILE: .coverage.integration
+
+      - name: Upload coverage data
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-data-integration
+          path: .coverage.integration
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 7
+
+  coverage-report:
+    name: Coverage gate (>=90%)
+    runs-on: ubuntu-latest
+    needs: [unit-test, integration-test]
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+
+      - run: uv sync --locked
+
+      - name: Download coverage data (unit + integration)
+        uses: actions/download-artifact@v4
+        with:
+          pattern: coverage-data-*
+          path: coverage-data
+          merge-multiple: true
+
+      - name: Combine coverage data
+        run: uv run coverage combine coverage-data
+
+      - name: Coverage report (backend/, %90 eşiği pyproject.toml'dan okunur)
+        run: uv run coverage report -m
+
+  build:
+    name: Docker build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build backend image
+        run: docker build -f docker/Dockerfile.backend -t seekbind-backend:ci .
