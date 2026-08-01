@@ -52,8 +52,13 @@ jobs:
       # OllamaLLM()'i hiç mock'lamadan çağırıyor, bunlar da get_settings()'i
       # doğrudan çağırıyor — bu yüzden unit-test job'ı da integration-test
       # kadar dolu (ama sahte) bir env'e ihtiyaç duyuyor.
+      # NOT: $GITHUB_ENV normal bir .env parser'ı değil — sadece düz
+      # KEY=value satırları kabul ediyor, yorum (#) satırlarında "Invalid
+      # format" ile tüm adımı kırıyor (ilk gerçek CI çalıştırmasında
+      # bulundu). Bu yüzden .env.ci'nin kendisi değil, yorum/boş satırları
+      # ayıklanmış hali yazılıyor.
       - name: Load CI env vars
-        run: cat .env.ci >> "$GITHUB_ENV"
+        run: grep -vE '^#|^$' .env.ci >> "$GITHUB_ENV"
 
       - name: Run unit tests with coverage
         # NOT 1: coverage'ın "parallel" modu yerine COVERAGE_FILE ile açıkça
@@ -138,8 +143,13 @@ jobs:
 
       - run: uv sync --locked
 
+      # NOT: $GITHUB_ENV normal bir .env parser'ı değil — sadece düz
+      # KEY=value satırları kabul ediyor, yorum (#) satırlarında "Invalid
+      # format" ile tüm adımı kırıyor (ilk gerçek CI çalıştırmasında
+      # bulundu). Bu yüzden .env.ci'nin kendisi değil, yorum/boş satırları
+      # ayıklanmış hali yazılıyor.
       - name: Load CI env vars
-        run: cat .env.ci >> "$GITHUB_ENV"
+        run: grep -vE '^#|^$' .env.ci >> "$GITHUB_ENV"
 
       - name: Wait for Qdrant to be ready
         run: |
