@@ -4,7 +4,11 @@ from typing import cast
 
 from qdrant_client.models import FieldCondition, Filter, GeoRadius, MatchValue, Range
 
-from backend.services.search.filters import NearFilter, SearchFilters, translate_filters_to_qdrant
+from backend.services.search.filters import (
+    NearFilter,
+    SearchFilters,
+    translate_filters_to_qdrant,
+)
 
 
 def _require_conditions(qdrant_filter: Filter | None) -> list[FieldCondition]:
@@ -17,7 +21,11 @@ def _require_conditions(qdrant_filter: Filter | None) -> list[FieldCondition]:
     """
     assert qdrant_filter is not None
     assert qdrant_filter.must is not None
-    must = qdrant_filter.must if isinstance(qdrant_filter.must, list) else [qdrant_filter.must]
+    must = (
+        qdrant_filter.must
+        if isinstance(qdrant_filter.must, list)
+        else [qdrant_filter.must]
+    )
     for condition in must:
         assert isinstance(condition, FieldCondition)
     return cast(list[FieldCondition], must)
@@ -100,6 +108,8 @@ def test_translate_filters_converts_near_filter_radius_to_meters() -> None:
 
 
 def test_translate_filters_combines_multiple_conditions() -> None:
-    result = translate_filters_to_qdrant(SearchFilters(gender="unisex", online_only=True, max_price=300))
+    result = translate_filters_to_qdrant(
+        SearchFilters(gender="unisex", online_only=True, max_price=300)
+    )
 
     assert set(_condition_keys(result)) == {"gender", "online_available", "price_min"}

@@ -11,7 +11,10 @@ from backend.services.rag.intent import (
     resolve_day_of_week,
 )
 from backend.services.rag.pricing import PricePreference, resolve_price_threshold
-from backend.services.rag.recommendation import RecommendationGenerationError, generate_recommendation
+from backend.services.rag.recommendation import (
+    RecommendationGenerationError,
+    generate_recommendation,
+)
 from backend.services.rag.service import (
     EMPTY_RESULTS_MESSAGE,
     RECOMMENDATION_FALLBACK_MESSAGE,

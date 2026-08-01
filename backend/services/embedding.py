@@ -56,16 +56,24 @@ class EmbeddingProvider(Protocol):
 
 
 async def _run_embedding(
-    client: AsyncOpenAI, model: str, provider_name: str, texts: list[str], timeout_seconds: int
+    client: AsyncOpenAI,
+    model: str,
+    provider_name: str,
+    texts: list[str],
+    timeout_seconds: int,
 ) -> list[list[float]]:
     """İki sağlayıcının da (OpenAI/Ollama) paylaştığı istek/hata-eşleme mantığı.
 
     `backend.services.llm._run_completion()` ile aynı desen.
     """
     try:
-        response = await client.embeddings.create(model=model, input=texts, timeout=timeout_seconds)
+        response = await client.embeddings.create(
+            model=model, input=texts, timeout=timeout_seconds
+        )
     except APITimeoutError as e:
-        raise EmbeddingServiceError(f"{provider_name} embedding isteği zaman aşımına uğradı") from e
+        raise EmbeddingServiceError(
+            f"{provider_name} embedding isteği zaman aşımına uğradı"
+        ) from e
     except APIError as e:
         raise EmbeddingServiceError(f"{provider_name} embedding API hatası: {e}") from e
     return [item.embedding for item in response.data]
@@ -96,13 +104,17 @@ class OpenAIEmbedding:
 
     async def embed_batch(self, texts: list[str]) -> list[list[float]]:
         """OpenAI'den birden fazla metnin embedding'ini tek istekte alır."""
-        return await _run_embedding(self._client, self._model, self.name, texts, self._timeout_seconds)
+        return await _run_embedding(
+            self._client, self._model, self.name, texts, self._timeout_seconds
+        )
 
     async def close(self) -> None:
         await self._client.close()
 
 
-_OLLAMA_DUMMY_API_KEY: str = "ollama"  # Ollama'nın OpenAI-uyumlu endpoint'i doğrulamıyor, dolu bir string yeterli
+_OLLAMA_DUMMY_API_KEY: str = (
+    "ollama"  # Ollama'nın OpenAI-uyumlu endpoint'i doğrulamıyor, dolu bir string yeterli
+)
 _MODEL_TAG_SANITIZE_PATTERN: re.Pattern[str] = re.compile(r"[^a-z0-9]+")
 
 
@@ -167,7 +179,9 @@ class OllamaEmbedding:
         return self._dimension
 
     async def embed_batch(self, texts: list[str]) -> list[list[float]]:
-        return await _run_embedding(self._client, self._model, self.name, texts, self._timeout_seconds)
+        return await _run_embedding(
+            self._client, self._model, self.name, texts, self._timeout_seconds
+        )
 
     async def close(self) -> None:
         await self._client.close()
@@ -204,7 +218,10 @@ def get_embedding_provider(*, allow_fallback: bool = True) -> EmbeddingProvider:
 
     settings = get_settings()
     redis_client = get_redis_client()
-    cache_kwargs = {"enabled": settings.enable_cache, "ttl_seconds": settings.embedding_cache_ttl_seconds}
+    cache_kwargs = {
+        "enabled": settings.enable_cache,
+        "ttl_seconds": settings.embedding_cache_ttl_seconds,
+    }
 
     primary = CachedEmbeddingProvider(OpenAIEmbedding(), redis_client, **cache_kwargs)
     if not allow_fallback:
@@ -213,7 +230,9 @@ def get_embedding_provider(*, allow_fallback: bool = True) -> EmbeddingProvider:
     from backend.services.fallback import FallbackEmbeddingProvider
 
     secondary = CachedEmbeddingProvider(OllamaEmbedding(), redis_client, **cache_kwargs)
-    return FallbackEmbeddingProvider(primary, secondary, enabled=settings.enable_fallback)
+    return FallbackEmbeddingProvider(
+        primary, secondary, enabled=settings.enable_fallback
+    )
 
 
 QDRANT_COLLECTION_PREFIX: str = "businesses"

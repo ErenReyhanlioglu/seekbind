@@ -116,7 +116,9 @@ def append_records(path: Path, records: list[RawBusinessRecord]) -> None:
 
 def main() -> None:
     """Tüm kategoriler için veri çeker ve data/raw/businesses.jsonl'a yazar."""
-    logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
+    logging.basicConfig(
+        level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s"
+    )
     settings = get_settings()
     api_key = settings.serpapi_api_key.get_secret_value()
 

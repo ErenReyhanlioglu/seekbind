@@ -59,4 +59,7 @@ def detect_prompt_injection(raw_query: str) -> bool:
     """
     turkish_aware = " ".join(tokenize(raw_query))
     plain = _NON_WORD_PATTERN.sub(" ", raw_query.lower())
-    return any(pattern.search(turkish_aware) or pattern.search(plain) for pattern in _INJECTION_PATTERNS)
+    return any(
+        pattern.search(turkish_aware) or pattern.search(plain)
+        for pattern in _INJECTION_PATTERNS
+    )

@@ -33,7 +33,9 @@ pytestmark = pytest.mark.integration
 _CONCURRENT_REQUEST_COUNT = 10
 
 
-async def test_book_allows_exactly_one_winner_under_concurrent_requests(api_client: httpx.AsyncClient) -> None:
+async def test_book_allows_exactly_one_winner_under_concurrent_requests(
+    api_client: httpx.AsyncClient,
+) -> None:
     session_factory = get_session_factory()
 
     async with session_factory() as setup_session:
@@ -57,7 +59,10 @@ async def test_book_allows_exactly_one_winner_under_concurrent_requests(api_clie
         setup_session.add(slot)
         await setup_session.flush()
 
-        users = [UserProfile(name=f"Eşzamanlılık Test Kullanıcısı {i}") for i in range(_CONCURRENT_REQUEST_COUNT)]
+        users = [
+            UserProfile(name=f"Eşzamanlılık Test Kullanıcısı {i}")
+            for i in range(_CONCURRENT_REQUEST_COUNT)
+        ]
         setup_session.add_all(users)
         await setup_session.flush()
 
@@ -70,7 +75,9 @@ async def test_book_allows_exactly_one_winner_under_concurrent_requests(api_clie
     try:
         responses = await asyncio.gather(
             *(
-                api_client.post("/book", json={"user_id": user_id, "appointment_slot_id": slot_id})
+                api_client.post(
+                    "/book", json={"user_id": user_id, "appointment_slot_id": slot_id}
+                )
                 for user_id in user_ids
             )
         )
@@ -89,8 +96,16 @@ async def test_book_allows_exactly_one_winner_under_concurrent_requests(api_clie
         assert all(failure["booking_id"] is None for failure in failures)
     finally:
         async with session_factory() as cleanup_session:
-            await cleanup_session.execute(delete(Booking).where(Booking.appointment_slot_id == slot_id))
-            await cleanup_session.execute(delete(AppointmentSlot).where(AppointmentSlot.id == slot_id))
-            await cleanup_session.execute(delete(Business).where(Business.id == business_id))
-            await cleanup_session.execute(delete(UserProfile).where(UserProfile.id.in_(user_ids)))
+            await cleanup_session.execute(
+                delete(Booking).where(Booking.appointment_slot_id == slot_id)
+            )
+            await cleanup_session.execute(
+                delete(AppointmentSlot).where(AppointmentSlot.id == slot_id)
+            )
+            await cleanup_session.execute(
+                delete(Business).where(Business.id == business_id)
+            )
+            await cleanup_session.execute(
+                delete(UserProfile).where(UserProfile.id.in_(user_ids))
+            )
             await cleanup_session.commit()

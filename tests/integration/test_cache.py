@@ -92,7 +92,9 @@ async def test_cached_embedding_provider_serves_second_identical_call_from_real_
     redis_client: Redis,
 ) -> None:
     inner = _FakeEmbeddingProvider()
-    provider = CachedEmbeddingProvider(inner, redis_client, enabled=True, ttl_seconds=_TTL_SECONDS)
+    provider = CachedEmbeddingProvider(
+        inner, redis_client, enabled=True, ttl_seconds=_TTL_SECONDS
+    )
 
     first = await provider.embed_batch(["entegrasyon testi sorgusu"])
     second = await provider.embed_batch(["entegrasyon testi sorgusu"])
@@ -101,14 +103,20 @@ async def test_cached_embedding_provider_serves_second_identical_call_from_real_
     assert first == second == [[0.1, 0.2, 0.3]]
 
 
-async def test_cached_embedding_provider_uses_different_key_per_model(redis_client: Redis) -> None:
+async def test_cached_embedding_provider_uses_different_key_per_model(
+    redis_client: Redis,
+) -> None:
     """`.env`'de model değişirse (`name` aynı kalsa bile) eski cache
     girdileri yeni modelmiş gibi kullanılmamalı — bkz. cache.py docstring'i."""
     inner_a = _FakeEmbeddingProvider()
     inner_b = _FakeEmbeddingProvider()
     inner_b.model = f"{_MODEL}-v2"
-    provider_a = CachedEmbeddingProvider(inner_a, redis_client, enabled=True, ttl_seconds=_TTL_SECONDS)
-    provider_b = CachedEmbeddingProvider(inner_b, redis_client, enabled=True, ttl_seconds=_TTL_SECONDS)
+    provider_a = CachedEmbeddingProvider(
+        inner_a, redis_client, enabled=True, ttl_seconds=_TTL_SECONDS
+    )
+    provider_b = CachedEmbeddingProvider(
+        inner_b, redis_client, enabled=True, ttl_seconds=_TTL_SECONDS
+    )
     text = "aynı metin farklı model"
 
     await provider_a.embed_batch([text])
@@ -118,9 +126,13 @@ async def test_cached_embedding_provider_uses_different_key_per_model(redis_clie
     assert inner_b.call_count == 1
 
 
-async def test_cached_llm_provider_serves_second_identical_call_from_real_redis(redis_client: Redis) -> None:
+async def test_cached_llm_provider_serves_second_identical_call_from_real_redis(
+    redis_client: Redis,
+) -> None:
     inner = _FakeLLMProvider()
-    provider = CachedLLMProvider(inner, redis_client, enabled=True, ttl_seconds=_TTL_SECONDS)
+    provider = CachedLLMProvider(
+        inner, redis_client, enabled=True, ttl_seconds=_TTL_SECONDS
+    )
     messages = [ChatMessage(role="user", content="entegrasyon testi")]
 
     first = await provider.complete(messages, temperature=0.0)
@@ -133,14 +145,20 @@ async def test_cached_llm_provider_serves_second_identical_call_from_real_redis(
     assert second.total_tokens == 0
 
 
-async def test_cached_llm_provider_never_caches_non_deterministic_temperature(redis_client: Redis) -> None:
+async def test_cached_llm_provider_never_caches_non_deterministic_temperature(
+    redis_client: Redis,
+) -> None:
     """`generate_recommendation()` (temperature=0.7) yanlışlıkla cache'lenip
     aynı sonuç kümesine hep birebir aynı öneri metnini dönmesin diye —
     gerçek OpenAI'a karşı elle doğrulanırken bulunan bir hatanın regresyon
     testi (bkz. backend/services/cache.py modül docstring'i)."""
     inner = _FakeLLMProvider()
-    provider = CachedLLMProvider(inner, redis_client, enabled=True, ttl_seconds=_TTL_SECONDS)
-    messages = [ChatMessage(role="user", content="entegrasyon testi - deterministik olmayan")]
+    provider = CachedLLMProvider(
+        inner, redis_client, enabled=True, ttl_seconds=_TTL_SECONDS
+    )
+    messages = [
+        ChatMessage(role="user", content="entegrasyon testi - deterministik olmayan")
+    ]
 
     first = await provider.complete(messages, temperature=0.7)
     second = await provider.complete(messages, temperature=0.7)

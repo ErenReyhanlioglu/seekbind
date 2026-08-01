@@ -76,7 +76,9 @@ def _print_and_record(title: str, results: list[ProviderResult], total: int) -> 
     if not results:
         print("  (sonuç yok)")
     for i, result in enumerate(results, start=1):
-        distance = f", {result.distance_km:.1f} km" if result.distance_km is not None else ""
+        distance = (
+            f", {result.distance_km:.1f} km" if result.distance_km is not None else ""
+        )
         print(
             f"  {i}. {result.title} — {result.price_min}-{result.price_max}TL, "
             f"puan={result.rating}{distance}"
@@ -98,11 +100,15 @@ def _print_and_record(title: str, results: list[ProviderResult], total: int) -> 
     }
 
 
-async def _lookup_titles(session: AsyncSession, business_ids: list[int]) -> dict[int, str]:
+async def _lookup_titles(
+    session: AsyncSession, business_ids: list[int]
+) -> dict[int, str]:
     """Sadece ID/skor içeren ham arama sonuçlarını gözle okunabilir yapmak için başlıkları çeker."""
     if not business_ids:
         return {}
-    result = await session.execute(select(Business.id, Business.title).where(Business.id.in_(business_ids)))
+    result = await session.execute(
+        select(Business.id, Business.title).where(Business.id.in_(business_ids))
+    )
     return {business_id: title for business_id, title in result.all()}
 
 
@@ -130,7 +136,9 @@ async def _diagnose_query(
     all_ids = [bid for bid, _ in vector_results] + [bid for bid, _ in bm25_results]
     titles = await _lookup_titles(session, all_ids)
 
-    print(f"\n--- Tanı: '{query}' (filtre: {filters.model_dump(exclude_none=True)}) ---")
+    print(
+        f"\n--- Tanı: '{query}' (filtre: {filters.model_dump(exclude_none=True)}) ---"
+    )
     print(f"  Vektör top-{DIAGNOSTIC_DEPTH}:")
     for rank, (bid, score) in enumerate(vector_results, start=1):
         print(f"    {rank}. {titles.get(bid, '?')} (skor={score:.3f})")
@@ -141,12 +149,23 @@ async def _diagnose_query(
     return {
         "query": query,
         "filters": filters.model_dump(exclude_none=True),
-        "vector_top": [{"rank": r, "title": titles.get(bid, "?"), "score": score} for r, (bid, score) in enumerate(vector_results, start=1)],
-        "bm25_top": [{"rank": r, "title": titles.get(bid, "?"), "score": score} for r, (bid, score) in enumerate(bm25_results, start=1)],
+        "vector_top": [
+            {"rank": r, "title": titles.get(bid, "?"), "score": score}
+            for r, (bid, score) in enumerate(vector_results, start=1)
+        ],
+        "bm25_top": [
+            {"rank": r, "title": titles.get(bid, "?"), "score": score}
+            for r, (bid, score) in enumerate(bm25_results, start=1)
+        ],
     }
 
 
-def _write_result(scenarios: list[dict], diagnostics: list[dict], label: str | None, embedder_model: str) -> Path:
+def _write_result(
+    scenarios: list[dict],
+    diagnostics: list[dict],
+    label: str | None,
+    embedder_model: str,
+) -> Path:
     """Sonucu evaluation/results/diagnostics/search_smoke_test/<embedder>/ altına JSON olarak yazar.
 
     LLM katmanı yok — search_providers() hiç LLM çağırmıyor, bu yüzden
@@ -161,8 +180,15 @@ def _write_result(scenarios: list[dict], diagnostics: list[dict], label: str | N
     timestamp = datetime.now().strftime(TIMESTAMP_FORMAT)
     filename = f"{label}_{timestamp}.json" if label else f"{timestamp}.json"
     output_path = results_dir / filename
-    payload = {"label": label, "timestamp": timestamp, "scenarios": scenarios, "diagnostics": diagnostics}
-    output_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+    payload = {
+        "label": label,
+        "timestamp": timestamp,
+        "scenarios": scenarios,
+        "diagnostics": diagnostics,
+    }
+    output_path.write_text(
+        json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8"
+    )
     return output_path
 
 
@@ -175,7 +201,9 @@ async def main(
     factory'si kullanılır. Belirli bir embedder'ı zorlamak isteyen bir
     çağıran (bkz. mini ablasyon script'i) çıplak bir sağlayıcıyı doğrudan
     geçirebilir — bu fonksiyon hiç LLM kullanmadığı için LLM parametresi yok."""
-    logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
+    logging.basicConfig(
+        level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s"
+    )
 
     qdrant_client = get_qdrant_client()
     if embedding_provider is None:
@@ -209,26 +237,41 @@ async def main(
                     availability=availability,
                     limit=DISPLAY_LIMIT,
                 )
-                scenarios.append(_print_and_record(title, response.results, response.total))
+                scenarios.append(
+                    _print_and_record(title, response.results, response.total)
+                )
 
             if custom_query is not None:
                 # Sabit senaryolar yerine sadece elle verilen tek sorgu — hem ham
                 # BM25/vektör dökümü hem reranker sonrası final sonuç kaydedilir.
                 diagnostics.append(
                     await _diagnose_query(
-                        session, qdrant_client, bm25_index, embedding_provider, custom_query, SearchFilters()
+                        session,
+                        qdrant_client,
+                        bm25_index,
+                        embedding_provider,
+                        custom_query,
+                        SearchFilters(),
                     )
                 )
                 await run(f"Özel sorgu: {custom_query}", custom_query, SearchFilters())
-                output_path = _write_result(scenarios, diagnostics, label, embedding_provider.model)
+                output_path = _write_result(
+                    scenarios, diagnostics, label, embedding_provider.model
+                )
                 logger.info("Sonuçlar kaydedildi: %s", output_path)
                 return
 
             # 1) Sade semantik + fiyat filtresi
-            await run("Ucuz diş kliniği (max_price=1500)", "ucuz diş kliniği", SearchFilters(max_price=1500))
+            await run(
+                "Ucuz diş kliniği (max_price=1500)",
+                "ucuz diş kliniği",
+                SearchFilters(max_price=1500),
+            )
 
             # 1b) Aynı sorgu, fiyat filtresi OLMADAN — karşılaştırma için
-            await run("Ucuz diş kliniği (filtresiz)", "ucuz diş kliniği", SearchFilters())
+            await run(
+                "Ucuz diş kliniği (filtresiz)", "ucuz diş kliniği", SearchFilters()
+            )
 
             # 1c) Tanı: max_price=1500 ile BM25/vektör ham sonuçları
             diagnostics.append(
@@ -244,20 +287,36 @@ async def main(
 
             # 2) Kategori + cinsiyet filtresi
             await run(
-                "Kadınlara yönelik kuaför", "saç kesimi", SearchFilters(category="Kuaför", gender="female")
+                "Kadınlara yönelik kuaför",
+                "saç kesimi",
+                SearchFilters(category="Kuaför", gender="female"),
             )
 
             # 2b) Başka bir "ucuz X" kombinasyonu — bu bir kalıp mı yoksa tek seferlik mi görmek için
-            await run("Ucuz kuaför (max_price=1000)", "ucuz kuaför", SearchFilters(max_price=1000))
+            await run(
+                "Ucuz kuaför (max_price=1000)",
+                "ucuz kuaför",
+                SearchFilters(max_price=1000),
+            )
 
             # 3) Hafta sonu açık filtresi
-            await run("Hafta sonu açık güzellik salonu", "güzellik salonu", SearchFilters(weekend_open_only=True))
+            await run(
+                "Hafta sonu açık güzellik salonu",
+                "güzellik salonu",
+                SearchFilters(weekend_open_only=True),
+            )
 
             # 4) Konum filtresi (mesafe kontrolü için)
             await run(
                 "İzmit merkeze 5km içinde berber",
                 "berber",
-                SearchFilters(near=NearFilter(latitude=IZMIT_MERKEZ_LAT, longitude=IZMIT_MERKEZ_LON, radius_km=5)),
+                SearchFilters(
+                    near=NearFilter(
+                        latitude=IZMIT_MERKEZ_LAT,
+                        longitude=IZMIT_MERKEZ_LON,
+                        radius_km=5,
+                    )
+                ),
             )
 
             # 5) Tarih/saat müsaitliği (iki fazlı filtrenin gerçek testi)
@@ -266,18 +325,28 @@ async def main(
                 f"Diş kliniği, {tomorrow} sabahı müsait",
                 "diş kliniği",
                 SearchFilters(),
-                availability=DateAvailabilityFilter(date=tomorrow, time_of_day="morning"),
+                availability=DateAvailabilityFilter(
+                    date=tomorrow, time_of_day="morning"
+                ),
             )
 
             # 6) Fiyat aralığının iki ucu da verilirse
             await run(
-                "Diş kliniği (1000-3000TL aralığı)", "diş kliniği", SearchFilters(min_price=1000, max_price=3000)
+                "Diş kliniği (1000-3000TL aralığı)",
+                "diş kliniği",
+                SearchFilters(min_price=1000, max_price=3000),
             )
 
             # 7) Muhtemelen boş dönecek bir kombinasyon — zarif davranış kontrolü
-            await run("Diş kliniği (max_price=10, muhtemelen boş)", "diş kliniği", SearchFilters(max_price=10))
+            await run(
+                "Diş kliniği (max_price=10, muhtemelen boş)",
+                "diş kliniği",
+                SearchFilters(max_price=10),
+            )
 
-        output_path = _write_result(scenarios, diagnostics, label, embedding_provider.model)
+        output_path = _write_result(
+            scenarios, diagnostics, label, embedding_provider.model
+        )
         logger.info("Sonuçlar kaydedildi: %s", output_path)
         logger.info("Smoke test tamamlandı.")
     finally:
@@ -289,7 +358,10 @@ async def main(
 def _parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
-        "label", nargs="?", default=None, help="Sonuç dosyasının adına eklenecek opsiyonel etiket"
+        "label",
+        nargs="?",
+        default=None,
+        help="Sonuç dosyasının adına eklenecek opsiyonel etiket",
     )
     parser.add_argument(
         "--query",

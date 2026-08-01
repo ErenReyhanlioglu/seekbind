@@ -23,11 +23,10 @@ varsayılan `pytest` çalıştırmasında hariç tutulurlar (bkz. pyproject.toml
 """
 
 from collections.abc import AsyncGenerator, Callable, Generator
+from typing import Any
 
 import httpx
 import pytest
-from typing import Any
-
 from sqlalchemy import event, select
 from sqlalchemy.engine import Connection
 from sqlalchemy.engine.interfaces import ExecutionContext
@@ -54,7 +53,9 @@ async def api_client() -> AsyncGenerator[httpx.AsyncClient, None]:
     """
     async with lifespan(app):
         transport = httpx.ASGITransport(app=app)
-        async with httpx.AsyncClient(transport=transport, base_url="http://test") as client:
+        async with httpx.AsyncClient(
+            transport=transport, base_url="http://test"
+        ) as client:
             yield client
 
 
@@ -97,7 +98,11 @@ class _FakeLLMProvider:
         langfuse_name: str | None = None,
         langfuse_metadata: dict[str, object] | None = None,
     ) -> LLMResponse:
-        content = self._intent_json if langfuse_name == "intent_parsing" else self._recommendation_text
+        content = (
+            self._intent_json
+            if langfuse_name == "intent_parsing"
+            else self._recommendation_text
+        )
         return LLMResponse(
             content=content,
             model="fake-model",
@@ -139,7 +144,9 @@ class _FakeEmbeddingProvider:
 class _IdentityRerankerProvider:
     """`RerankerProvider` Protocol'üne uyan test double'ı — sırayı değiştirmeden döner."""
 
-    async def rerank(self, query: str, documents: list[str], top_n: int) -> list[tuple[int, float]]:
+    async def rerank(
+        self, query: str, documents: list[str], top_n: int
+    ) -> list[tuple[int, float]]:
         return [(i, 1.0) for i in range(len(documents))]
 
     async def close(self) -> None:
@@ -158,9 +165,15 @@ def install_fake_recommend_providers() -> Callable[[str, str], None]:
     """
 
     def _install(intent_json: str, recommendation_text: str = "Test önerisi.") -> None:
-        app.dependency_overrides[get_llm_provider] = lambda: _FakeLLMProvider(intent_json, recommendation_text)
-        app.dependency_overrides[get_embedding_provider] = lambda: _FakeEmbeddingProvider()
-        app.dependency_overrides[get_reranker_provider] = lambda: _IdentityRerankerProvider()
+        app.dependency_overrides[get_llm_provider] = lambda: _FakeLLMProvider(
+            intent_json, recommendation_text
+        )
+        app.dependency_overrides[get_embedding_provider] = (
+            lambda: _FakeEmbeddingProvider()
+        )
+        app.dependency_overrides[get_reranker_provider] = (
+            lambda: _IdentityRerankerProvider()
+        )
 
     return _install
 
@@ -188,7 +201,9 @@ async def savepoint_session() -> AsyncGenerator[AsyncSession, None]:
     async with engine.connect() as connection:
         await connection.begin()
         session_factory = async_sessionmaker(
-            bind=connection, expire_on_commit=False, join_transaction_mode="create_savepoint"
+            bind=connection,
+            expire_on_commit=False,
+            join_transaction_mode="create_savepoint",
         )
         session = session_factory()
         try:
@@ -212,7 +227,9 @@ async def real_test_user_id() -> int:
     isimle aranıyor, sabit bir sayı hardcode edilmiyor.
     """
     async with get_session_factory()() as session:
-        result = await session.execute(select(UserProfile.id).where(UserProfile.name == TEST_USER_NAME))
+        result = await session.execute(
+            select(UserProfile.id).where(UserProfile.name == TEST_USER_NAME)
+        )
         user_id = result.scalar_one_or_none()
     if user_id is None:
         pytest.skip(
@@ -223,7 +240,9 @@ async def real_test_user_id() -> int:
 
 
 @pytest.fixture
-def book_savepoint_client(api_client: httpx.AsyncClient, savepoint_session: AsyncSession) -> httpx.AsyncClient:
+def book_savepoint_client(
+    api_client: httpx.AsyncClient, savepoint_session: AsyncSession
+) -> httpx.AsyncClient:
     """`/book` standart senaryoları için `get_db_session`'ı SAVEPOINT'e bağlı
     session'a yönlendirir.
 
@@ -286,7 +305,9 @@ def query_counter() -> Generator[list[str], None, None]:
         executemany: bool,
     ) -> None:
         normalized = statement.strip().upper()
-        if not normalized.startswith(("SAVEPOINT", "RELEASE SAVEPOINT", "ROLLBACK TO SAVEPOINT")):
+        if not normalized.startswith(
+            ("SAVEPOINT", "RELEASE SAVEPOINT", "ROLLBACK TO SAVEPOINT")
+        ):
             statements.append(statement)
 
     event.listen(engine.sync_engine, "before_cursor_execute", _listener)

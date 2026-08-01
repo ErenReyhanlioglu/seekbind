@@ -206,7 +206,9 @@ class OpenAILLM:
         await self._client.close()
 
 
-_OLLAMA_DUMMY_API_KEY: str = "ollama"  # Ollama'nın OpenAI-uyumlu endpoint'i doğrulamıyor, dolu bir string yeterli
+_OLLAMA_DUMMY_API_KEY: str = (
+    "ollama"  # Ollama'nın OpenAI-uyumlu endpoint'i doğrulamıyor, dolu bir string yeterli
+)
 
 
 class OllamaLLM:
@@ -285,7 +287,10 @@ def get_llm_provider() -> LLMProvider:
 
     settings = get_settings()
     redis_client = get_redis_client()
-    cache_kwargs = {"enabled": settings.enable_cache, "ttl_seconds": settings.llm_cache_ttl_seconds}
+    cache_kwargs = {
+        "enabled": settings.enable_cache,
+        "ttl_seconds": settings.llm_cache_ttl_seconds,
+    }
 
     if settings.active_llm_provider == "ollama":
         return CachedLLMProvider(OllamaLLM(), redis_client, **cache_kwargs)

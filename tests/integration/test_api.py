@@ -13,7 +13,9 @@ from backend.api.schemas import HealthCheckResponse
 pytestmark = pytest.mark.integration
 
 
-async def test_health_returns_200_and_healthy_when_dependencies_are_up(api_client: httpx.AsyncClient) -> None:
+async def test_health_returns_200_and_healthy_when_dependencies_are_up(
+    api_client: httpx.AsyncClient,
+) -> None:
     response = await api_client.get("/health")
 
     assert response.status_code == 200

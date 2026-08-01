@@ -26,7 +26,9 @@ class RerankerServiceError(Exception):
 class RerankerProvider(Protocol):
     """Reranker sağlayıcıları için ortak arayüz."""
 
-    async def rerank(self, query: str, documents: list[str], top_n: int) -> list[tuple[int, float]]:
+    async def rerank(
+        self, query: str, documents: list[str], top_n: int
+    ) -> list[tuple[int, float]]:
         """documents listesindeki metinleri query'ye göre azalan skorla sıralar.
 
         Döndürülen (index, relevance_score) çiftlerindeki index, documents
@@ -51,7 +53,9 @@ class JinaReranker:
         # close()'a bırakılır, lifespan shutdown'da çağrılır.
         self._client = httpx.AsyncClient(timeout=settings.jina_rerank_timeout_seconds)
 
-    async def rerank(self, query: str, documents: list[str], top_n: int) -> list[tuple[int, float]]:
+    async def rerank(
+        self, query: str, documents: list[str], top_n: int
+    ) -> list[tuple[int, float]]:
         """Jina'nın rerank endpoint'ine istek atar, (index, relevance_score) döner."""
         if not documents:
             return []

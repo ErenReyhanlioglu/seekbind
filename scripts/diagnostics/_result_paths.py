@@ -27,7 +27,9 @@ def sanitize_model_name(model: str) -> str:
     return _SANITIZE_PATTERN.sub("-", model.lower()).strip("-")
 
 
-def build_results_dir(experiment_name: str, embedder_model: str, llm_model: str | None = None) -> Path:
+def build_results_dir(
+    experiment_name: str, embedder_model: str, llm_model: str | None = None
+) -> Path:
     """`<deney_türü>/[<llm_model>/]<embedder_model>/` klasör yolunu üretir (oluşturmaz)."""
     path = DIAGNOSTICS_ROOT / experiment_name
     if llm_model is not None:

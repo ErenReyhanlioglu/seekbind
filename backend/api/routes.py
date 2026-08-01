@@ -22,7 +22,12 @@ from backend.services.calendar import SlotNotFoundError, book_appointment
 from backend.services.embedding import EmbeddingProvider, get_embedding_provider
 from backend.services.llm import LLMProvider, get_llm_provider
 from backend.services.rag import get_recommendation
-from backend.services.search import BM25Index, RerankerProvider, get_bm25_index, get_reranker_provider
+from backend.services.search import (
+    BM25Index,
+    RerankerProvider,
+    get_bm25_index,
+    get_reranker_provider,
+)
 
 router = APIRouter()
 

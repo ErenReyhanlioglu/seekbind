@@ -44,7 +44,9 @@ def cosine_similarity(a: np.ndarray, b: np.ndarray) -> float:
     return float(np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b)))
 
 
-async def fetch_vectors_by_category(client: AsyncQdrantClient, collection_name: str) -> VectorsByCategory:
+async def fetch_vectors_by_category(
+    client: AsyncQdrantClient, collection_name: str
+) -> VectorsByCategory:
     """Collection'daki tüm noktaları çekip type_normalized'e göre gruplar."""
     grouped: VectorsByCategory = defaultdict(list)
     offset = None
@@ -60,7 +62,9 @@ async def fetch_vectors_by_category(client: AsyncQdrantClient, collection_name: 
             # with_payload=True yukarıda her zaman veriliyor, payload hiçbir
             # zaman None olmuyor — Qdrant'ın tip stub'ı bunu genel (with_payload
             # parametresinin değerinden bağımsız) bir Optional olarak işaretliyor.
-            category = point.payload["type_normalized"]  # pyright: ignore[reportOptionalSubscript]
+            category = point.payload[
+                "type_normalized"
+            ]  # pyright: ignore[reportOptionalSubscript]
             grouped[category].append(np.array(point.vector))
         if offset is None:
             break
@@ -82,7 +86,9 @@ def average_within_category_similarity(grouped: VectorsByCategory) -> dict[str, 
     return results
 
 
-def average_cross_category_similarity(grouped: VectorsByCategory, sample_size: int) -> float:
+def average_cross_category_similarity(
+    grouped: VectorsByCategory, sample_size: int
+) -> float:
     """Farklı kategorilerden rastgele çiftler örnekleyip ortalama benzerliği hesaplar."""
     categories = [c for c, vectors in grouped.items() if vectors]
     similarities = []
@@ -100,19 +106,29 @@ def report(collection_name: str, within: dict[str, float], cross: float) -> None
     logger.info("Kategoriler arası ortalama benzerlik: %.4f", cross)
     logger.info("Kategori-içi ortalama benzerlikler (yüksekten düşüğe):")
     for category, score in sorted(within.items(), key=lambda item: -item[1]):
-        warning = " <-- YÜKSEK, incele (mode collapse şüphesi)" if score > HIGH_SIMILARITY_WARNING_THRESHOLD else ""
+        warning = (
+            " <-- YÜKSEK, incele (mode collapse şüphesi)"
+            if score > HIGH_SIMILARITY_WARNING_THRESHOLD
+            else ""
+        )
         logger.info("  %s: %.4f%s", category, score, warning)
 
 
-def build_result(collection_name: str, within: dict[str, float], cross: float, total_vectors: int) -> dict:
+def build_result(
+    collection_name: str, within: dict[str, float], cross: float, total_vectors: int
+) -> dict:
     """Tek bir collection'ın sonuçlarını JSON'a yazılacak yapıya çevirir."""
-    flagged = [c for c, score in within.items() if score > HIGH_SIMILARITY_WARNING_THRESHOLD]
+    flagged = [
+        c for c, score in within.items() if score > HIGH_SIMILARITY_WARNING_THRESHOLD
+    ]
     return {
         "collection_name": collection_name,
         "total_categories": len(within),
         "total_vectors": total_vectors,
         "cross_category_average_similarity": round(cross, 4),
-        "within_category_average_similarity": {c: round(s, 4) for c, s in within.items()},
+        "within_category_average_similarity": {
+            c: round(s, 4) for c, s in within.items()
+        },
         "high_similarity_warning_threshold": HIGH_SIMILARITY_WARNING_THRESHOLD,
         "flagged_categories": flagged,
     }
@@ -122,15 +138,25 @@ def build_comparison(results: list[dict]) -> dict:
     """Birden fazla collection'ın sonuçlarını yan yana karşılaştırır — elle
     diff'lemeye gerek kalmadan hangi sağlayıcının hangi kategoride daha
     ayrışık (ya da daha mode-collapse riskli) olduğu tek bakışta görülsün diye."""
-    all_categories = sorted({category for r in results for category in r["within_category_average_similarity"]})
+    all_categories = sorted(
+        {
+            category
+            for r in results
+            for category in r["within_category_average_similarity"]
+        }
+    )
     within_by_category = {
-        category: {r["collection_name"]: r["within_category_average_similarity"].get(category) for r in results}
+        category: {
+            r["collection_name"]: r["within_category_average_similarity"].get(category)
+            for r in results
+        }
         for category in all_categories
     }
     return {
         "collections": [r["collection_name"] for r in results],
         "cross_category_average_similarity_by_collection": {
-            r["collection_name"]: r["cross_category_average_similarity"] for r in results
+            r["collection_name"]: r["cross_category_average_similarity"]
+            for r in results
         },
         "within_category_average_similarity_by_category": within_by_category,
     }
@@ -140,12 +166,17 @@ def report_comparison(comparison: dict) -> None:
     """Karşılaştırma tablosunu okunabilir şekilde loglar."""
     logger.info("=== KARŞILAŞTIRMA (%s) ===", ", ".join(comparison["collections"]))
     logger.info("Kategoriler arası ortalama benzerlik:")
-    for collection_name, cross in comparison["cross_category_average_similarity_by_collection"].items():
+    for collection_name, cross in comparison[
+        "cross_category_average_similarity_by_collection"
+    ].items():
         logger.info("  %s: %.4f", collection_name, cross)
     logger.info("Kategori-içi ortalama benzerlik (collection'a göre):")
-    for category, by_collection in comparison["within_category_average_similarity_by_category"].items():
+    for category, by_collection in comparison[
+        "within_category_average_similarity_by_category"
+    ].items():
         values = "  ".join(
-            f"{name}={score:.4f}" if score is not None else f"{name}=—" for name, score in by_collection.items()
+            f"{name}={score:.4f}" if score is not None else f"{name}=—"
+            for name, score in by_collection.items()
         )
         logger.info("  %s: %s", category, values)
 
@@ -156,12 +187,18 @@ def write_output(results: list[dict], comparison: dict | None) -> Path:
     eşleştirmek yerine tek bir yerden okunabilsin diye."""
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
     timestamp = datetime.now().strftime(TIMESTAMP_FORMAT)
-    suffix = "_".join(r["collection_name"] for r in results) if len(results) == 1 else "comparison"
+    suffix = (
+        "_".join(r["collection_name"] for r in results)
+        if len(results) == 1
+        else "comparison"
+    )
     output_path = RESULTS_DIR / f"{suffix}_{timestamp}.json"
     payload: dict = {"results": results}
     if comparison is not None:
         payload["comparison"] = comparison
-    output_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+    output_path.write_text(
+        json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8"
+    )
     return output_path
 
 
@@ -169,14 +206,21 @@ async def main(collection_names: tuple[str, ...] = DEFAULT_COLLECTIONS) -> None:
     """Verilen collection'lar için kategori-içi/kategoriler-arası benzerlik
     analizini çalıştırır; birden fazla collection verilirse ayrıca bir
     karşılaştırma raporu üretir."""
-    logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
+    logging.basicConfig(
+        level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s"
+    )
 
     client = get_qdrant_client()
     results: list[dict] = []
     for collection_name in collection_names:
         grouped = await fetch_vectors_by_category(client, collection_name)
         total_vectors = sum(len(v) for v in grouped.values())
-        logger.info("'%s': %d kategori, toplam %d vektör okundu", collection_name, len(grouped), total_vectors)
+        logger.info(
+            "'%s': %d kategori, toplam %d vektör okundu",
+            collection_name,
+            len(grouped),
+            total_vectors,
+        )
 
         within = average_within_category_similarity(grouped)
         cross = average_cross_category_similarity(grouped, CROSS_CATEGORY_SAMPLE_SIZE)
@@ -193,7 +237,9 @@ async def main(collection_names: tuple[str, ...] = DEFAULT_COLLECTIONS) -> None:
 
 
 def _parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
     parser.add_argument(
         "--collections",
         nargs="+",

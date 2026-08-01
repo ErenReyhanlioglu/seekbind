@@ -3,7 +3,9 @@
 import os
 
 import pytest
-from langfuse import Langfuse  # pyright: ignore[reportPrivateImportUsage]  # bkz. backend/core/monitoring.py
+from langfuse import (
+    Langfuse,
+)  # pyright: ignore[reportPrivateImportUsage]  # bkz. backend/core/monitoring.py
 
 from backend.core.monitoring import get_langfuse_client
 
@@ -18,7 +20,9 @@ def test_get_langfuse_client_returns_langfuse_instance() -> None:
         get_langfuse_client.cache_clear()
 
 
-def test_get_langfuse_client_sets_environment_variables_for_openai_wrapper(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_get_langfuse_client_sets_environment_variables_for_openai_wrapper(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     """`langfuse.openai.AsyncOpenAI` sarmalayıcısı kendi iç singleton'ında
     sadece `os.environ`'a bakıyor (bkz. monitoring.py docstring) — bu testin
     varlık nedeni tam olarak bu: değerler os.environ'a da yazılmazsa

@@ -21,9 +21,16 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from backend.api.schemas import ProviderResult, SearchResponse
 from backend.db.models import Business
 from backend.services.embedding import EmbeddingProvider
-from backend.services.search.availability import DateAvailabilityFilter, fetch_available_business_ids
+from backend.services.search.availability import (
+    DateAvailabilityFilter,
+    fetch_available_business_ids,
+)
 from backend.services.search.bm25 import BM25Index, build_lexical_text
-from backend.services.search.filters import SearchFilters, compute_distance_km, translate_filters_to_qdrant
+from backend.services.search.filters import (
+    SearchFilters,
+    compute_distance_km,
+    translate_filters_to_qdrant,
+)
 from backend.services.search.fusion import reciprocal_rank_fusion
 from backend.services.search.reranker import RerankerProvider, RerankerServiceError
 from backend.services.search.vector import fetch_filtered_business_ids, vector_search
@@ -41,7 +48,9 @@ CANDIDATE_POOL_SIZE: int = 40
 RatingPreference = Literal["high", "low"]
 
 
-async def _fetch_businesses_by_id(session: AsyncSession, business_ids: list[int]) -> list[Business]:
+async def _fetch_businesses_by_id(
+    session: AsyncSession, business_ids: list[int]
+) -> list[Business]:
     """Verilen ID'lere ait işletmeleri, ID listesinin sırasını koruyarak döner.
 
     SQL'in IN (...) koşulu sıra garanti etmediği için sonuç, DB'den gelen
@@ -50,7 +59,9 @@ async def _fetch_businesses_by_id(session: AsyncSession, business_ids: list[int]
     """
     if not business_ids:
         return []
-    result = await session.execute(select(Business).where(Business.id.in_(business_ids)))
+    result = await session.execute(
+        select(Business).where(Business.id.in_(business_ids))
+    )
     businesses_by_id = {business.id: business for business in result.scalars().all()}
     return [businesses_by_id[bid] for bid in business_ids if bid in businesses_by_id]
 
@@ -78,7 +89,9 @@ async def _rerank_businesses(
     return [businesses[index] for index, _ in ranked]
 
 
-def _rank_by_rating(businesses: list[Business], preference: RatingPreference) -> list[tuple[int, float]]:
+def _rank_by_rating(
+    businesses: list[Business], preference: RatingPreference
+) -> list[tuple[int, float]]:
     """weighted_rating'i olan işletmeleri tercihe göre sıralar (yüksekten
     düşüğe ya da düşükten yükseğe), `weighted_rating`'i olmayanları YÖN FARK
     ETMEKSİZİN listenin sonuna ekler — TÜM işletmeleri içeren bir sıralı
@@ -93,12 +106,17 @@ def _rank_by_rating(businesses: list[Business], preference: RatingPreference) ->
     listeden katkı almadan bırakır, ama listede DIŞARIDA bırakılırsa (sona
     eklenmek yerine) tekil sinyal durumunda dahi sonuçtan tamamen düşer.
     """
-    rated = [business for business in businesses if business.weighted_rating is not None]
+    rated = [
+        business for business in businesses if business.weighted_rating is not None
+    ]
     unrated = [business for business in businesses if business.weighted_rating is None]
     # cast: bu noktada rated'daki her business'ın weighted_rating'i yukarıdaki
     # filtreyle zaten None değil — Pyright bunu liste comprehension'ı üzerinden
     # takip edemiyor (ORM attribute, statik olarak float | None kalıyor).
-    rated.sort(key=lambda business: cast(float, business.weighted_rating), reverse=(preference == "high"))
+    rated.sort(
+        key=lambda business: cast(float, business.weighted_rating),
+        reverse=(preference == "high"),
+    )
     return [(business.id, 0.0) for business in rated + unrated]
 
 
@@ -152,25 +170,41 @@ def apply_final_sort(
     if rating_preference is not None:
         rankings.append(_rank_by_rating(businesses, rating_preference))
     if distance_reference is not None:
-        rankings.append(_rank_by_distance(businesses, distance_reference, online_exempt_from_distance))
+        rankings.append(
+            _rank_by_distance(
+                businesses, distance_reference, online_exempt_from_distance
+            )
+        )
 
     if not rankings:
         return businesses
 
     fused = reciprocal_rank_fusion(rankings)
     businesses_by_id = {business.id: business for business in businesses}
-    ordered = [businesses_by_id[business_id] for business_id, _ in fused if business_id in businesses_by_id]
+    ordered = [
+        businesses_by_id[business_id]
+        for business_id, _ in fused
+        if business_id in businesses_by_id
+    ]
     included_ids = {business_id for business_id, _ in fused}
     leftover = [business for business in businesses if business.id not in included_ids]
     return ordered + leftover
 
 
-def _to_provider_result(business: Business, distance_reference: tuple[float, float] | None) -> ProviderResult:
+def _to_provider_result(
+    business: Business, distance_reference: tuple[float, float] | None
+) -> ProviderResult:
     """Business ORM nesnesini ProviderResult response şemasına eşler."""
     distance_km = None
-    if distance_reference is not None and business.latitude is not None and business.longitude is not None:
+    if (
+        distance_reference is not None
+        and business.latitude is not None
+        and business.longitude is not None
+    ):
         ref_lat, ref_lon = distance_reference
-        distance_km = compute_distance_km(ref_lat, ref_lon, business.latitude, business.longitude)
+        distance_km = compute_distance_km(
+            ref_lat, ref_lon, business.latitude, business.longitude
+        )
     return ProviderResult(
         id=business.id,
         title=business.title,
@@ -216,7 +250,11 @@ async def search_providers(
     qdrant_filter = translate_filters_to_qdrant(filters)
 
     vector_results = await vector_search(
-        qdrant_client, embedding_provider, query, CANDIDATE_DEPTH_PER_SOURCE, qdrant_filter
+        qdrant_client,
+        embedding_provider,
+        query,
+        CANDIDATE_DEPTH_PER_SOURCE,
+        qdrant_filter,
     )
 
     bm25_results = bm25_index.search(query, CANDIDATE_DEPTH_PER_SOURCE)
@@ -224,15 +262,21 @@ async def search_providers(
         # BM25 kendi başına hard filtre bilmiyor — filtreyi sağlayan ID
         # kümesiyle kesişim alınır. Filtre yoksa bu ekstra Qdrant sorgusu
         # atlanır (is_active zaten BM25 corpus'unda garanti, bkz. bm25.py).
-        filtered_ids = await fetch_filtered_business_ids(qdrant_client, embedding_provider, qdrant_filter)
+        filtered_ids = await fetch_filtered_business_ids(
+            qdrant_client, embedding_provider, qdrant_filter
+        )
         bm25_results = [pair for pair in bm25_results if pair[0] in filtered_ids]
 
     fused = reciprocal_rank_fusion([vector_results, bm25_results])
     candidate_ids = [business_id for business_id, _ in fused][:CANDIDATE_POOL_SIZE]
 
     if availability is not None:
-        available_ids = await fetch_available_business_ids(session, candidate_ids, availability)
-        candidate_ids = [business_id for business_id in candidate_ids if business_id in available_ids]
+        available_ids = await fetch_available_business_ids(
+            session, candidate_ids, availability
+        )
+        candidate_ids = [
+            business_id for business_id in candidate_ids if business_id in available_ids
+        ]
 
     candidates = await _fetch_businesses_by_id(session, candidate_ids)
     candidates = await _rerank_businesses(reranker_provider, query, candidates)
@@ -242,7 +286,10 @@ async def search_providers(
         # AÇIKÇA online_only istediyse online işletmeler artık mesafe
         # sıralamasından muaf tutulmaz (bkz. apply_final_sort docstring'i).
         candidates = apply_final_sort(
-            candidates, rating_preference, distance_reference, online_exempt_from_distance=not filters.online_only
+            candidates,
+            rating_preference,
+            distance_reference,
+            online_exempt_from_distance=not filters.online_only,
         )
 
     page = candidates[offset : offset + limit]

@@ -2,10 +2,16 @@
 
 from backend.api.schemas import ProviderResult
 from backend.services.llm import ChatMessage, LLMProvider, LLMServiceError
-from backend.services.rag.prompts import RECOMMENDATION_PROMPT_PATH, SYSTEM_PROMPT_PATH, load_prompt
+from backend.services.rag.prompts import (
+    RECOMMENDATION_PROMPT_PATH,
+    SYSTEM_PROMPT_PATH,
+    load_prompt,
+)
 from backend.services.search import RatingPreference
 
-RECOMMENDATION_RESULT_LIMIT: int = 5  # öneri prompt'una en fazla bu kadar işletme konur (token/maliyet)
+RECOMMENDATION_RESULT_LIMIT: int = (
+    5  # öneri prompt'una en fazla bu kadar işletme konur (token/maliyet)
+)
 _RECOMMENDATION_TEMPERATURE: float = 0.7
 _LANGFUSE_STEP_NAME: str = "recommendation_generation"
 
@@ -87,7 +93,8 @@ async def generate_recommendation(
     """
     top_results = results[:RECOMMENDATION_RESULT_LIMIT]
     businesses_text = "\n".join(
-        _format_business_for_prompt(i, business) for i, business in enumerate(top_results, start=1)
+        _format_business_for_prompt(i, business)
+        for i, business in enumerate(top_results, start=1)
     )
     system_content = load_prompt(SYSTEM_PROMPT_PATH)
     recommendation_instructions = load_prompt(RECOMMENDATION_PROMPT_PATH).format(
@@ -105,8 +112,13 @@ async def generate_recommendation(
             messages,
             temperature=_RECOMMENDATION_TEMPERATURE,
             langfuse_name=_LANGFUSE_STEP_NAME,
-            langfuse_metadata={"result_count": len(top_results), "rating_preference": rating_preference},
+            langfuse_metadata={
+                "result_count": len(top_results),
+                "rating_preference": rating_preference,
+            },
         )
     except LLMServiceError as e:
-        raise RecommendationGenerationError("Öneri üretimi LLM çağrısı başarısız") from e
+        raise RecommendationGenerationError(
+            "Öneri üretimi LLM çağrısı başarısız"
+        ) from e
     return response.content

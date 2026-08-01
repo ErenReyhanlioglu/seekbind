@@ -15,13 +15,21 @@ from datetime import date, timedelta
 from typing import Literal, get_args
 
 from pydantic import BaseModel, Field, ValidationError, model_validator
-
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.services.llm import ChatMessage, LLMProvider, LLMServiceError
 from backend.services.rag.pricing import PricePreference, resolve_price_threshold
-from backend.services.rag.prompts import SEARCH_INTENT_PROMPT_PATH, SYSTEM_PROMPT_PATH, load_prompt
-from backend.services.search import DateAvailabilityFilter, RatingPreference, SearchFilters, normalize_turkish_text
+from backend.services.rag.prompts import (
+    SEARCH_INTENT_PROMPT_PATH,
+    SYSTEM_PROMPT_PATH,
+    load_prompt,
+)
+from backend.services.search import (
+    DateAvailabilityFilter,
+    RatingPreference,
+    SearchFilters,
+    normalize_turkish_text,
+)
 from backend.services.search.availability import TimeOfDay
 from scripts.constants.business_types import QUERY_TERM_TO_TYPE
 
@@ -33,7 +41,9 @@ logger = logging.getLogger(__name__)
 # I/O olduğu için güvenli.
 VALID_CATEGORIES: frozenset[str] = frozenset(QUERY_TERM_TO_TYPE.values())
 
-DayOfWeek = Literal["pazartesi", "salı", "çarşamba", "perşembe", "cuma", "cumartesi", "pazar"]
+DayOfWeek = Literal[
+    "pazartesi", "salı", "çarşamba", "perşembe", "cuma", "cumartesi", "pazar"
+]
 _DAY_NAMES: tuple[str, ...] = get_args(DayOfWeek)
 _WEEKDAY_INDEX: dict[str, int] = {name: i for i, name in enumerate(_DAY_NAMES)}
 
@@ -90,12 +100,16 @@ class ParsedIntent(BaseModel):
 
         price_preference = data.get("price_preference")
         if price_preference not in ("cheap", "expensive", None):
-            logger.warning("Geçersiz price_preference değeri düşürüldü: %r", price_preference)
+            logger.warning(
+                "Geçersiz price_preference değeri düşürüldü: %r", price_preference
+            )
             data["price_preference"] = None
 
         rating_preference = data.get("rating_preference")
         if rating_preference not in ("high", "low", None):
-            logger.warning("Geçersiz rating_preference değeri düşürüldü: %r", rating_preference)
+            logger.warning(
+                "Geçersiz rating_preference değeri düşürüldü: %r", rating_preference
+            )
             data["rating_preference"] = None
 
         gender = data.get("gender")
@@ -110,7 +124,9 @@ class ParsedIntent(BaseModel):
         # yerine bir liste döndürürse, isinstance kontrolü olmadan
         # `category not in VALID_CATEGORIES` TypeError fırlatırdı (gerçek bir
         # ablasyon çalıştırmasında qwen3:4b-instruct-2507-q4_K_M'de bulundu).
-        if category is not None and (not isinstance(category, str) or category not in VALID_CATEGORIES):
+        if category is not None and (
+            not isinstance(category, str) or category not in VALID_CATEGORIES
+        ):
             logger.warning("Geçersiz category değeri düşürüldü: %r", category)
             data["category"] = None
 
@@ -143,7 +159,9 @@ def resolve_day_of_week(day_of_week: DayOfWeek, today: date) -> date:
     return today + timedelta(days=days_ahead)
 
 
-async def build_search_filters(intent: ParsedIntent, session: AsyncSession) -> SearchFilters:
+async def build_search_filters(
+    intent: ParsedIntent, session: AsyncSession
+) -> SearchFilters:
     """ParsedIntent'ten SearchFilters üretir.
 
     LLM somut bir sayı vermişse (`min_price`/`max_price` dolu) onlar aynen
@@ -153,7 +171,9 @@ async def build_search_filters(intent: ParsedIntent, session: AsyncSession) -> S
     """
     min_price, max_price = intent.min_price, intent.max_price
     if min_price is None and max_price is None and intent.price_preference is not None:
-        min_price, max_price = await resolve_price_threshold(session, intent.category, intent.price_preference)
+        min_price, max_price = await resolve_price_threshold(
+            session, intent.category, intent.price_preference
+        )
 
     return SearchFilters(
         min_price=min_price,
@@ -165,7 +185,9 @@ async def build_search_filters(intent: ParsedIntent, session: AsyncSession) -> S
     )
 
 
-def build_availability_filter(intent: ParsedIntent, today: date) -> DateAvailabilityFilter | None:
+def build_availability_filter(
+    intent: ParsedIntent, today: date
+) -> DateAvailabilityFilter | None:
     """`day_of_week` yoksa None döner — `time_of_day` tek başına yeterli
     değil, şemada "herhangi bir gün, sabahları" diye bir temsil yok."""
     if intent.day_of_week is None:
@@ -176,7 +198,9 @@ def build_availability_filter(intent: ParsedIntent, today: date) -> DateAvailabi
     )
 
 
-async def parse_intent(llm_provider: LLMProvider, raw_query: str, today: date) -> tuple[ParsedIntent, bool]:
+async def parse_intent(
+    llm_provider: LLMProvider, raw_query: str, today: date
+) -> tuple[ParsedIntent, bool]:
     """Serbest metin sorguyu LLM ile yapılandırılmış `ParsedIntent`'e ayrıştırır.
 
     İkinci eleman (`bool`), LLM cevabının Redis cache'inden mi geldiğini
@@ -195,7 +219,9 @@ async def parse_intent(llm_provider: LLMProvider, raw_query: str, today: date) -
     )
     messages = [
         ChatMessage(role="system", content=system_content),
-        ChatMessage(role="user", content=f'{intent_instructions}\n\nSorgu: "{raw_query}"'),
+        ChatMessage(
+            role="user", content=f'{intent_instructions}\n\nSorgu: "{raw_query}"'
+        ),
     ]
 
     try:

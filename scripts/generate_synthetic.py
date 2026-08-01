@@ -13,7 +13,11 @@ import random
 from pathlib import Path
 from typing import Any
 
-from scripts.constants import APPOINTMENT_DURATIONS_MIN, ONLINE_AVAILABLE, QUERY_TERM_TO_TYPE
+from scripts.constants import (
+    APPOINTMENT_DURATIONS_MIN,
+    ONLINE_AVAILABLE,
+    QUERY_TERM_TO_TYPE,
+)
 from scripts.schemas import ProcessedBusinessRecord
 from scripts.synthetic import (
     assign_genders,
@@ -58,8 +62,12 @@ def build_processed_record(
     online_available = ONLINE_AVAILABLE[type_normalized]
     rating = data.get("rating")
     reviews = parse_review_count(data.get("reviews_original"), data.get("reviews", 0))
-    weighted_rating = compute_weighted_rating(rating, reviews, mean_rating, confidence_m)
-    tags = build_tags(type_normalized, online_available, working_hours, weighted_rating, price_range)
+    weighted_rating = compute_weighted_rating(
+        rating, reviews, mean_rating, confidence_m
+    )
+    tags = build_tags(
+        type_normalized, online_available, working_hours, weighted_rating, price_range
+    )
 
     return ProcessedBusinessRecord(
         place_id=raw["place_id"],
@@ -85,22 +93,33 @@ def build_processed_record(
 
 def main() -> None:
     """Ham veriyi işleyip data/processed/businesses.jsonl'a yazar."""
-    logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
+    logging.basicConfig(
+        level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s"
+    )
 
     raw_records = load_raw_records(INPUT_FILE_PATH)
     logger.info("%d ham kayıt okundu", len(raw_records))
 
     mean_rating, confidence_m = compute_rating_baseline(raw_records)
-    logger.info("Bayesian taban: ortalama puan=%.3f, güven eşiği (m)=%d", mean_rating, confidence_m)
+    logger.info(
+        "Bayesian taban: ortalama puan=%.3f, güven eşiği (m)=%d",
+        mean_rating,
+        confidence_m,
+    )
     gender_assignment = assign_genders(raw_records)
 
     OUTPUT_FILE_PATH.parent.mkdir(parents=True, exist_ok=True)
     with OUTPUT_FILE_PATH.open("w", encoding="utf-8") as f:
         for raw in raw_records:
-            record = build_processed_record(raw, mean_rating, confidence_m, gender_assignment)
+            record = build_processed_record(
+                raw, mean_rating, confidence_m, gender_assignment
+            )
             f.write(record.model_dump_json() + "\n")
 
-    logger.info("Tamamlandı. %d işlenmiş kayıt data/processed/businesses.jsonl'a yazıldı", len(raw_records))
+    logger.info(
+        "Tamamlandı. %d işlenmiş kayıt data/processed/businesses.jsonl'a yazıldı",
+        len(raw_records),
+    )
 
 
 if __name__ == "__main__":

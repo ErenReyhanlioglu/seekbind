@@ -48,17 +48,17 @@ async def resolve_price_threshold(
 
     if preference == "cheap":
         result = await session.execute(
-            select(func.percentile_cont(CHEAP_PERCENTILE).within_group(Business.price_min)).where(
-                Business.type_normalized == category
-            )
+            select(
+                func.percentile_cont(CHEAP_PERCENTILE).within_group(Business.price_min)
+            ).where(Business.type_normalized == category)
         )
         max_price = result.scalar()
         return None, int(max_price) if max_price is not None else None
 
     result = await session.execute(
-        select(func.percentile_cont(EXPENSIVE_PERCENTILE).within_group(Business.price_max)).where(
-            Business.type_normalized == category
-        )
+        select(
+            func.percentile_cont(EXPENSIVE_PERCENTILE).within_group(Business.price_max)
+        ).where(Business.type_normalized == category)
     )
     min_price = result.scalar()
     return int(min_price) if min_price is not None else None, None

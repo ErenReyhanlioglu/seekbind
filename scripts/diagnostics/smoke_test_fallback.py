@@ -25,16 +25,33 @@ from redis.asyncio import Redis
 
 from backend.db.redis import get_redis_client
 from backend.main import app, lifespan
-from backend.services.embedding import EmbeddingProvider, OllamaEmbedding, OpenAIEmbedding, get_embedding_provider
+from backend.services.embedding import (
+    EmbeddingProvider,
+    OllamaEmbedding,
+    OpenAIEmbedding,
+    get_embedding_provider,
+)
 from backend.services.fallback import FallbackEmbeddingProvider, FallbackLLMProvider
-from backend.services.llm import ChatMessage, LLMProvider, LLMServiceError, OllamaLLM, OpenAILLM, get_llm_provider
+from backend.services.llm import (
+    ChatMessage,
+    LLMProvider,
+    LLMServiceError,
+    OllamaLLM,
+    OpenAILLM,
+    get_llm_provider,
+)
 from backend.services.rag.intent import parse_intent
 
 logger = logging.getLogger(__name__)
 
 RESULTS_DIR: Path = Path("evaluation/results/diagnostics/fallback_smoke_test")
 TIMESTAMP_FORMAT: str = "%Y-%m-%dT%H-%M-%S"
-_CACHE_KEY_PATTERNS: tuple[str, ...] = ("embed:openai:*", "llm:openai:*", "embed:ollama*", "llm:ollama:*")
+_CACHE_KEY_PATTERNS: tuple[str, ...] = (
+    "embed:openai:*",
+    "llm:openai:*",
+    "embed:ollama*",
+    "llm:ollama:*",
+)
 _JSON_RESPONSE_FORMAT: dict[str, str] = {"type": "json_object"}
 
 
@@ -83,7 +100,8 @@ async def _scenario_llm_full_stack_baseline(llm_provider: LLMProvider) -> dict:
     """Gerçek `get_llm_provider()` (Fallback+Cache ile sarılmış) — birincil
     (OpenAI) sağlıklıyken hiçbir fallback tetiklenmeden normal cevap dönmeli."""
     response = await llm_provider.complete(
-        [ChatMessage(role="user", content="tek kelimeyle 'merhaba' de")], temperature=0.0
+        [ChatMessage(role="user", content="tek kelimeyle 'merhaba' de")],
+        temperature=0.0,
     )
     passed = response.provider == "openai" and bool(response.content)
     return _record(
@@ -101,10 +119,14 @@ async def _scenario_llm_forced_primary_failure_uses_real_ollama() -> dict:
     provider = FallbackLLMProvider(primary, secondary, enabled=True)
 
     try:
-        response = await provider.complete([ChatMessage(role="user", content="tek kelimeyle 'merhaba' de")])
+        response = await provider.complete(
+            [ChatMessage(role="user", content="tek kelimeyle 'merhaba' de")]
+        )
         passed = response.provider == "ollama" and bool(response.content)
         error = None
-    except Exception as e:  # noqa: BLE001 — bu senaryo "çökmemeli" iddiasını test ediyor
+    except (
+        Exception
+    ) as e:  # noqa: BLE001 — bu senaryo "çökmemeli" iddiasını test ediyor
         passed = False
         error = str(e)
         response = None
@@ -131,21 +153,35 @@ async def _scenario_llm_fallback_intent_parsing_produces_clean_json() -> dict:
 
     try:
         raw_response = await provider.complete(
-            [ChatMessage(role="user", content='Sadece şu JSON\'u aynen döndür: {"tamam": true}')],
+            [
+                ChatMessage(
+                    role="user",
+                    content='Sadece şu JSON\'u aynen döndür: {"tamam": true}',
+                )
+            ],
             temperature=0.0,
             response_format=_JSON_RESPONSE_FORMAT,
         )
-        has_think_leak = "<think" in raw_response.content or "</think" in raw_response.content
+        has_think_leak = (
+            "<think" in raw_response.content or "</think" in raw_response.content
+        )
         try:
             json.loads(raw_response.content)
             valid_json = True
         except json.JSONDecodeError:
             valid_json = False
 
-        intent, _ = await parse_intent(provider, "İzmit'te ucuz bir dişçi istiyorum", date.today())
+        intent, _ = await parse_intent(
+            provider, "İzmit'te ucuz bir dişçi istiyorum", date.today()
+        )
         intent_ok = bool(intent.semantic_query)
 
-        passed = raw_response.provider == "ollama" and not has_think_leak and valid_json and intent_ok
+        passed = (
+            raw_response.provider == "ollama"
+            and not has_think_leak
+            and valid_json
+            and intent_ok
+        )
         error = None
     except Exception as e:  # noqa: BLE001
         passed = False
@@ -195,8 +231,12 @@ async def _scenario_llm_enabled_false_kill_switch_propagates_raw_failure() -> di
 # --- Embedding senaryoları ---
 
 
-async def _scenario_embedding_full_stack_baseline(embedding_provider: EmbeddingProvider) -> dict:
-    [vector] = await embedding_provider.embed_batch(["gerçek embedding fallback baseline testi"])
+async def _scenario_embedding_full_stack_baseline(
+    embedding_provider: EmbeddingProvider,
+) -> dict:
+    [vector] = await embedding_provider.embed_batch(
+        ["gerçek embedding fallback baseline testi"]
+    )
     passed = embedding_provider.name == "openai" and len(vector) == 1536
     return _record(
         "embedding_full_stack_baseline",
@@ -233,7 +273,9 @@ async def _scenario_embedding_forced_primary_failure_uses_real_ollama() -> dict:
     )
 
 
-async def _scenario_embedding_enabled_false_kill_switch_propagates_raw_failure() -> dict:
+async def _scenario_embedding_enabled_false_kill_switch_propagates_raw_failure() -> (
+    dict
+):
     from backend.services.embedding import EmbeddingServiceError
 
     primary = _UnreachableOpenAIEmbedding()
@@ -261,7 +303,9 @@ async def _scenario_embedding_enabled_false_kill_switch_propagates_raw_failure()
 
 async def _scenario_close_sequence_does_not_raise() -> dict:
     llm_provider = FallbackLLMProvider(OpenAILLM(), OllamaLLM(), enabled=True)
-    embedding_provider = FallbackEmbeddingProvider(OpenAIEmbedding(), OllamaEmbedding(), enabled=True)
+    embedding_provider = FallbackEmbeddingProvider(
+        OpenAIEmbedding(), OllamaEmbedding(), enabled=True
+    )
 
     try:
         await llm_provider.close()
@@ -294,12 +338,16 @@ def _write_result(scenarios: list[dict], label: str | None) -> Path:
         "basarisiz_senaryo": len(scenarios) - passed_count,
         "scenarios": scenarios,
     }
-    output_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+    output_path.write_text(
+        json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8"
+    )
     return output_path
 
 
 async def main(label: str | None = None) -> None:
-    logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
+    logging.basicConfig(
+        level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s"
+    )
 
     scenarios: list[dict] = []
 
@@ -312,12 +360,22 @@ async def main(label: str | None = None) -> None:
 
         scenarios.append(await _scenario_llm_full_stack_baseline(llm_provider))
         scenarios.append(await _scenario_llm_forced_primary_failure_uses_real_ollama())
-        scenarios.append(await _scenario_llm_fallback_intent_parsing_produces_clean_json())
-        scenarios.append(await _scenario_llm_enabled_false_kill_switch_propagates_raw_failure())
+        scenarios.append(
+            await _scenario_llm_fallback_intent_parsing_produces_clean_json()
+        )
+        scenarios.append(
+            await _scenario_llm_enabled_false_kill_switch_propagates_raw_failure()
+        )
 
-        scenarios.append(await _scenario_embedding_full_stack_baseline(embedding_provider))
-        scenarios.append(await _scenario_embedding_forced_primary_failure_uses_real_ollama())
-        scenarios.append(await _scenario_embedding_enabled_false_kill_switch_propagates_raw_failure())
+        scenarios.append(
+            await _scenario_embedding_full_stack_baseline(embedding_provider)
+        )
+        scenarios.append(
+            await _scenario_embedding_forced_primary_failure_uses_real_ollama()
+        )
+        scenarios.append(
+            await _scenario_embedding_enabled_false_kill_switch_propagates_raw_failure()
+        )
 
         scenarios.append(await _scenario_close_sequence_does_not_raise())
 
@@ -327,7 +385,11 @@ async def main(label: str | None = None) -> None:
         for key in new_keys:
             if await redis_client.delete(key):
                 deleted += 1
-        logger.info("Temizlik: bu çalıştırmada oluşan %d/%d anahtar silindi.", deleted, len(new_keys))
+        logger.info(
+            "Temizlik: bu çalıştırmada oluşan %d/%d anahtar silindi.",
+            deleted,
+            len(new_keys),
+        )
 
     output_path = _write_result(scenarios, label)
     passed_count = sum(1 for s in scenarios if s["passed"])
@@ -337,7 +399,12 @@ async def main(label: str | None = None) -> None:
 
 def _parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("label", nargs="?", default=None, help="Sonuç dosyasının adına eklenecek opsiyonel etiket")
+    parser.add_argument(
+        "label",
+        nargs="?",
+        default=None,
+        help="Sonuç dosyasının adına eklenecek opsiyonel etiket",
+    )
     return parser.parse_args()
 
 

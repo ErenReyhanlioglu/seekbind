@@ -56,7 +56,9 @@ class _FakeRedis:
         if self._fail:
             raise RedisError("bağlantı hatası")
         self.mget_calls.append(list(keys))
-        return [self._store[k].encode("utf-8") if k in self._store else None for k in keys]
+        return [
+            self._store[k].encode("utf-8") if k in self._store else None for k in keys
+        ]
 
     async def set(self, key: str, value: str, ex: int | None = None) -> None:
         if self._fail:
@@ -122,10 +124,14 @@ class _FakeLLMProvider:
 # --- CachedEmbeddingProvider ---
 
 
-async def test_embed_batch_returns_empty_list_without_touching_redis_for_empty_input() -> None:
+async def test_embed_batch_returns_empty_list_without_touching_redis_for_empty_input() -> (
+    None
+):
     redis = _FakeRedis()
     inner = _FakeEmbeddingProvider()
-    provider = CachedEmbeddingProvider(inner, cast(Redis, redis), enabled=True, ttl_seconds=_TTL_SECONDS)
+    provider = CachedEmbeddingProvider(
+        inner, cast(Redis, redis), enabled=True, ttl_seconds=_TTL_SECONDS
+    )
 
     result = await provider.embed_batch([])
 
@@ -137,7 +143,9 @@ async def test_embed_batch_returns_empty_list_without_touching_redis_for_empty_i
 async def test_embed_batch_calls_inner_on_first_call_then_serves_from_cache() -> None:
     redis = _FakeRedis()
     inner = _FakeEmbeddingProvider()
-    provider = CachedEmbeddingProvider(inner, cast(Redis, redis), enabled=True, ttl_seconds=_TTL_SECONDS)
+    provider = CachedEmbeddingProvider(
+        inner, cast(Redis, redis), enabled=True, ttl_seconds=_TTL_SECONDS
+    )
 
     first = await provider.embed_batch(["ucuz dişçi"])
     second = await provider.embed_batch(["ucuz dişçi"])
@@ -149,7 +157,9 @@ async def test_embed_batch_calls_inner_on_first_call_then_serves_from_cache() ->
 async def test_embed_batch_only_calls_inner_for_cache_miss_subset() -> None:
     redis = _FakeRedis()
     inner = _FakeEmbeddingProvider()
-    provider = CachedEmbeddingProvider(inner, cast(Redis, redis), enabled=True, ttl_seconds=_TTL_SECONDS)
+    provider = CachedEmbeddingProvider(
+        inner, cast(Redis, redis), enabled=True, ttl_seconds=_TTL_SECONDS
+    )
 
     await provider.embed_batch(["eski metin"])
     inner.call_count = 0  # ilk çağrının sayacını sıfırla, sadece ikinci çağrıyı ölç
@@ -168,8 +178,12 @@ async def test_embed_batch_uses_separate_cache_namespace_per_model() -> None:
     inner_small = _FakeEmbeddingProvider()
     inner_large = _FakeEmbeddingProvider()
     inner_large.model = "text-embedding-3-large"
-    provider_small = CachedEmbeddingProvider(inner_small, cast(Redis, redis), enabled=True, ttl_seconds=_TTL_SECONDS)
-    provider_large = CachedEmbeddingProvider(inner_large, cast(Redis, redis), enabled=True, ttl_seconds=_TTL_SECONDS)
+    provider_small = CachedEmbeddingProvider(
+        inner_small, cast(Redis, redis), enabled=True, ttl_seconds=_TTL_SECONDS
+    )
+    provider_large = CachedEmbeddingProvider(
+        inner_large, cast(Redis, redis), enabled=True, ttl_seconds=_TTL_SECONDS
+    )
 
     await provider_small.embed_batch(["aynı metin"])
     await provider_large.embed_batch(["aynı metin"])
@@ -181,7 +195,9 @@ async def test_embed_batch_uses_separate_cache_namespace_per_model() -> None:
 async def test_embed_batch_bypasses_redis_when_disabled() -> None:
     redis = _FakeRedis()
     inner = _FakeEmbeddingProvider()
-    provider = CachedEmbeddingProvider(inner, cast(Redis, redis), enabled=False, ttl_seconds=_TTL_SECONDS)
+    provider = CachedEmbeddingProvider(
+        inner, cast(Redis, redis), enabled=False, ttl_seconds=_TTL_SECONDS
+    )
 
     await provider.embed_batch(["ucuz dişçi"])
     await provider.embed_batch(["ucuz dişçi"])
@@ -194,7 +210,9 @@ async def test_embed_batch_bypasses_redis_when_disabled() -> None:
 async def test_embed_batch_falls_back_to_inner_when_redis_read_fails() -> None:
     redis = _FakeRedis(fail=True)
     inner = _FakeEmbeddingProvider()
-    provider = CachedEmbeddingProvider(inner, cast(Redis, redis), enabled=True, ttl_seconds=_TTL_SECONDS)
+    provider = CachedEmbeddingProvider(
+        inner, cast(Redis, redis), enabled=True, ttl_seconds=_TTL_SECONDS
+    )
 
     result = await provider.embed_batch(["ucuz dişçi"])
 
@@ -205,7 +223,9 @@ async def test_embed_batch_falls_back_to_inner_when_redis_read_fails() -> None:
 async def test_embed_batch_properties_delegate_to_inner() -> None:
     redis = _FakeRedis()
     inner = _FakeEmbeddingProvider()
-    provider = CachedEmbeddingProvider(inner, cast(Redis, redis), enabled=True, ttl_seconds=_TTL_SECONDS)
+    provider = CachedEmbeddingProvider(
+        inner, cast(Redis, redis), enabled=True, ttl_seconds=_TTL_SECONDS
+    )
 
     assert provider.name == inner.name
     assert provider.model == inner.model
@@ -218,7 +238,9 @@ async def test_embed_batch_properties_delegate_to_inner() -> None:
 async def test_complete_calls_inner_on_first_call_then_serves_from_cache() -> None:
     redis = _FakeRedis()
     inner = _FakeLLMProvider()
-    provider = CachedLLMProvider(inner, cast(Redis, redis), enabled=True, ttl_seconds=_TTL_SECONDS)
+    provider = CachedLLMProvider(
+        inner, cast(Redis, redis), enabled=True, ttl_seconds=_TTL_SECONDS
+    )
     messages = [ChatMessage(role="user", content="ucuz dişçi bul")]
 
     first = await provider.complete(messages, temperature=0.0)
@@ -237,7 +259,9 @@ async def test_complete_calls_inner_on_first_call_then_serves_from_cache() -> No
 async def test_complete_uses_separate_cache_key_per_temperature() -> None:
     redis = _FakeRedis()
     inner = _FakeLLMProvider()
-    provider = CachedLLMProvider(inner, cast(Redis, redis), enabled=True, ttl_seconds=_TTL_SECONDS)
+    provider = CachedLLMProvider(
+        inner, cast(Redis, redis), enabled=True, ttl_seconds=_TTL_SECONDS
+    )
     messages = [ChatMessage(role="user", content="ucuz dişçi bul")]
 
     await provider.complete(messages, temperature=0.0)
@@ -252,7 +276,9 @@ async def test_complete_bypasses_redis_when_disabled() -> None:
     kanıtlamış olurdu, gerçek `enabled` kontrolüne hiç dokunmadan geçerdi."""
     redis = _FakeRedis()
     inner = _FakeLLMProvider()
-    provider = CachedLLMProvider(inner, cast(Redis, redis), enabled=False, ttl_seconds=_TTL_SECONDS)
+    provider = CachedLLMProvider(
+        inner, cast(Redis, redis), enabled=False, ttl_seconds=_TTL_SECONDS
+    )
     messages = [ChatMessage(role="user", content="ucuz dişçi bul")]
 
     await provider.complete(messages, temperature=0.0)
@@ -269,7 +295,9 @@ async def test_complete_falls_back_to_inner_when_redis_read_fails() -> None:
     gerçekte hiç test etmeyen boş (vacuous) bir test olurdu."""
     redis = _FakeRedis(fail=True)
     inner = _FakeLLMProvider()
-    provider = CachedLLMProvider(inner, cast(Redis, redis), enabled=True, ttl_seconds=_TTL_SECONDS)
+    provider = CachedLLMProvider(
+        inner, cast(Redis, redis), enabled=True, ttl_seconds=_TTL_SECONDS
+    )
     messages = [ChatMessage(role="user", content="ucuz dişçi bul")]
 
     response = await provider.complete(messages, temperature=0.0)
@@ -285,7 +313,9 @@ async def test_complete_bypasses_cache_for_non_deterministic_temperature() -> No
     testi (bkz. cache.py modül docstring'i)."""
     redis = _FakeRedis()
     inner = _FakeLLMProvider()
-    provider = CachedLLMProvider(inner, cast(Redis, redis), enabled=True, ttl_seconds=_TTL_SECONDS)
+    provider = CachedLLMProvider(
+        inner, cast(Redis, redis), enabled=True, ttl_seconds=_TTL_SECONDS
+    )
     messages = [ChatMessage(role="user", content="ucuz dişçi bul")]
 
     first = await provider.complete(messages, temperature=0.7)
@@ -301,7 +331,9 @@ async def test_complete_bypasses_cache_for_non_deterministic_temperature() -> No
 async def test_complete_properties_and_close_delegate_to_inner() -> None:
     redis = _FakeRedis()
     inner = _FakeLLMProvider()
-    provider = CachedLLMProvider(inner, cast(Redis, redis), enabled=True, ttl_seconds=_TTL_SECONDS)
+    provider = CachedLLMProvider(
+        inner, cast(Redis, redis), enabled=True, ttl_seconds=_TTL_SECONDS
+    )
 
     assert provider.name == inner.name
     assert provider.model == inner.model
@@ -316,7 +348,9 @@ async def test_complete_never_mutates_the_original_cached_response() -> None:
     token'lı görünürdü."""
     redis = _FakeRedis()
     inner = _FakeLLMProvider()
-    provider = CachedLLMProvider(inner, cast(Redis, redis), enabled=True, ttl_seconds=_TTL_SECONDS)
+    provider = CachedLLMProvider(
+        inner, cast(Redis, redis), enabled=True, ttl_seconds=_TTL_SECONDS
+    )
     messages = [ChatMessage(role="user", content="test")]
 
     await provider.complete(messages, temperature=0.0)

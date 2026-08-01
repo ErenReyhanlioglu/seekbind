@@ -33,15 +33,23 @@ def test_get_engine_uses_database_url_and_debug_from_settings(monkeypatch) -> No
         engine = get_engine()
 
         assert engine is fake_engine
-        fake_create_engine.assert_called_once_with("postgresql+asyncpg://test", echo=True)
+        fake_create_engine.assert_called_once_with(
+            "postgresql+asyncpg://test", echo=True
+        )
     finally:
         get_engine.cache_clear()
 
 
 def test_get_engine_returns_same_instance_on_repeated_calls(monkeypatch) -> None:
     get_engine.cache_clear()
-    monkeypatch.setattr(session_module, "get_settings", lambda: MagicMock(database_url="x", debug=False))
-    monkeypatch.setattr(session_module, "create_async_engine", MagicMock(side_effect=lambda *a, **k: MagicMock()))
+    monkeypatch.setattr(
+        session_module, "get_settings", lambda: MagicMock(database_url="x", debug=False)
+    )
+    monkeypatch.setattr(
+        session_module,
+        "create_async_engine",
+        MagicMock(side_effect=lambda *a, **k: MagicMock()),
+    )
 
     try:
         assert get_engine() is get_engine()
@@ -49,7 +57,9 @@ def test_get_engine_returns_same_instance_on_repeated_calls(monkeypatch) -> None
         get_engine.cache_clear()
 
 
-def test_get_session_factory_uses_engine_and_expire_on_commit_false(monkeypatch) -> None:
+def test_get_session_factory_uses_engine_and_expire_on_commit_false(
+    monkeypatch,
+) -> None:
     get_session_factory.cache_clear()
     fake_engine = MagicMock()
     monkeypatch.setattr(session_module, "get_engine", lambda: fake_engine)
@@ -61,15 +71,23 @@ def test_get_session_factory_uses_engine_and_expire_on_commit_false(monkeypatch)
         factory = get_session_factory()
 
         assert factory is fake_factory
-        fake_async_sessionmaker.assert_called_once_with(fake_engine, expire_on_commit=False)
+        fake_async_sessionmaker.assert_called_once_with(
+            fake_engine, expire_on_commit=False
+        )
     finally:
         get_session_factory.cache_clear()
 
 
-def test_get_session_factory_returns_same_instance_on_repeated_calls(monkeypatch) -> None:
+def test_get_session_factory_returns_same_instance_on_repeated_calls(
+    monkeypatch,
+) -> None:
     get_session_factory.cache_clear()
     monkeypatch.setattr(session_module, "get_engine", lambda: MagicMock())
-    monkeypatch.setattr(session_module, "async_sessionmaker", MagicMock(side_effect=lambda *a, **k: MagicMock()))
+    monkeypatch.setattr(
+        session_module,
+        "async_sessionmaker",
+        MagicMock(side_effect=lambda *a, **k: MagicMock()),
+    )
 
     try:
         assert get_session_factory() is get_session_factory()
@@ -80,7 +98,9 @@ def test_get_session_factory_returns_same_instance_on_repeated_calls(monkeypatch
 async def test_get_db_session_commits_on_success(monkeypatch) -> None:
     fake_session = AsyncMock()
     monkeypatch.setattr(
-        session_module, "get_session_factory", lambda: (lambda: _FakeSessionContextManager(fake_session))
+        session_module,
+        "get_session_factory",
+        lambda: (lambda: _FakeSessionContextManager(fake_session)),
     )
 
     async for session in get_db_session():
@@ -96,7 +116,9 @@ async def test_get_db_session_rolls_back_and_reraises_on_exception(monkeypatch) 
     (bkz. get_db_session'ın docstring'i)."""
     fake_session = AsyncMock()
     monkeypatch.setattr(
-        session_module, "get_session_factory", lambda: (lambda: _FakeSessionContextManager(fake_session))
+        session_module,
+        "get_session_factory",
+        lambda: (lambda: _FakeSessionContextManager(fake_session)),
     )
 
     generator = get_db_session()

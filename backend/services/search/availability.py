@@ -36,7 +36,9 @@ class DateAvailabilityFilter(BaseModel):
     time_of_day: TimeOfDay | None = None
 
 
-def _availability_time_range(availability: DateAvailabilityFilter) -> tuple[datetime, datetime]:
+def _availability_time_range(
+    availability: DateAvailabilityFilter,
+) -> tuple[datetime, datetime]:
     """DateAvailabilityFilter'dan sorgu için (başlangıç, bitiş) datetime aralığını üretir.
 
     appointment_slots.start_time timezone-aware bir kolon ama generate_slots

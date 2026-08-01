@@ -17,7 +17,9 @@ from backend.db.models import AppointmentSlot, Business, UserProfile
 DEFAULT_CATEGORY = "Diş Kliniği"
 
 
-async def create_business(session: AsyncSession, *, category: str = DEFAULT_CATEGORY) -> Business:
+async def create_business(
+    session: AsyncSession, *, category: str = DEFAULT_CATEGORY
+) -> Business:
     business = Business(
         place_id=f"integration-test-{uuid4()}",
         title="Entegrasyon Test İşletmesi",
@@ -33,15 +35,23 @@ async def create_business(session: AsyncSession, *, category: str = DEFAULT_CATE
 
 
 async def create_slot(
-    session: AsyncSession, business_id: int, start_time: datetime, *, is_booked: bool = False
+    session: AsyncSession,
+    business_id: int,
+    start_time: datetime,
+    *,
+    is_booked: bool = False,
 ) -> AppointmentSlot:
-    slot = AppointmentSlot(business_id=business_id, start_time=start_time, is_booked=is_booked)
+    slot = AppointmentSlot(
+        business_id=business_id, start_time=start_time, is_booked=is_booked
+    )
     session.add(slot)
     await session.flush()
     return slot
 
 
-async def create_user(session: AsyncSession, name: str = "Entegrasyon Test Kullanıcısı") -> UserProfile:
+async def create_user(
+    session: AsyncSession, name: str = "Entegrasyon Test Kullanıcısı"
+) -> UserProfile:
     user = UserProfile(name=name)
     session.add(user)
     await session.flush()

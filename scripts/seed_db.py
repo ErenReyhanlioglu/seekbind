@@ -44,7 +44,10 @@ def load_enriched_records(path: Path) -> list[ProcessedBusinessRecord]:
 
 async def seed_business_types(session: AsyncSession) -> None:
     """business_types tablosunu toplu upsert ile doldurur (27 sabit satır)."""
-    rows = [{"name": name, "category_group": group} for name, group in get_type_to_category_group().items()]
+    rows = [
+        {"name": name, "category_group": group}
+        for name, group in get_type_to_category_group().items()
+    ]
     stmt = pg_insert(BusinessType).values(rows)
     stmt = stmt.on_conflict_do_update(
         index_elements=[BusinessType.name],
@@ -88,22 +91,30 @@ def _business_row(record: ProcessedBusinessRecord) -> dict:
         "keywords": record.keywords,
         "working_hours": record.working_hours.model_dump(),
         "rich_description": record.rich_description,
-        "search_vector": func.to_tsvector(SEARCH_VECTOR_LANGUAGE, _build_search_text(record)),
+        "search_vector": func.to_tsvector(
+            SEARCH_VECTOR_LANGUAGE, _build_search_text(record)
+        ),
     }
 
 
-async def seed_businesses(session: AsyncSession, records: list[ProcessedBusinessRecord]) -> dict[str, int]:
+async def seed_businesses(
+    session: AsyncSession, records: list[ProcessedBusinessRecord]
+) -> dict[str, int]:
     """businesses tablosunu toplu upsert ile doldurur, place_id -> id eşlemesini döner."""
     rows = [_business_row(record) for record in records]
     stmt = pg_insert(Business).values(rows)
 
     skip_on_update = {"id", "place_id", "created_at", "updated_at"}
     update_columns = {
-        col.name: stmt.excluded[col.name] for col in Business.__table__.columns if col.name not in skip_on_update
+        col.name: stmt.excluded[col.name]
+        for col in Business.__table__.columns
+        if col.name not in skip_on_update
     }
     update_columns["updated_at"] = func.now()
 
-    stmt = stmt.on_conflict_do_update(index_elements=[Business.place_id], set_=update_columns)
+    stmt = stmt.on_conflict_do_update(
+        index_elements=[Business.place_id], set_=update_columns
+    )
     stmt = stmt.returning(Business.id, Business.place_id)
 
     result = await session.execute(stmt)
@@ -145,7 +156,9 @@ async def seed_appointment_slots(
 
 async def main() -> None:
     """data/processed/businesses_enriched.jsonl'ı okuyup Postgres'e yükler."""
-    logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
+    logging.basicConfig(
+        level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s"
+    )
 
     records = load_enriched_records(INPUT_FILE_PATH)
     logger.info("%d kayıt okundu, Postgres'e yükleniyor", len(records))
@@ -155,13 +168,19 @@ async def main() -> None:
         try:
             await seed_business_types(session)
             place_id_to_business_id = await seed_businesses(session, records)
-            slot_count = await seed_appointment_slots(session, records, place_id_to_business_id)
+            slot_count = await seed_appointment_slots(
+                session, records, place_id_to_business_id
+            )
             await session.commit()
         except Exception:
             await session.rollback()
             raise
 
-    logger.info("Tamamlandı. %d işletme, %d slot yüklendi", len(place_id_to_business_id), slot_count)
+    logger.info(
+        "Tamamlandı. %d işletme, %d slot yüklendi",
+        len(place_id_to_business_id),
+        slot_count,
+    )
 
 
 if __name__ == "__main__":

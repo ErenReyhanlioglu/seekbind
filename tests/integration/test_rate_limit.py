@@ -22,7 +22,9 @@ _TEST_RATE_LIMIT: int = 3
 
 
 @pytest.fixture
-async def isolated_client(api_client: httpx.AsyncClient) -> AsyncGenerator[httpx.AsyncClient, None]:
+async def isolated_client(
+    api_client: httpx.AsyncClient,
+) -> AsyncGenerator[httpx.AsyncClient, None]:
     """`api_client`'ı sadece `lifespan()`'ın zaten aktif olduğundan emin olmak
     için fixture bağımlılığı olarak alıyor — `lifespan()`'ı ikinci kez
     girmiyor, sadece kendi izole IP'sine sahip ayrı bir transport kuruyor."""
@@ -36,11 +38,15 @@ def low_rate_limit(monkeypatch: pytest.MonkeyPatch) -> None:
     """`rate_limit_per_minute`'u teste özgü düşük bir değere indirir —
     gerçek prod limitine (60) ulaşmak için onlarca gerçek istek atmak yerine."""
     real_settings = get_settings()
-    fake_settings = real_settings.model_copy(update={"rate_limit_per_minute": _TEST_RATE_LIMIT})
+    fake_settings = real_settings.model_copy(
+        update={"rate_limit_per_minute": _TEST_RATE_LIMIT}
+    )
     monkeypatch.setattr(rate_limit_module, "get_settings", lambda: fake_settings)
 
 
-async def test_requests_under_limit_succeed(isolated_client: httpx.AsyncClient, low_rate_limit: None) -> None:
+async def test_requests_under_limit_succeed(
+    isolated_client: httpx.AsyncClient, low_rate_limit: None
+) -> None:
     for _ in range(_TEST_RATE_LIMIT):
         response = await isolated_client.get("/health")
         assert response.status_code == 200

@@ -25,7 +25,12 @@ from backend.services.rag.service import (
     _build_trace_tags,
     get_recommendation,
 )
-from backend.services.search import BM25Index, DateAvailabilityFilter, RerankerProvider, SearchFilters
+from backend.services.search import (
+    BM25Index,
+    DateAvailabilityFilter,
+    RerankerProvider,
+    SearchFilters,
+)
 
 _TODAY = date(2026, 7, 28)
 
@@ -100,7 +105,9 @@ _VALID_INTENT_JSON = '{"semantic_query": "dişçi", "category": "Diş Kliniği"}
 _MALFORMED_JSON = "bu JSON değil"
 
 
-async def test_get_recommendation_calls_search_providers_with_parsed_filters_on_success(monkeypatch) -> None:
+async def test_get_recommendation_calls_search_providers_with_parsed_filters_on_success(
+    monkeypatch,
+) -> None:
     captured: dict = {}
 
     async def fake_search_providers(**kwargs):
@@ -126,7 +133,9 @@ async def test_get_recommendation_calls_search_providers_with_parsed_filters_on_
     assert captured["filters"].category == "Diş Kliniği"
 
 
-async def test_get_recommendation_skips_generation_when_injection_detected(monkeypatch) -> None:
+async def test_get_recommendation_skips_generation_when_injection_detected(
+    monkeypatch,
+) -> None:
     """Bkz. ADR-0025 — injection tespit edilirse generate_recommendation()
     (öneri üretimi, ikinci LLM çağrısı) hiç çağrılmamalı, sabit
     RECOMMENDATION_FALLBACK_MESSAGE'a atlanmalı. Intent parsing (ilk çağrı)
@@ -158,7 +167,9 @@ async def test_get_recommendation_skips_generation_when_injection_detected(monke
     assert llm.call_count == 1
 
 
-async def test_get_recommendation_passes_rating_preference_through_to_search_providers(monkeypatch) -> None:
+async def test_get_recommendation_passes_rating_preference_through_to_search_providers(
+    monkeypatch,
+) -> None:
     """ADR-0015: intent'in rating_preference'ı search_providers()'a ayrı bir
     parametre olarak ulaşmalı — SearchFilters'a değil, çünkü Qdrant'a
     çevrilen bir şey değil, sadece post-rerank bir sıralama sinyali."""
@@ -188,7 +199,9 @@ async def test_get_recommendation_passes_rating_preference_through_to_search_pro
     assert captured["rating_preference"] == "low"
 
 
-async def test_get_recommendation_passes_rating_preference_to_recommendation_generation(monkeypatch) -> None:
+async def test_get_recommendation_passes_rating_preference_to_recommendation_generation(
+    monkeypatch,
+) -> None:
     """rating_preference sadece search_providers()'a değil, generate_recommendation()'a
     da ulaşmalı — yoksa öneri metni, puana göre sıralanmış sonuçları alaka
     sırasıymış gibi yorumlayıp düşük puanlı bir sonucu yüksekmiş gibi
@@ -198,12 +211,16 @@ async def test_get_recommendation_passes_rating_preference_to_recommendation_gen
     async def fake_search_providers(**kwargs):
         return SearchResponse(results=[_make_result(1)], total=1)
 
-    async def fake_generate_recommendation(llm_provider, raw_query, results, rating_preference=None):
+    async def fake_generate_recommendation(
+        llm_provider, raw_query, results, rating_preference=None
+    ):
         captured["rating_preference"] = rating_preference
         return "öneri metni"
 
     monkeypatch.setattr(rag_service, "search_providers", fake_search_providers)
-    monkeypatch.setattr(rag_service, "generate_recommendation", fake_generate_recommendation)
+    monkeypatch.setattr(
+        rag_service, "generate_recommendation", fake_generate_recommendation
+    )
     llm = _FakeLLMProvider(['{"semantic_query": "dişçi", "rating_preference": "low"}'])
 
     await get_recommendation(
@@ -221,7 +238,9 @@ async def test_get_recommendation_passes_rating_preference_to_recommendation_gen
     assert captured["rating_preference"] == "low"
 
 
-async def test_get_recommendation_resolves_distance_reference_when_near_me_true(monkeypatch) -> None:
+async def test_get_recommendation_resolves_distance_reference_when_near_me_true(
+    monkeypatch,
+) -> None:
     """intent'te near_me true çıkarsa, kullanıcının referans konumu
     search_providers()'a distance_reference olarak ulaşmalı."""
     captured: dict = {}
@@ -231,8 +250,14 @@ async def test_get_recommendation_resolves_distance_reference_when_near_me_true(
         return SearchResponse(results=[_make_result(1)], total=1)
 
     monkeypatch.setattr(rag_service, "search_providers", fake_search_providers)
-    monkeypatch.setattr(rag_service, "get_user_reference_location", AsyncMock(return_value=(40.77, 29.92)))
-    llm = _FakeLLMProvider(['{"semantic_query": "yakınımda dişçi", "near_me": true}', "öneri metni"])
+    monkeypatch.setattr(
+        rag_service,
+        "get_user_reference_location",
+        AsyncMock(return_value=(40.77, 29.92)),
+    )
+    llm = _FakeLLMProvider(
+        ['{"semantic_query": "yakınımda dişçi", "near_me": true}', "öneri metni"]
+    )
 
     await get_recommendation(
         session=_SESSION,
@@ -249,7 +274,9 @@ async def test_get_recommendation_resolves_distance_reference_when_near_me_true(
     assert captured["distance_reference"] == (40.77, 29.92)
 
 
-async def test_get_recommendation_leaves_distance_reference_none_when_near_me_false(monkeypatch) -> None:
+async def test_get_recommendation_leaves_distance_reference_none_when_near_me_false(
+    monkeypatch,
+) -> None:
     captured: dict = {}
 
     async def fake_search_providers(**kwargs):
@@ -274,7 +301,9 @@ async def test_get_recommendation_leaves_distance_reference_none_when_near_me_fa
     assert captured["distance_reference"] is None
 
 
-async def test_get_recommendation_falls_back_to_raw_query_and_empty_filters_on_malformed_json(monkeypatch) -> None:
+async def test_get_recommendation_falls_back_to_raw_query_and_empty_filters_on_malformed_json(
+    monkeypatch,
+) -> None:
     captured: dict = {}
 
     async def fake_search_providers(**kwargs):
@@ -302,7 +331,9 @@ async def test_get_recommendation_falls_back_to_raw_query_and_empty_filters_on_m
     assert captured["rating_preference"] is None
 
 
-async def test_get_recommendation_skips_recommendation_call_when_search_results_empty(monkeypatch) -> None:
+async def test_get_recommendation_skips_recommendation_call_when_search_results_empty(
+    monkeypatch,
+) -> None:
     async def fake_search_providers(**kwargs):
         return SearchResponse(results=[], total=0)
 
@@ -334,6 +365,7 @@ async def test_get_recommendation_falls_back_to_templated_message_when_recommend
         return SearchResponse(results=[_make_result(1)], total=1)
 
     monkeypatch.setattr(rag_service, "search_providers", fake_search_providers)
+
     # 2. çağrı (öneri üretimi) için de geçersiz olmayan bir içerik veriyoruz
     # ama LLMServiceError fırlatan bir fake ile ayrı test etmek yerine,
     # burada gerçek hata senaryosunu generate_recommendation'ın kendi
@@ -341,8 +373,14 @@ async def test_get_recommendation_falls_back_to_templated_message_when_recommend
     # başarısız olmasıyla simüle ediyoruz.
     class _FailingSecondCallLLM(_FakeLLMProvider):
         async def complete(
-            self, messages, *, temperature=0.7, max_tokens=None, response_format=None,
-            langfuse_name=None, langfuse_metadata=None,
+            self,
+            messages,
+            *,
+            temperature=0.7,
+            max_tokens=None,
+            response_format=None,
+            langfuse_name=None,
+            langfuse_metadata=None,
         ):
             if self.call_count == 1:
                 from backend.services.llm import LLMServiceError
@@ -376,12 +414,16 @@ async def test_get_recommendation_falls_back_to_templated_message_when_recommend
     assert len(response.results) == 1
 
 
-async def test_get_recommendation_returns_full_pipeline_result_on_success(monkeypatch) -> None:
+async def test_get_recommendation_returns_full_pipeline_result_on_success(
+    monkeypatch,
+) -> None:
     async def fake_search_providers(**kwargs):
         return SearchResponse(results=[_make_result(1), _make_result(2)], total=2)
 
     monkeypatch.setattr(rag_service, "search_providers", fake_search_providers)
-    llm = _FakeLLMProvider([_VALID_INTENT_JSON, "Size iki güzel diş kliniği önerebilirim."])
+    llm = _FakeLLMProvider(
+        [_VALID_INTENT_JSON, "Size iki güzel diş kliniği önerebilirim."]
+    )
 
     response = await get_recommendation(
         session=_SESSION,
@@ -400,7 +442,9 @@ async def test_get_recommendation_returns_full_pipeline_result_on_success(monkey
     assert len(response.results) == 2
 
 
-async def test_get_recommendation_passes_limit_and_offset_through_to_search_providers(monkeypatch) -> None:
+async def test_get_recommendation_passes_limit_and_offset_through_to_search_providers(
+    monkeypatch,
+) -> None:
     captured: dict = {}
 
     async def fake_search_providers(**kwargs):
@@ -429,7 +473,13 @@ async def test_get_recommendation_passes_limit_and_offset_through_to_search_prov
 
 
 def test_build_trace_metadata_includes_all_filter_fields() -> None:
-    filters = SearchFilters(min_price=100, max_price=500, gender="unisex", category="Diş Kliniği", online_only=True)
+    filters = SearchFilters(
+        min_price=100,
+        max_price=500,
+        gender="unisex",
+        category="Diş Kliniği",
+        online_only=True,
+    )
     availability = DateAvailabilityFilter(date=date(2026, 8, 1), time_of_day="morning")
 
     metadata = _build_trace_metadata(
@@ -494,7 +544,10 @@ def test_build_trace_metadata_handles_missing_availability() -> None:
 
 def test_build_trace_tags_includes_base_tag_only_when_nothing_failed() -> None:
     tags = _build_trace_tags(
-        intent_fallback=False, recommendation_fallback=False, prompt_injection_detected=False, empty_results=False
+        intent_fallback=False,
+        recommendation_fallback=False,
+        prompt_injection_detected=False,
+        empty_results=False,
     )
 
     assert tags == ["recommend"]
@@ -502,15 +555,26 @@ def test_build_trace_tags_includes_base_tag_only_when_nothing_failed() -> None:
 
 def test_build_trace_tags_adds_fallback_and_empty_results_tags() -> None:
     tags = _build_trace_tags(
-        intent_fallback=True, recommendation_fallback=True, prompt_injection_detected=False, empty_results=True
+        intent_fallback=True,
+        recommendation_fallback=True,
+        prompt_injection_detected=False,
+        empty_results=True,
     )
 
-    assert set(tags) == {"recommend", "intent_fallback", "recommendation_fallback", "empty_results"}
+    assert set(tags) == {
+        "recommend",
+        "intent_fallback",
+        "recommendation_fallback",
+        "empty_results",
+    }
 
 
 def test_build_trace_tags_adds_prompt_injection_suspected_tag() -> None:
     tags = _build_trace_tags(
-        intent_fallback=False, recommendation_fallback=False, prompt_injection_detected=True, empty_results=False
+        intent_fallback=False,
+        recommendation_fallback=False,
+        prompt_injection_detected=True,
+        empty_results=False,
     )
 
     assert set(tags) == {"recommend", "prompt_injection_suspected"}
@@ -522,7 +586,9 @@ async def test_get_recommendation_records_trace_on_success(monkeypatch) -> None:
 
     monkeypatch.setattr(rag_service, "search_providers", fake_search_providers)
     update_trace = MagicMock()
-    monkeypatch.setattr(rag_service.langfuse_context, "update_current_trace", update_trace)
+    monkeypatch.setattr(
+        rag_service.langfuse_context, "update_current_trace", update_trace
+    )
     llm = _FakeLLMProvider([_VALID_INTENT_JSON, "öneri metni"])
 
     await get_recommendation(
@@ -547,13 +613,17 @@ async def test_get_recommendation_records_trace_on_success(monkeypatch) -> None:
     assert call_kwargs["metadata"]["recommendation_fallback"] is False
 
 
-async def test_get_recommendation_records_intent_fallback_tag_on_malformed_json(monkeypatch) -> None:
+async def test_get_recommendation_records_intent_fallback_tag_on_malformed_json(
+    monkeypatch,
+) -> None:
     async def fake_search_providers(**kwargs):
         return SearchResponse(results=[_make_result(1)], total=1)
 
     monkeypatch.setattr(rag_service, "search_providers", fake_search_providers)
     update_trace = MagicMock()
-    monkeypatch.setattr(rag_service.langfuse_context, "update_current_trace", update_trace)
+    monkeypatch.setattr(
+        rag_service.langfuse_context, "update_current_trace", update_trace
+    )
     llm = _FakeLLMProvider([_MALFORMED_JSON, "öneri metni"])
 
     await get_recommendation(
@@ -573,13 +643,17 @@ async def test_get_recommendation_records_intent_fallback_tag_on_malformed_json(
     assert call_kwargs["metadata"]["intent_parsing_fallback"] is True
 
 
-async def test_get_recommendation_records_empty_results_tag_when_no_results(monkeypatch) -> None:
+async def test_get_recommendation_records_empty_results_tag_when_no_results(
+    monkeypatch,
+) -> None:
     async def fake_search_providers(**kwargs):
         return SearchResponse(results=[], total=0)
 
     monkeypatch.setattr(rag_service, "search_providers", fake_search_providers)
     update_trace = MagicMock()
-    monkeypatch.setattr(rag_service.langfuse_context, "update_current_trace", update_trace)
+    monkeypatch.setattr(
+        rag_service.langfuse_context, "update_current_trace", update_trace
+    )
     llm = _FakeLLMProvider([_VALID_INTENT_JSON])
 
     await get_recommendation(

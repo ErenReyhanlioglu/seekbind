@@ -16,14 +16,18 @@ from backend.db.models import UserProfile
 logger = logging.getLogger(__name__)
 
 
-async def get_user_reference_location(session: AsyncSession, user_id: int) -> tuple[float, float] | None:
+async def get_user_reference_location(
+    session: AsyncSession, user_id: int
+) -> tuple[float, float] | None:
     """Kullanıcının `UserProfile`'daki (latitude, longitude) çiftini döner.
 
     Profil yoksa ya da konum NULL ise sessizce None döner — çağıran bunu
     "mesafe sinyali uygulanamadı" olarak yorumlar, arama/rezervasyon
     çökmez.
     """
-    user = (await session.execute(select(UserProfile).where(UserProfile.id == user_id))).scalar_one_or_none()
+    user = (
+        await session.execute(select(UserProfile).where(UserProfile.id == user_id))
+    ).scalar_one_or_none()
     if user is None or user.latitude is None or user.longitude is None:
         logger.warning("user_id=%s için referans konum bulunamadı", user_id)
         return None

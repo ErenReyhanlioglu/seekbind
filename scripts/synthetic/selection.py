@@ -48,7 +48,9 @@ def _largest_remainder_counts(weights: dict[str, float], total: int) -> dict[str
     raw_counts = {key: weight * total for key, weight in weights.items()}
     counts = {key: int(value) for key, value in raw_counts.items()}
     remainder = total - sum(counts.values())
-    ranked = sorted(raw_counts, key=lambda key: raw_counts[key] - counts[key], reverse=True)
+    ranked = sorted(
+        raw_counts, key=lambda key: raw_counts[key] - counts[key], reverse=True
+    )
     for i in range(remainder):
         counts[ranked[i % len(ranked)]] += 1
     return counts
@@ -68,7 +70,9 @@ def assign_genders(raw_records: list[dict[str, Any]]) -> dict[str, str]:
 
     assignment: dict[str, str] = {}
     for type_normalized, place_ids in place_ids_by_type.items():
-        weights = GENDER_PREFERENCE_WEIGHTS.get(type_normalized, DEFAULT_GENDER_PREFERENCE_WEIGHTS)
+        weights = GENDER_PREFERENCE_WEIGHTS.get(
+            type_normalized, DEFAULT_GENDER_PREFERENCE_WEIGHTS
+        )
         counts = _largest_remainder_counts(weights, len(place_ids))
         labels = [gender for gender, count in counts.items() for _ in range(count)]
         random.shuffle(labels)

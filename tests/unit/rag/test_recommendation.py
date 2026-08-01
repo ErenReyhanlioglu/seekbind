@@ -4,7 +4,10 @@ import pytest
 
 from backend.api.schemas import ProviderResult
 from backend.services.llm import ChatMessage, LLMResponse, LLMServiceError
-from backend.services.rag.recommendation import RecommendationGenerationError, generate_recommendation
+from backend.services.rag.recommendation import (
+    RecommendationGenerationError,
+    generate_recommendation,
+)
 
 
 class _FakeLLMProvider:
@@ -51,7 +54,11 @@ class _FakeLLMProvider:
         pass
 
 
-def _make_result(business_id: int, title: str = "Diş Kliniği Alfa", weighted_rating: float | None = 4.4) -> ProviderResult:
+def _make_result(
+    business_id: int,
+    title: str = "Diş Kliniği Alfa",
+    weighted_rating: float | None = 4.4,
+) -> ProviderResult:
     return ProviderResult(
         id=business_id,
         title=title,
@@ -85,11 +92,17 @@ async def test_generate_recommendation_sends_langfuse_name_and_metadata() -> Non
     provider = _FakeLLMProvider(content="öneri metni")
 
     await generate_recommendation(
-        provider, "en kötü dişçi", [_make_result(1), _make_result(2)], rating_preference="low"
+        provider,
+        "en kötü dişçi",
+        [_make_result(1), _make_result(2)],
+        rating_preference="low",
     )
 
     assert provider.last_langfuse_name == "recommendation_generation"
-    assert provider.last_langfuse_metadata == {"result_count": 2, "rating_preference": "low"}
+    assert provider.last_langfuse_metadata == {
+        "result_count": 2,
+        "rating_preference": "low",
+    }
 
 
 async def test_generate_recommendation_does_not_request_json_response_format() -> None:
@@ -100,7 +113,9 @@ async def test_generate_recommendation_does_not_request_json_response_format() -
     assert provider.last_response_format is None
 
 
-async def test_generate_recommendation_raises_recommendation_generation_error_when_llm_fails() -> None:
+async def test_generate_recommendation_raises_recommendation_generation_error_when_llm_fails() -> (
+    None
+):
     provider = _FakeLLMProvider(error=LLMServiceError("zaman aşımı"))
 
     with pytest.raises(RecommendationGenerationError):
@@ -113,24 +128,32 @@ async def test_generate_recommendation_includes_weighted_rating_in_prompt() -> N
     bu sinyal, ham `rating` yerine kullanılıyor."""
     provider = _FakeLLMProvider(content="öneri metni")
 
-    await generate_recommendation(provider, "dişçi", [_make_result(1, weighted_rating=4.7)])
+    await generate_recommendation(
+        provider, "dişçi", [_make_result(1, weighted_rating=4.7)]
+    )
 
     assert provider.last_messages is not None
     user_message = provider.last_messages[-1].content
     assert "4.7/5" in user_message
 
 
-async def test_generate_recommendation_omits_rating_line_when_weighted_rating_missing() -> None:
+async def test_generate_recommendation_omits_rating_line_when_weighted_rating_missing() -> (
+    None
+):
     provider = _FakeLLMProvider(content="öneri metni")
 
-    await generate_recommendation(provider, "dişçi", [_make_result(1, weighted_rating=None)])
+    await generate_recommendation(
+        provider, "dişçi", [_make_result(1, weighted_rating=None)]
+    )
 
     assert provider.last_messages is not None
     user_message = provider.last_messages[-1].content
     assert "Puan:" not in user_message
 
 
-async def test_generate_recommendation_uses_relevance_ordering_context_by_default() -> None:
+async def test_generate_recommendation_uses_relevance_ordering_context_by_default() -> (
+    None
+):
     provider = _FakeLLMProvider(content="öneri metni")
 
     await generate_recommendation(provider, "dişçi", [_make_result(1)])
@@ -140,14 +163,18 @@ async def test_generate_recommendation_uses_relevance_ordering_context_by_defaul
     assert "en iyi eşleşmedir" in user_message
 
 
-async def test_generate_recommendation_uses_low_rating_ordering_context_when_preference_is_low() -> None:
+async def test_generate_recommendation_uses_low_rating_ordering_context_when_preference_is_low() -> (
+    None
+):
     """ADR-0015: rating_preference="low" iken prompt, sıranın alaka değil
     puan bazlı olduğunu ve ilk işletmenin EN DÜŞÜK puanlı olduğunu açıkça
     belirtmeli — yoksa LLM "ilk = en iyi eşleşme" varsayımıyla düşük puanlı
     sonucu yüksekmiş gibi övüyor (gerçek smoke test'te gözlemlendi)."""
     provider = _FakeLLMProvider(content="öneri metni")
 
-    await generate_recommendation(provider, "en kötü dişçi", [_make_result(1)], rating_preference="low")
+    await generate_recommendation(
+        provider, "en kötü dişçi", [_make_result(1)], rating_preference="low"
+    )
 
     assert provider.last_messages is not None
     user_message = provider.last_messages[-1].content
@@ -155,10 +182,14 @@ async def test_generate_recommendation_uses_low_rating_ordering_context_when_pre
     assert "en iyi eşleşmedir" not in user_message
 
 
-async def test_generate_recommendation_uses_high_rating_ordering_context_when_preference_is_high() -> None:
+async def test_generate_recommendation_uses_high_rating_ordering_context_when_preference_is_high() -> (
+    None
+):
     provider = _FakeLLMProvider(content="öneri metni")
 
-    await generate_recommendation(provider, "en iyi dişçi", [_make_result(1)], rating_preference="high")
+    await generate_recommendation(
+        provider, "en iyi dişçi", [_make_result(1)], rating_preference="high"
+    )
 
     assert provider.last_messages is not None
     user_message = provider.last_messages[-1].content
