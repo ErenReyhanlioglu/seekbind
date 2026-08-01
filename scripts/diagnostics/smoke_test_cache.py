@@ -37,7 +37,11 @@ from redis.asyncio import Redis
 from backend.db.redis import get_redis_client
 from backend.main import app, lifespan
 from backend.services.cache import CachedEmbeddingProvider, CachedLLMProvider
-from backend.services.embedding import EmbeddingProvider, OpenAIEmbedding, get_embedding_provider
+from backend.services.embedding import (
+    EmbeddingProvider,
+    OpenAIEmbedding,
+    get_embedding_provider,
+)
 from backend.services.llm import ChatMessage, LLMProvider, OpenAILLM, get_llm_provider
 from backend.services.rag.intent import parse_intent
 
@@ -47,7 +51,9 @@ RESULTS_DIR: Path = Path("evaluation/results/diagnostics/cache_smoke_test")
 # Windows dosya sisteminde ":" geçersiz — diğer smoke test'lerdeki aynı format.
 TIMESTAMP_FORMAT: str = "%Y-%m-%dT%H-%M-%S"
 
-_SHORT_TTL_SECONDS: int = 3  # TTL süresi dolma senaryosu için — gerçek TTL'ler (7/30 gün) beklenemez
+_SHORT_TTL_SECONDS: int = (
+    3  # TTL süresi dolma senaryosu için — gerçek TTL'ler (7/30 gün) beklenemez
+)
 _UNREACHABLE_REDIS_URL: str = "redis://localhost:9"  # 9 portu hiçbir zaman Redis olmaz
 _CACHE_KEY_PATTERNS: tuple[str, ...] = ("embed:openai:*", "llm:openai:*")
 
@@ -136,8 +142,12 @@ async def _scenario_embedding_model_isolation(redis_client: Redis) -> dict:
 
     inner_a = OpenAIEmbedding()
     inner_b = _RelabeledEmbedding()
-    provider_a = CachedEmbeddingProvider(inner_a, redis_client, enabled=True, ttl_seconds=_SHORT_TTL_SECONDS)
-    provider_b = CachedEmbeddingProvider(inner_b, redis_client, enabled=True, ttl_seconds=_SHORT_TTL_SECONDS)
+    provider_a = CachedEmbeddingProvider(
+        inner_a, redis_client, enabled=True, ttl_seconds=_SHORT_TTL_SECONDS
+    )
+    provider_b = CachedEmbeddingProvider(
+        inner_b, redis_client, enabled=True, ttl_seconds=_SHORT_TTL_SECONDS
+    )
     text = "model izolasyonu testi — aynı metin"
 
     t0 = time.perf_counter()
@@ -161,7 +171,9 @@ async def _scenario_embedding_model_isolation(redis_client: Redis) -> dict:
 
 async def _scenario_embedding_disabled_bypass(redis_client: Redis) -> dict:
     inner = OpenAIEmbedding()
-    provider = CachedEmbeddingProvider(inner, redis_client, enabled=False, ttl_seconds=_SHORT_TTL_SECONDS)
+    provider = CachedEmbeddingProvider(
+        inner, redis_client, enabled=False, ttl_seconds=_SHORT_TTL_SECONDS
+    )
     text = "enabled=False testi — cache'e hiç yazılmamalı"
 
     t0 = time.perf_counter()
@@ -186,7 +198,9 @@ async def _scenario_embedding_disabled_bypass(redis_client: Redis) -> dict:
 
 async def _scenario_embedding_ttl_expiry(redis_client: Redis) -> dict:
     inner = OpenAIEmbedding()
-    provider = CachedEmbeddingProvider(inner, redis_client, enabled=True, ttl_seconds=_SHORT_TTL_SECONDS)
+    provider = CachedEmbeddingProvider(
+        inner, redis_client, enabled=True, ttl_seconds=_SHORT_TTL_SECONDS
+    )
     text = "TTL süresi dolma testi — embedding"
 
     await provider.embed_batch([text])
@@ -197,10 +211,16 @@ async def _scenario_embedding_ttl_expiry(redis_client: Redis) -> dict:
 
     ttl_after = await redis_client.ttl(key)
     t0 = time.perf_counter()
-    await provider.embed_batch([text])  # süresi dolduğu için bu da gerçek bir çağrı olmalı
+    await provider.embed_batch(
+        [text]
+    )  # süresi dolduğu için bu da gerçek bir çağrı olmalı
     t_after_expiry = time.perf_counter() - t0
 
-    passed = 0 < ttl_before <= _SHORT_TTL_SECONDS and ttl_after == -2 and t_after_expiry > 0.1
+    passed = (
+        0 < ttl_before <= _SHORT_TTL_SECONDS
+        and ttl_after == -2
+        and t_after_expiry > 0.1
+    )
     return _record(
         "embedding_ttl_expiry",
         f"TTL={_SHORT_TTL_SECONDS}sn ile cache'lenen bir anahtar, süre dolunca gerçekten silinmeli (ttl()==-2) ve bir sonraki çağrı gerçek API'ye gitmeli.",
@@ -212,16 +232,22 @@ async def _scenario_embedding_ttl_expiry(redis_client: Redis) -> dict:
 
 
 async def _scenario_embedding_redis_unreachable() -> dict:
-    unreachable_redis = Redis.from_url(_UNREACHABLE_REDIS_URL, socket_connect_timeout=1, socket_timeout=1)
+    unreachable_redis = Redis.from_url(
+        _UNREACHABLE_REDIS_URL, socket_connect_timeout=1, socket_timeout=1
+    )
     inner = OpenAIEmbedding()
-    provider = CachedEmbeddingProvider(inner, unreachable_redis, enabled=True, ttl_seconds=_SHORT_TTL_SECONDS)
+    provider = CachedEmbeddingProvider(
+        inner, unreachable_redis, enabled=True, ttl_seconds=_SHORT_TTL_SECONDS
+    )
     text = "Redis'e ulaşılamama testi"
 
     try:
         result = await provider.embed_batch([text])
         passed = len(result) == 1 and len(result[0]) == provider.dimension
         error = None
-    except Exception as e:  # noqa: BLE001 — bu senaryonun kendisi "hiç çökmemeli" iddiasını test ediyor
+    except (
+        Exception
+    ) as e:  # noqa: BLE001 — bu senaryonun kendisi "hiç çökmemeli" iddiasını test ediyor
         passed = False
         error = str(e)
     finally:
@@ -239,7 +265,9 @@ async def _scenario_embedding_redis_unreachable() -> dict:
 
 
 async def _scenario_llm_miss_then_hit(provider: CachedLLMProvider) -> dict:
-    messages = [ChatMessage(role="user", content="gerçek LLM cache testi — birebir isabet")]
+    messages = [
+        ChatMessage(role="user", content="gerçek LLM cache testi — birebir isabet")
+    ]
 
     t0 = time.perf_counter()
     first = await provider.complete(messages, temperature=0.0)
@@ -270,7 +298,9 @@ async def _scenario_llm_miss_then_hit(provider: CachedLLMProvider) -> dict:
     )
 
 
-async def _scenario_llm_day_of_week_changes_cache_key(llm_provider: LLMProvider) -> dict:
+async def _scenario_llm_day_of_week_changes_cache_key(
+    llm_provider: LLMProvider,
+) -> dict:
     """search_intent.txt prompt'u today_weekday'i içine gömüyor — aynı ham
     sorgu, farklı `today` değerleriyle çağrılırsa render edilmiş prompt (ve
     dolayısıyla cache anahtarı) da değişmeli, ikinci çağrı da gerçek bir
@@ -284,7 +314,9 @@ async def _scenario_llm_day_of_week_changes_cache_key(llm_provider: LLMProvider)
     t_monday = time.perf_counter() - t0
 
     t0 = time.perf_counter()
-    intent_thursday, hit_thursday = await parse_intent(llm_provider, raw_query, thursday)
+    intent_thursday, hit_thursday = await parse_intent(
+        llm_provider, raw_query, thursday
+    )
     t_thursday = time.perf_counter() - t0
 
     passed = hit_monday is False and hit_thursday is False and t_thursday > 0.1
@@ -302,7 +334,9 @@ async def _scenario_llm_day_of_week_changes_cache_key(llm_provider: LLMProvider)
     )
 
 
-async def _scenario_llm_non_deterministic_never_cached(provider: CachedLLMProvider) -> dict:
+async def _scenario_llm_non_deterministic_never_cached(
+    provider: CachedLLMProvider,
+) -> dict:
     """ASIL BULUNAN HATANIN regresyon kanıtı (bkz. docs/adr/0022):
     generate_recommendation() (temperature=0.7) YANLIŞLIKLA cache'lenmişti,
     ikinci istek birebir aynı öneri metnini dönüyordu."""
@@ -316,7 +350,11 @@ async def _scenario_llm_non_deterministic_never_cached(provider: CachedLLMProvid
     first = await provider.complete(messages, temperature=0.7)
     second = await provider.complete(messages, temperature=0.7)
 
-    passed = first.from_cache is False and second.from_cache is False and first.content != second.content
+    passed = (
+        first.from_cache is False
+        and second.from_cache is False
+        and first.content != second.content
+    )
     return _record(
         "llm_non_deterministic_never_cached",
         "temperature=0.7 (örn. öneri üretimi) HİÇBİR ZAMAN cache'lenmemeli — iki çağrı da gerçek olmalı, içerik farklı çıkmalı (bu branch'te bulunup düzeltilen gerçek hatanın regresyon kanıtı).",
@@ -331,7 +369,9 @@ async def _scenario_llm_non_deterministic_never_cached(provider: CachedLLMProvid
 
 async def _scenario_llm_disabled_bypass(redis_client: Redis) -> dict:
     inner = OpenAILLM()
-    provider = CachedLLMProvider(inner, redis_client, enabled=False, ttl_seconds=_SHORT_TTL_SECONDS)
+    provider = CachedLLMProvider(
+        inner, redis_client, enabled=False, ttl_seconds=_SHORT_TTL_SECONDS
+    )
     messages = [ChatMessage(role="user", content="enabled=False testi — LLM")]
 
     first = await provider.complete(messages, temperature=0.0)
@@ -350,10 +390,12 @@ async def _scenario_llm_disabled_bypass(redis_client: Redis) -> dict:
 
 async def _scenario_llm_ttl_expiry(redis_client: Redis) -> dict:
     inner = OpenAILLM()
-    provider = CachedLLMProvider(inner, redis_client, enabled=True, ttl_seconds=_SHORT_TTL_SECONDS)
+    provider = CachedLLMProvider(
+        inner, redis_client, enabled=True, ttl_seconds=_SHORT_TTL_SECONDS
+    )
     messages = [ChatMessage(role="user", content="TTL süresi dolma testi — LLM")]
 
-    first = await provider.complete(messages, temperature=0.0)
+    await provider.complete(messages, temperature=0.0)
     key = provider._cache_key(messages, 0.0, None, None)  # type: ignore[attr-defined]
     ttl_before = await redis_client.ttl(key)
 
@@ -362,7 +404,11 @@ async def _scenario_llm_ttl_expiry(redis_client: Redis) -> dict:
     ttl_after = await redis_client.ttl(key)
     second = await provider.complete(messages, temperature=0.0)
 
-    passed = 0 < ttl_before <= _SHORT_TTL_SECONDS and ttl_after == -2 and second.from_cache is False
+    passed = (
+        0 < ttl_before <= _SHORT_TTL_SECONDS
+        and ttl_after == -2
+        and second.from_cache is False
+    )
     return _record(
         "llm_ttl_expiry",
         f"TTL={_SHORT_TTL_SECONDS}sn ile cache'lenen bir LLM cevabı, süre dolunca gerçekten silinmeli, bir sonraki çağrı gerçek API'ye gitmeli.",
@@ -374,16 +420,22 @@ async def _scenario_llm_ttl_expiry(redis_client: Redis) -> dict:
 
 
 async def _scenario_llm_redis_unreachable() -> dict:
-    unreachable_redis = Redis.from_url(_UNREACHABLE_REDIS_URL, socket_connect_timeout=1, socket_timeout=1)
+    unreachable_redis = Redis.from_url(
+        _UNREACHABLE_REDIS_URL, socket_connect_timeout=1, socket_timeout=1
+    )
     inner = OpenAILLM()
-    provider = CachedLLMProvider(inner, unreachable_redis, enabled=True, ttl_seconds=_SHORT_TTL_SECONDS)
+    provider = CachedLLMProvider(
+        inner, unreachable_redis, enabled=True, ttl_seconds=_SHORT_TTL_SECONDS
+    )
     messages = [ChatMessage(role="user", content="Redis'e ulaşılamama testi — LLM")]
 
     try:
         response = await provider.complete(messages, temperature=0.0)
         passed = bool(response.content) and response.from_cache is False
         error = None
-    except Exception as e:  # noqa: BLE001 — bu senaryonun kendisi "hiç çökmemeli" iddiasını test ediyor
+    except (
+        Exception
+    ) as e:  # noqa: BLE001 — bu senaryonun kendisi "hiç çökmemeli" iddiasını test ediyor
         passed = False
         error = str(e)
     finally:
@@ -443,12 +495,16 @@ def _write_result(scenarios: list[dict], label: str | None) -> Path:
         "basarisiz_senaryo": len(scenarios) - passed_count,
         "scenarios": scenarios,
     }
-    output_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+    output_path.write_text(
+        json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8"
+    )
     return output_path
 
 
 async def main(label: str | None = None) -> None:
-    logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
+    logging.basicConfig(
+        level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s"
+    )
 
     scenarios: list[dict] = []
 
@@ -473,14 +529,20 @@ async def main(label: str | None = None) -> None:
         scenarios.append(await _scenario_embedding_redis_unreachable())
 
         scenarios.append(await _scenario_llm_miss_then_hit(llm_provider))
-        scenarios.append(await _scenario_llm_day_of_week_changes_cache_key(llm_provider))
-        scenarios.append(await _scenario_llm_non_deterministic_never_cached(llm_provider))
+        scenarios.append(
+            await _scenario_llm_day_of_week_changes_cache_key(llm_provider)
+        )
+        scenarios.append(
+            await _scenario_llm_non_deterministic_never_cached(llm_provider)
+        )
         scenarios.append(await _scenario_llm_disabled_bypass(redis_client))
         scenarios.append(await _scenario_llm_ttl_expiry(redis_client))
         scenarios.append(await _scenario_llm_redis_unreachable())
 
         transport = httpx.ASGITransport(app=app)
-        async with httpx.AsyncClient(transport=transport, base_url="http://test", timeout=30.0) as client:
+        async with httpx.AsyncClient(
+            transport=transport, base_url="http://test", timeout=30.0
+        ) as client:
             scenarios.append(await _scenario_full_recommend_pipeline(client))
 
         keys_after = await _snapshot_cache_keys(redis_client)
@@ -489,7 +551,11 @@ async def main(label: str | None = None) -> None:
         for key in new_keys:
             if await redis_client.delete(key):
                 deleted += 1
-        logger.info("Temizlik: bu çalıştırmada oluşan %d/%d anahtar silindi.", deleted, len(new_keys))
+        logger.info(
+            "Temizlik: bu çalıştırmada oluşan %d/%d anahtar silindi.",
+            deleted,
+            len(new_keys),
+        )
 
     output_path = _write_result(scenarios, label)
     passed_count = sum(1 for s in scenarios if s["passed"])
@@ -499,7 +565,12 @@ async def main(label: str | None = None) -> None:
 
 def _parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("label", nargs="?", default=None, help="Sonuç dosyasının adına eklenecek opsiyonel etiket")
+    parser.add_argument(
+        "label",
+        nargs="?",
+        default=None,
+        help="Sonuç dosyasının adına eklenecek opsiyonel etiket",
+    )
     return parser.parse_args()
 
 

@@ -27,8 +27,16 @@ def test_get_qdrant_client_returns_same_instance_on_repeated_calls(monkeypatch) 
     """lru_cache singleton davranışı — pahalı client'lar her istekte
     yeniden oluşturulmamalı (bkz. CLAUDE.md)."""
     get_qdrant_client.cache_clear()
-    monkeypatch.setattr(qdrant_module, "get_settings", lambda: MagicMock(qdrant_url="http://test-qdrant:6333"))
-    monkeypatch.setattr(qdrant_module, "AsyncQdrantClient", MagicMock(side_effect=lambda **kwargs: MagicMock()))
+    monkeypatch.setattr(
+        qdrant_module,
+        "get_settings",
+        lambda: MagicMock(qdrant_url="http://test-qdrant:6333"),
+    )
+    monkeypatch.setattr(
+        qdrant_module,
+        "AsyncQdrantClient",
+        MagicMock(side_effect=lambda **kwargs: MagicMock()),
+    )
 
     try:
         first = get_qdrant_client()

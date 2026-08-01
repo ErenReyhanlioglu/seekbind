@@ -5,7 +5,11 @@ from unittest.mock import AsyncMock
 
 from qdrant_client.models import FieldCondition, Filter, MatchValue
 
-from backend.services.search.vector import _build_active_only_filter, fetch_filtered_business_ids, vector_search
+from backend.services.search.vector import (
+    _build_active_only_filter,
+    fetch_filtered_business_ids,
+    vector_search,
+)
 
 
 class _FakeEmbeddingProvider:
@@ -53,7 +57,10 @@ async def test_vector_search_uses_provider_specific_collection_name() -> None:
 
     await vector_search(fake_client, provider, "diş kliniği", top_k=5)
 
-    assert fake_client.query_points.call_args.kwargs["collection_name"] == "businesses_fake"
+    assert (
+        fake_client.query_points.call_args.kwargs["collection_name"]
+        == "businesses_fake"
+    )
 
 
 def _condition_keys(must: object) -> set[str]:
@@ -103,7 +110,10 @@ def test_build_active_only_filter_appends_single_condition_extra_filter() -> Non
 async def test_fetch_filtered_business_ids_returns_ids_from_single_page() -> None:
     provider = _FakeEmbeddingProvider()
     fake_client = AsyncMock()
-    fake_client.scroll.return_value = ([SimpleNamespace(id=1), SimpleNamespace(id=2)], None)
+    fake_client.scroll.return_value = (
+        [SimpleNamespace(id=1), SimpleNamespace(id=2)],
+        None,
+    )
 
     result = await fetch_filtered_business_ids(fake_client, provider, None)
 

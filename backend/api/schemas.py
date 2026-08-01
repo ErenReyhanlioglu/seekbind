@@ -81,7 +81,9 @@ class RecommendRequest(BaseModel):
     referans konumu buradan bulunuyor.
     """
 
-    query: str = Field(min_length=1, max_length=500)  # ucuz bir maliyet/kötüye kullanım sınırı
+    query: str = Field(
+        min_length=1, max_length=500
+    )  # ucuz bir maliyet/kötüye kullanım sınırı
     user_id: int
     limit: int = Field(default=10, ge=1, le=MAX_RECOMMEND_LIMIT)
     offset: int = Field(default=0, ge=0)

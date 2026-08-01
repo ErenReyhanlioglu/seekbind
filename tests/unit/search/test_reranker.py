@@ -6,7 +6,11 @@ from unittest.mock import AsyncMock
 import httpx
 import pytest
 
-from backend.services.search.reranker import JinaReranker, RerankerServiceError, get_reranker_provider
+from backend.services.search.reranker import (
+    JinaReranker,
+    RerankerServiceError,
+    get_reranker_provider,
+)
 
 
 def _make_response(payload: dict, status_code: int = 200) -> SimpleNamespace:
@@ -55,7 +59,9 @@ async def test_rerank_sends_correct_request_body() -> None:
     assert "Authorization" in call.kwargs["headers"]
 
 
-async def test_rerank_returns_empty_list_for_empty_documents_without_http_call() -> None:
+async def test_rerank_returns_empty_list_for_empty_documents_without_http_call() -> (
+    None
+):
     reranker = JinaReranker()
     reranker._client.post = AsyncMock()  # type: ignore[method-assign]
 

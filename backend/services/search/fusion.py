@@ -23,5 +23,7 @@ def reciprocal_rank_fusion(
     fused_scores: dict[int, float] = {}
     for results in result_lists:
         for rank, (business_id, _) in enumerate(results, start=1):
-            fused_scores[business_id] = fused_scores.get(business_id, 0.0) + 1.0 / (k + rank)
+            fused_scores[business_id] = fused_scores.get(business_id, 0.0) + 1.0 / (
+                k + rank
+            )
     return sorted(fused_scores.items(), key=lambda pair: pair[1], reverse=True)

@@ -39,12 +39,16 @@ def test_availability_time_range_evening_does_not_overlap_afternoon() -> None:
     assert afternoon_end == evening_start
 
 
-async def test_fetch_available_business_ids_returns_empty_set_for_empty_candidate_list() -> None:
+async def test_fetch_available_business_ids_returns_empty_set_for_empty_candidate_list() -> (
+    None
+):
     """Aday havuzu boşsa DB'ye hiç gidilmemeli — appointment_slots'a karşı
     boş bir IN (...) sorgusu atmanın anlamı yok."""
     session = AsyncMock()
 
-    result = await fetch_available_business_ids(session, [], DateAvailabilityFilter(date=date(2026, 8, 12)))
+    result = await fetch_available_business_ids(
+        session, [], DateAvailabilityFilter(date=date(2026, 8, 12))
+    )
 
     assert result == set()
     session.execute.assert_not_called()
@@ -52,10 +56,14 @@ async def test_fetch_available_business_ids_returns_empty_set_for_empty_candidat
 
 async def test_fetch_available_business_ids_returns_ids_with_open_slots() -> None:
     session = AsyncMock()
-    session.execute.return_value = SimpleNamespace(scalars=lambda: SimpleNamespace(all=lambda: [3, 7]))
+    session.execute.return_value = SimpleNamespace(
+        scalars=lambda: SimpleNamespace(all=lambda: [3, 7])
+    )
 
     result = await fetch_available_business_ids(
-        session, [3, 5, 7], DateAvailabilityFilter(date=date(2026, 8, 12), time_of_day="morning")
+        session,
+        [3, 5, 7],
+        DateAvailabilityFilter(date=date(2026, 8, 12), time_of_day="morning"),
     )
 
     assert result == {3, 7}

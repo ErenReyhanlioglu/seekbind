@@ -11,7 +11,13 @@ import backend.services.llm as llm_module
 from backend.config import get_settings
 from backend.services.cache import CachedLLMProvider
 from backend.services.fallback import FallbackLLMProvider
-from backend.services.llm import ChatMessage, LLMServiceError, OllamaLLM, OpenAILLM, get_llm_provider
+from backend.services.llm import (
+    ChatMessage,
+    LLMServiceError,
+    OllamaLLM,
+    OpenAILLM,
+    get_llm_provider,
+)
 
 _DUMMY_REQUEST = httpx.Request("POST", "https://example.com")
 
@@ -69,7 +75,10 @@ async def test_openai_complete_sends_correct_request() -> None:
     )
 
     await provider.complete(
-        [ChatMessage(role="system", content="sen bir asistansın"), ChatMessage(role="user", content="selam")],
+        [
+            ChatMessage(role="system", content="sen bir asistansın"),
+            ChatMessage(role="user", content="selam"),
+        ],
         temperature=0.2,
         max_tokens=100,
     )
@@ -269,7 +278,9 @@ def test_get_llm_provider_returns_openai_primary_wrapped_in_fallback_and_cache(
         get_llm_provider.cache_clear()
 
 
-def test_get_llm_provider_returns_ollama_when_configured(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_get_llm_provider_returns_ollama_when_configured(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     """`get_llm_provider()` artık çıplak `OllamaLLM` değil, Redis cache ile
     sarılmış hâlini döner (bkz. backend/services/cache.py)."""
     real_settings = llm_module.get_settings()

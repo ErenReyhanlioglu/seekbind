@@ -25,7 +25,9 @@ logger = logging.getLogger(__name__)
 _WINDOW_SECONDS: int = 60
 _RATE_LIMIT_KEY_PREFIX: str = "ratelimit"
 _UNKNOWN_CLIENT_ID: str = "unknown"
-_RATE_LIMIT_EXCEEDED_MESSAGE: str = "Çok fazla istek gönderildi, lütfen bir süre sonra tekrar deneyin."
+_RATE_LIMIT_EXCEEDED_MESSAGE: str = (
+    "Çok fazla istek gönderildi, lütfen bir süre sonra tekrar deneyin."
+)
 
 
 def _client_identifier(request: Request) -> str:
@@ -39,7 +41,9 @@ def _client_identifier(request: Request) -> str:
 class RateLimitMiddleware(BaseHTTPMiddleware):
     """`rate_limit_per_minute` (config.py) sınırını aşan istemcilere 429 döner."""
 
-    async def dispatch(self, request: Request, call_next: RequestResponseEndpoint) -> Response:
+    async def dispatch(
+        self, request: Request, call_next: RequestResponseEndpoint
+    ) -> Response:
         settings = get_settings()
         redis = get_redis_client()
         bucket = int(time.time() // _WINDOW_SECONDS)

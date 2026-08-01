@@ -49,8 +49,10 @@ from backend.services.rag.intent import (
     build_search_filters,
     parse_intent,
 )
-from backend.services.user_location import get_user_reference_location
-from backend.services.rag.recommendation import RecommendationGenerationError, generate_recommendation
+from backend.services.rag.recommendation import (
+    RecommendationGenerationError,
+    generate_recommendation,
+)
 from backend.services.search import (
     BM25Index,
     DateAvailabilityFilter,
@@ -59,17 +61,28 @@ from backend.services.search import (
     SearchFilters,
     search_providers,
 )
+from backend.services.user_location import get_user_reference_location
 
 logger = logging.getLogger(__name__)
 
-EMPTY_RESULTS_MESSAGE: str = "Aramanıza uygun bir işletme bulamadım, farklı bir arama deneyebilirsin."
+EMPTY_RESULTS_MESSAGE: str = (
+    "Aramanıza uygun bir işletme bulamadım, farklı bir arama deneyebilirsin."
+)
 RECOMMENDATION_FALLBACK_MESSAGE: str = "Aşağıda arama sonuçlarını bulabilirsin."
 _LANGFUSE_TRACE_NAME: str = "recommend"
 
 
 async def _resolve_search_query_and_filters(
     llm_provider: LLMProvider, raw_query: str, today: date, session: AsyncSession
-) -> tuple[str, SearchFilters, DateAvailabilityFilter | None, RatingPreference | None, bool, bool, bool]:
+) -> tuple[
+    str,
+    SearchFilters,
+    DateAvailabilityFilter | None,
+    RatingPreference | None,
+    bool,
+    bool,
+    bool,
+]:
     """Intent parsing dener, başarısız olursa ham sorgu + boş filtreye düşer.
 
     Sondan iki önceki eleman (`bool`), intent parsing'in fallback'e düşüp
@@ -82,7 +95,9 @@ async def _resolve_search_query_and_filters(
     try:
         intent, intent_cache_hit = await parse_intent(llm_provider, raw_query, today)
     except IntentParsingError as e:
-        logger.warning("Intent parsing başarısız, salt semantik aramaya düşülüyor: %s", e)
+        logger.warning(
+            "Intent parsing başarısız, salt semantik aramaya düşülüyor: %s", e
+        )
         return raw_query, SearchFilters(), None, None, True, False, False
     filters = await build_search_filters(intent, session)
     availability = build_availability_filter(intent, today)
@@ -122,7 +137,9 @@ async def _generate_recommendation_with_fallback(
     Son eleman (`bool`), öneri üretiminin fallback'e düşüp düşmediğini belirtir.
     """
     try:
-        text = await generate_recommendation(llm_provider, raw_query, results, rating_preference)
+        text = await generate_recommendation(
+            llm_provider, raw_query, results, rating_preference
+        )
         return text, False
     except RecommendationGenerationError as e:
         logger.warning("Öneri üretimi başarısız, sabit mesaja düşülüyor: %s", e)
@@ -177,7 +194,11 @@ def _build_trace_metadata(
 
 
 def _build_trace_tags(
-    *, intent_fallback: bool, recommendation_fallback: bool, prompt_injection_detected: bool, empty_results: bool
+    *,
+    intent_fallback: bool,
+    recommendation_fallback: bool,
+    prompt_injection_detected: bool,
+    empty_results: bool,
 ) -> list[str]:
     """Langfuse arayüzünde filtrelemeyi kolaylaştıran etiketler üretir."""
     tags = [_LANGFUSE_TRACE_NAME]
@@ -277,11 +298,19 @@ async def get_recommendation(
     """
     injection_detected = detect_prompt_injection(raw_query)
     if injection_detected:
-        logger.warning("Prompt injection kalıbı tespit edildi (log + flag, aramaya devam ediliyor)")
+        logger.warning(
+            "Prompt injection kalıbı tespit edildi (log + flag, aramaya devam ediliyor)"
+        )
 
-    search_query, filters, availability, rating_preference, intent_fallback, near_me, intent_cache_hit = (
-        await _resolve_search_query_and_filters(llm_provider, raw_query, today, session)
-    )
+    (
+        search_query,
+        filters,
+        availability,
+        rating_preference,
+        intent_fallback,
+        near_me,
+        intent_cache_hit,
+    ) = await _resolve_search_query_and_filters(llm_provider, raw_query, today, session)
     distance_reference = await _resolve_distance_reference(session, user_id, near_me)
 
     search_response = await search_providers(
@@ -318,13 +347,20 @@ async def get_recommendation(
             limit=limit,
             offset=offset,
         )
-        return RecommendationResponse(recommendation=EMPTY_RESULTS_MESSAGE, results=[], total=0)
+        return RecommendationResponse(
+            recommendation=EMPTY_RESULTS_MESSAGE, results=[], total=0
+        )
 
     if injection_detected:
-        recommendation_text, recommendation_fallback = RECOMMENDATION_FALLBACK_MESSAGE, True
+        recommendation_text, recommendation_fallback = (
+            RECOMMENDATION_FALLBACK_MESSAGE,
+            True,
+        )
     else:
-        recommendation_text, recommendation_fallback = await _generate_recommendation_with_fallback(
-            llm_provider, raw_query, search_response.results, rating_preference
+        recommendation_text, recommendation_fallback = (
+            await _generate_recommendation_with_fallback(
+                llm_provider, raw_query, search_response.results, rating_preference
+            )
         )
     _record_trace(
         raw_query=raw_query,

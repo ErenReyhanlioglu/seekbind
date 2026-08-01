@@ -39,7 +39,9 @@ class FallbackLLMProvider:
     gerek yok.
     """
 
-    def __init__(self, primary: LLMProvider, secondary: LLMProvider, *, enabled: bool) -> None:
+    def __init__(
+        self, primary: LLMProvider, secondary: LLMProvider, *, enabled: bool
+    ) -> None:
         self._primary = primary
         self._secondary = secondary
         self._enabled = enabled
@@ -105,8 +107,8 @@ class FallbackLLMProvider:
 # EmbeddingProvider kimliğini (name, model, dimension) taşır — bkz. modül
 # docstring'i. Varsayılan None: henüz hiç embed_batch() çağrılmamış demek,
 # bu durumda .name/.model/.dimension birincile düşer.
-_active_embedding_identity: contextvars.ContextVar[tuple[str, str, int] | None] = contextvars.ContextVar(
-    "fallback_embedding_active_identity", default=None
+_active_embedding_identity: contextvars.ContextVar[tuple[str, str, int] | None] = (
+    contextvars.ContextVar("fallback_embedding_active_identity", default=None)
 )
 
 
@@ -119,7 +121,9 @@ class FallbackEmbeddingProvider:
     collection'ı seçebilsin diye.
     """
 
-    def __init__(self, primary: EmbeddingProvider, secondary: EmbeddingProvider, *, enabled: bool) -> None:
+    def __init__(
+        self, primary: EmbeddingProvider, secondary: EmbeddingProvider, *, enabled: bool
+    ) -> None:
         self._primary = primary
         self._secondary = secondary
         self._enabled = enabled

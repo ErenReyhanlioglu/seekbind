@@ -61,10 +61,16 @@ class _FakeSettings:
 
 def _patch(monkeypatch: pytest.MonkeyPatch, redis: _FakeRedis, limit: int) -> None:
     monkeypatch.setattr(rate_limit_module, "get_redis_client", lambda: redis)
-    monkeypatch.setattr(rate_limit_module, "get_settings", lambda: _FakeSettings(rate_limit_per_minute=limit))
+    monkeypatch.setattr(
+        rate_limit_module,
+        "get_settings",
+        lambda: _FakeSettings(rate_limit_per_minute=limit),
+    )
 
 
-async def test_dispatch_allows_requests_under_the_limit(monkeypatch: pytest.MonkeyPatch) -> None:
+async def test_dispatch_allows_requests_under_the_limit(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     redis = _FakeRedis()
     _patch(monkeypatch, redis, limit=3)
     middleware = RateLimitMiddleware(app=None)  # type: ignore[arg-type]
@@ -74,7 +80,9 @@ async def test_dispatch_allows_requests_under_the_limit(monkeypatch: pytest.Monk
     assert response.status_code == 200
 
 
-async def test_dispatch_returns_429_once_limit_exceeded(monkeypatch: pytest.MonkeyPatch) -> None:
+async def test_dispatch_returns_429_once_limit_exceeded(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     redis = _FakeRedis()
     _patch(monkeypatch, redis, limit=2)
     middleware = RateLimitMiddleware(app=None)  # type: ignore[arg-type]
@@ -88,7 +96,9 @@ async def test_dispatch_returns_429_once_limit_exceeded(monkeypatch: pytest.Monk
     assert response.headers["retry-after"] == "60"
 
 
-async def test_dispatch_fails_open_when_redis_incr_raises(monkeypatch: pytest.MonkeyPatch) -> None:
+async def test_dispatch_fails_open_when_redis_incr_raises(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     """Redis'e ulaşılamazsa istek reddedilmemeli — bkz. cache.py'deki aynı felsefe."""
     redis = _FakeRedis(fail=True)
     _patch(monkeypatch, redis, limit=1)
@@ -99,13 +109,19 @@ async def test_dispatch_fails_open_when_redis_incr_raises(monkeypatch: pytest.Mo
     assert response.status_code == 200
 
 
-async def test_dispatch_uses_separate_buckets_per_client_host(monkeypatch: pytest.MonkeyPatch) -> None:
+async def test_dispatch_uses_separate_buckets_per_client_host(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     redis = _FakeRedis()
     _patch(monkeypatch, redis, limit=1)
     middleware = RateLimitMiddleware(app=None)  # type: ignore[arg-type]
 
-    first_client_response = await middleware.dispatch(_make_request("1.2.3.4"), _call_next)
-    second_client_response = await middleware.dispatch(_make_request("5.6.7.8"), _call_next)
+    first_client_response = await middleware.dispatch(
+        _make_request("1.2.3.4"), _call_next
+    )
+    second_client_response = await middleware.dispatch(
+        _make_request("5.6.7.8"), _call_next
+    )
 
     assert first_client_response.status_code == 200
     assert second_client_response.status_code == 200
@@ -123,7 +139,9 @@ async def test_dispatch_falls_back_to_unknown_client_id_when_scope_has_no_client
     assert response.status_code == 200
 
 
-async def test_dispatch_reads_settings_freshly_on_every_call(monkeypatch: pytest.MonkeyPatch) -> None:
+async def test_dispatch_reads_settings_freshly_on_every_call(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     """`get_settings()` her `dispatch()` çağrısında yeniden okunuyor — bu,
     entegrasyon testinin limiti geçici olarak düşürüp bir sonraki istekte
     hemen etkili olduğunu doğrulayabilmesinin dayanağı."""

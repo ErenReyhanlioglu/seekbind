@@ -13,7 +13,13 @@ import logging
 from typing import Literal
 
 from qdrant_client import AsyncQdrantClient
-from qdrant_client.models import Distance, GeoPoint, PayloadSchemaType, PointStruct, VectorParams
+from qdrant_client.models import (
+    Distance,
+    GeoPoint,
+    PayloadSchemaType,
+    PointStruct,
+    VectorParams,
+)
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -26,7 +32,6 @@ from backend.services.cache import CachedEmbeddingProvider
 from backend.services.embedding import (
     EmbeddingProvider,
     OllamaEmbedding,
-    OpenAIEmbedding,
     get_embedding_provider,
     get_qdrant_collection_name,
 )
@@ -67,7 +72,11 @@ def build_embedding_text(business: Business) -> str:
         business.title,
         f"Hizmetler: {', '.join(business.services)}" if business.services else "",
         business.rich_description or "",
-        f"Anahtar kelimeler: {', '.join(business.keywords)}" if business.keywords else "",
+        (
+            f"Anahtar kelimeler: {', '.join(business.keywords)}"
+            if business.keywords
+            else ""
+        ),
     ]
     return "\n".join(part for part in parts if part)
 
@@ -120,7 +129,9 @@ async def load_all_businesses(session: AsyncSession) -> list[Business]:
     return list(result.scalars().all())
 
 
-async def ensure_collection(client: AsyncQdrantClient, collection_name: str, dimension: int) -> None:
+async def ensure_collection(
+    client: AsyncQdrantClient, collection_name: str, dimension: int
+) -> None:
     """Collection yoksa oluşturur, varsa dokunmaz."""
     exists = await client.collection_exists(collection_name)
     if not exists:
@@ -173,7 +184,9 @@ async def main(provider_name: Literal["openai", "ollama"] = "openai") -> None:
     `provider_name="ollama"`: sadece bu script'e özgü, fallback collection'ını
     (`businesses_ollama-*`) elle doldurmak için.
     """
-    logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
+    logging.basicConfig(
+        level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s"
+    )
 
     provider = _build_provider(provider_name)
     qdrant_client = get_qdrant_client()
@@ -185,14 +198,22 @@ async def main(provider_name: Literal["openai", "ollama"] = "openai") -> None:
     session_factory = get_session_factory()
     async with session_factory() as session:
         businesses = await load_all_businesses(session)
-    logger.info("%d işletme okundu, '%s' collection'ına yüklenecek", len(businesses), collection_name)
+    logger.info(
+        "%d işletme okundu, '%s' collection'ına yüklenecek",
+        len(businesses),
+        collection_name,
+    )
 
     batches = chunk(businesses, EMBEDDING_BATCH_SIZE)
     for i, batch in enumerate(batches, start=1):
         await embed_and_upsert_batch(qdrant_client, collection_name, provider, batch)
         logger.info("Batch %d/%d yüklendi (%d işletme)", i, len(batches), len(batch))
 
-    logger.info("Tamamlandı. %d işletme '%s' collection'ına yüklendi", len(businesses), collection_name)
+    logger.info(
+        "Tamamlandı. %d işletme '%s' collection'ına yüklendi",
+        len(businesses),
+        collection_name,
+    )
 
 
 def _parse_args() -> argparse.Namespace:

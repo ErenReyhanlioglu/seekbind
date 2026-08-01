@@ -50,12 +50,18 @@ def test_create_app_adds_rate_limit_middleware_before_gzip() -> None:
     (GZip'in hiç çalışması gerekmesin rate limit reddederken)."""
     app = create_app()
 
-    middleware_classes: list[object] = [middleware.cls for middleware in app.user_middleware]
+    middleware_classes: list[object] = [
+        middleware.cls for middleware in app.user_middleware
+    ]
     assert RateLimitMiddleware in middleware_classes
-    assert middleware_classes.index(RateLimitMiddleware) < middleware_classes.index(GZipMiddleware)
+    assert middleware_classes.index(RateLimitMiddleware) < middleware_classes.index(
+        GZipMiddleware
+    )
 
 
-def _patch_lifespan_dependencies(monkeypatch, fake_session: AsyncMock) -> dict[str, MagicMock]:
+def _patch_lifespan_dependencies(
+    monkeypatch, fake_session: AsyncMock
+) -> dict[str, MagicMock]:
     """lifespan()'ın kapanışta kapattığı 4 kaynağı + BM25/langfuse'u fake'ler,
     gerçek DB/Qdrant/LLM/Langfuse'a hiç dokunmadan test edilebilsin diye."""
     fake_bm25_index = MagicMock(refresh_if_stale=AsyncMock())
@@ -71,17 +77,29 @@ def _patch_lifespan_dependencies(monkeypatch, fake_session: AsyncMock) -> dict[s
         # edildiğini test edebilmek için sonsuza kadar bekleyen bir coroutine.
         await asyncio.Event().wait()
 
-    monkeypatch.setattr(main_module, "get_settings", lambda: MagicMock(bm25_refresh_interval_seconds=300))
+    monkeypatch.setattr(
+        main_module,
+        "get_settings",
+        lambda: MagicMock(bm25_refresh_interval_seconds=300),
+    )
     monkeypatch.setattr(main_module, "get_bm25_index", lambda: fake_bm25_index)
     monkeypatch.setattr(
-        main_module, "get_session_factory", lambda: (lambda: _FakeSessionContextManager(fake_session))
+        main_module,
+        "get_session_factory",
+        lambda: (lambda: _FakeSessionContextManager(fake_session)),
     )
-    monkeypatch.setattr(main_module, "periodic_refresh_loop", fake_periodic_refresh_loop)
+    monkeypatch.setattr(
+        main_module, "periodic_refresh_loop", fake_periodic_refresh_loop
+    )
     monkeypatch.setattr(main_module, "get_engine", lambda: fake_engine)
     monkeypatch.setattr(main_module, "get_qdrant_client", lambda: fake_qdrant_client)
-    monkeypatch.setattr(main_module, "get_reranker_provider", lambda: fake_reranker_provider)
+    monkeypatch.setattr(
+        main_module, "get_reranker_provider", lambda: fake_reranker_provider
+    )
     monkeypatch.setattr(main_module, "get_llm_provider", lambda: fake_llm_provider)
-    monkeypatch.setattr(main_module, "get_langfuse_client", lambda: fake_langfuse_client)
+    monkeypatch.setattr(
+        main_module, "get_langfuse_client", lambda: fake_langfuse_client
+    )
 
     return {
         "bm25_index": fake_bm25_index,

@@ -62,5 +62,9 @@ QUERY_TERM_TO_TYPE: dict[str, str] = {
 
 def get_type_to_category_group() -> dict[str, str]:
     """type_normalized -> category_group eşlemesini üretir (örn. business_types tablosu için)."""
-    query_term_to_group = {term: group for group, terms in CATEGORIES.items() for term in terms}
-    return {QUERY_TERM_TO_TYPE[term]: group for term, group in query_term_to_group.items()}
+    query_term_to_group = {
+        term: group for group, terms in CATEGORIES.items() for term in terms
+    }
+    return {
+        QUERY_TERM_TO_TYPE[term]: group for term, group in query_term_to_group.items()
+    }

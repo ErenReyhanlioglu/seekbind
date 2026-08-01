@@ -79,7 +79,9 @@ def test_to_provider_result_leaves_distance_none_without_reference() -> None:
     assert result.distance_km is None
 
 
-def test_to_provider_result_leaves_distance_none_when_business_has_no_coordinates() -> None:
+def test_to_provider_result_leaves_distance_none_when_business_has_no_coordinates() -> (
+    None
+):
     business = _make_business(latitude=None, longitude=None)
 
     result = _to_provider_result(business, (40.78, 29.93))
@@ -107,7 +109,9 @@ class _FailingRerankerProvider:
     """Reranker'ın zaman aşımı/API hatası gibi başarısızlık senaryolarını
     taklit eder — CLAUDE.md'nin fallback ilkesi: arama çökmemeli."""
 
-    async def rerank(self, query: str, documents: list[str], top_n: int) -> list[tuple[int, float]]:
+    async def rerank(
+        self, query: str, documents: list[str], top_n: int
+    ) -> list[tuple[int, float]]:
         raise RerankerServiceError("zaman aşımı")
 
     async def close(self) -> None:
@@ -179,7 +183,9 @@ def test_rank_by_distance_excludes_businesses_without_coordinates() -> None:
     with_coords = _make_business(business_id=1, latitude=40.77, longitude=29.92)
     without_coords = _make_business(business_id=2, latitude=None, longitude=None)
 
-    result = _rank_by_distance([with_coords, without_coords], (40.77, 29.92), online_exempt=True)
+    result = _rank_by_distance(
+        [with_coords, without_coords], (40.77, 29.92), online_exempt=True
+    )
 
     assert [business_id for business_id, _ in result] == [1]
 
@@ -188,8 +194,12 @@ def test_rank_by_distance_excludes_online_businesses_when_exempt() -> None:
     """Online hizmet veren işletme, kullanıcı özellikle online_only istemediği
     sürece mesafeye göre cezalandırılıp ödüllendirilmemeli — bu yüzden
     online_exempt=True iken mesafe sıralamasından tamamen çıkarılır."""
-    physical = _make_business(business_id=1, latitude=41.5, longitude=30.5, online_available=False)
-    online = _make_business(business_id=2, latitude=40.77, longitude=29.92, online_available=True)
+    physical = _make_business(
+        business_id=1, latitude=41.5, longitude=30.5, online_available=False
+    )
+    online = _make_business(
+        business_id=2, latitude=40.77, longitude=29.92, online_available=True
+    )
 
     result = _rank_by_distance([physical, online], (40.77, 29.92), online_exempt=True)
 
@@ -199,8 +209,12 @@ def test_rank_by_distance_excludes_online_businesses_when_exempt() -> None:
 def test_rank_by_distance_includes_online_businesses_when_not_exempt() -> None:
     """Kullanıcı online_only=True gibi mesafeyi bilerek istediğinde
     (online_exempt=False), online işletmeler de normal şekilde sıralanır."""
-    physical = _make_business(business_id=1, latitude=41.5, longitude=30.5, online_available=False)
-    online = _make_business(business_id=2, latitude=40.77, longitude=29.92, online_available=True)
+    physical = _make_business(
+        business_id=1, latitude=41.5, longitude=30.5, online_available=False
+    )
+    online = _make_business(
+        business_id=2, latitude=40.77, longitude=29.92, online_available=True
+    )
 
     result = _rank_by_distance([physical, online], (40.77, 29.92), online_exempt=False)
 
@@ -210,7 +224,9 @@ def test_rank_by_distance_includes_online_businesses_when_not_exempt() -> None:
 def test_apply_final_sort_returns_original_order_without_any_signal() -> None:
     businesses = [_make_business(business_id=1), _make_business(business_id=2)]
 
-    result = apply_final_sort(businesses, rating_preference=None, distance_reference=None)
+    result = apply_final_sort(
+        businesses, rating_preference=None, distance_reference=None
+    )
 
     assert [b.id for b in result] == [1, 2]
 
@@ -222,7 +238,11 @@ def test_apply_final_sort_reduces_to_rating_only_behavior_when_alone() -> None:
     rated_high = _make_business(business_id=2, weighted_rating=4.8)
     unrated = _make_business(business_id=3, weighted_rating=None)
 
-    result = apply_final_sort([rated_low, unrated, rated_high], rating_preference="high", distance_reference=None)
+    result = apply_final_sort(
+        [rated_low, unrated, rated_high],
+        rating_preference="high",
+        distance_reference=None,
+    )
 
     assert [b.id for b in result] == [2, 1, 3]
 
@@ -231,11 +251,17 @@ def test_apply_final_sort_combines_rating_and_distance_via_rrf() -> None:
     """En yakın ama düşük puanlı ile uzak ama yüksek puanlı işletme
     arasında, ikisi de aktifken RRF ikisini de dengeleyerek sıralamalı —
     tekil sinyallerin tersini üretmemeli (ikisi de dahil edilmeli)."""
-    close_low_rated = _make_business(business_id=1, latitude=40.771, longitude=29.921, weighted_rating=3.0)
-    far_high_rated = _make_business(business_id=2, latitude=41.5, longitude=30.5, weighted_rating=4.9)
+    close_low_rated = _make_business(
+        business_id=1, latitude=40.771, longitude=29.921, weighted_rating=3.0
+    )
+    far_high_rated = _make_business(
+        business_id=2, latitude=41.5, longitude=30.5, weighted_rating=4.9
+    )
 
     result = apply_final_sort(
-        [close_low_rated, far_high_rated], rating_preference="high", distance_reference=(40.77, 29.92)
+        [close_low_rated, far_high_rated],
+        rating_preference="high",
+        distance_reference=(40.77, 29.92),
     )
 
     assert {b.id for b in result} == {1, 2}
@@ -244,11 +270,17 @@ def test_apply_final_sort_combines_rating_and_distance_via_rrf() -> None:
 def test_apply_final_sort_appends_businesses_excluded_from_every_signal() -> None:
     """Hiçbir sinyale dahil olmayan (konumu yok VE puansız) bir işletme
     sonuçtan düşmemeli, en sona eklenmeli."""
-    rated_with_coords = _make_business(business_id=1, latitude=40.77, longitude=29.92, weighted_rating=4.0)
-    neither = _make_business(business_id=2, latitude=None, longitude=None, weighted_rating=None)
+    rated_with_coords = _make_business(
+        business_id=1, latitude=40.77, longitude=29.92, weighted_rating=4.0
+    )
+    neither = _make_business(
+        business_id=2, latitude=None, longitude=None, weighted_rating=None
+    )
 
     result = apply_final_sort(
-        [neither, rated_with_coords], rating_preference="high", distance_reference=(40.77, 29.92)
+        [neither, rated_with_coords],
+        rating_preference="high",
+        distance_reference=(40.77, 29.92),
     )
 
     assert [b.id for b in result] == [1, 2]
@@ -271,7 +303,9 @@ class _IdentityRerankerProvider:
     RRF/filtre/sayfalama davranışını doğruluyor (reranker'ın kendi testleri
     test_reranker.py'de ayrıca var)."""
 
-    async def rerank(self, query: str, documents: list[str], top_n: int) -> list[tuple[int, float]]:
+    async def rerank(
+        self, query: str, documents: list[str], top_n: int
+    ) -> list[tuple[int, float]]:
         return [(i, 1.0) for i in range(len(documents))]
 
     async def close(self) -> None:
@@ -285,7 +319,9 @@ def _make_session_returning(businesses: list[Business]) -> AsyncMock:
     return session
 
 
-async def test_search_providers_skips_filtered_id_fetch_when_no_filters(monkeypatch) -> None:
+async def test_search_providers_skips_filtered_id_fetch_when_no_filters(
+    monkeypatch,
+) -> None:
     fetch_filtered_called = False
 
     async def fake_vector_search(*args, **kwargs):
@@ -296,9 +332,12 @@ async def test_search_providers_skips_filtered_id_fetch_when_no_filters(monkeypa
         fetch_filtered_called = True
         return set()
 
-    monkeypatch.setattr("backend.services.search.service.vector_search", fake_vector_search)
     monkeypatch.setattr(
-        "backend.services.search.service.fetch_filtered_business_ids", fake_fetch_filtered_business_ids
+        "backend.services.search.service.vector_search", fake_vector_search
+    )
+    monkeypatch.setattr(
+        "backend.services.search.service.fetch_filtered_business_ids",
+        fake_fetch_filtered_business_ids,
     )
 
     business = _make_business(business_id=1)
@@ -306,8 +345,16 @@ async def test_search_providers_skips_filtered_id_fetch_when_no_filters(monkeypa
     bm25_index = _build_bm25_index(
         [
             business,
-            _make_business(business_id=10, title="Kuaför Salonu", rich_description="Saç kesimi hizmeti."),
-            _make_business(business_id=11, title="Oto Yıkama", rich_description="Araç yıkama servisi."),
+            _make_business(
+                business_id=10,
+                title="Kuaför Salonu",
+                rich_description="Saç kesimi hizmeti.",
+            ),
+            _make_business(
+                business_id=11,
+                title="Oto Yıkama",
+                rich_description="Araç yıkama servisi.",
+            ),
         ]
     )
 
@@ -331,19 +378,26 @@ async def test_search_providers_skips_filtered_id_fetch_when_no_filters(monkeypa
     assert response.results[0].id == 1
 
 
-async def test_search_providers_intersects_bm25_with_filtered_ids_when_filters_present(monkeypatch) -> None:
+async def test_search_providers_intersects_bm25_with_filtered_ids_when_filters_present(
+    monkeypatch,
+) -> None:
     async def fake_vector_search(*args, **kwargs):
         return [(1, 0.9)]
 
     async def fake_fetch_filtered_business_ids(*args, **kwargs):
         return {1}  # sadece business 1 filtreyi sağlıyor
 
-    monkeypatch.setattr("backend.services.search.service.vector_search", fake_vector_search)
     monkeypatch.setattr(
-        "backend.services.search.service.fetch_filtered_business_ids", fake_fetch_filtered_business_ids
+        "backend.services.search.service.vector_search", fake_vector_search
+    )
+    monkeypatch.setattr(
+        "backend.services.search.service.fetch_filtered_business_ids",
+        fake_fetch_filtered_business_ids,
     )
 
-    business_1 = _make_business(business_id=1, title="Kuaför Alfa", rich_description="Saç kesim salonu.")
+    business_1 = _make_business(
+        business_id=1, title="Kuaför Alfa", rich_description="Saç kesim salonu."
+    )
     business_2 = _make_business(
         business_id=2,
         title="Diş Kliniği Beta",
@@ -357,7 +411,15 @@ async def test_search_providers_intersects_bm25_with_filtered_ids_when_filters_p
     # bkz. test_bm25.py'deki aynı not) — ama filtre sadece 1'i geçiriyor,
     # bu yüzden 2 sonuçtan düşmeli.
     bm25_index = _build_bm25_index(
-        [business_1, business_2, _make_business(business_id=12, title="Oto Yıkama Gama", rich_description="Araç yıkama servisi.")]
+        [
+            business_1,
+            business_2,
+            _make_business(
+                business_id=12,
+                title="Oto Yıkama Gama",
+                rich_description="Araç yıkama servisi.",
+            ),
+        ]
     )
 
     response = await search_providers(
@@ -378,7 +440,9 @@ async def test_search_providers_applies_limit_and_offset(monkeypatch) -> None:
     async def fake_vector_search(*args, **kwargs):
         return [(1, 0.9), (2, 0.8), (3, 0.7)]
 
-    monkeypatch.setattr("backend.services.search.service.vector_search", fake_vector_search)
+    monkeypatch.setattr(
+        "backend.services.search.service.vector_search", fake_vector_search
+    )
 
     businesses = [_make_business(business_id=i) for i in (1, 2, 3)]
     session = _make_session_returning(businesses)
@@ -399,7 +463,9 @@ async def test_search_providers_applies_limit_and_offset(monkeypatch) -> None:
     assert len(response.results) == 1
 
 
-async def test_search_providers_filters_out_unavailable_businesses_when_availability_given(monkeypatch) -> None:
+async def test_search_providers_filters_out_unavailable_businesses_when_availability_given(
+    monkeypatch,
+) -> None:
     """İki fazlı müsaitlik kontrolünün ikinci fazı: RRF sonrası aday
     havuzundan, verilen tarihte/saatte müsait olmayan işletmeler elenir
     (bkz. availability.py docstring'i)."""
@@ -410,9 +476,12 @@ async def test_search_providers_filters_out_unavailable_businesses_when_availabi
     async def fake_fetch_available_business_ids(*args, **kwargs):
         return {1}  # sadece business 1 müsait
 
-    monkeypatch.setattr("backend.services.search.service.vector_search", fake_vector_search)
     monkeypatch.setattr(
-        "backend.services.search.service.fetch_available_business_ids", fake_fetch_available_business_ids
+        "backend.services.search.service.vector_search", fake_vector_search
+    )
+    monkeypatch.setattr(
+        "backend.services.search.service.fetch_available_business_ids",
+        fake_fetch_available_business_ids,
     )
 
     businesses = [_make_business(business_id=1), _make_business(business_id=2)]
@@ -433,7 +502,9 @@ async def test_search_providers_filters_out_unavailable_businesses_when_availabi
     assert result_ids == {1}
 
 
-async def test_search_providers_sorts_by_rating_preference_after_reranking(monkeypatch) -> None:
+async def test_search_providers_sorts_by_rating_preference_after_reranking(
+    monkeypatch,
+) -> None:
     """rating_preference verildiğinde, reranker'ın alaka sırasını değil
     weighted_rating sırasını görmeliyiz (ADR-0015) — reranker burada bilerek
     RRF/vektör sırasını (1, 2, 3) korur, ama en düşük puanlı business_id=3
@@ -442,7 +513,9 @@ async def test_search_providers_sorts_by_rating_preference_after_reranking(monke
     async def fake_vector_search(*args, **kwargs):
         return [(1, 0.9), (2, 0.8), (3, 0.7)]
 
-    monkeypatch.setattr("backend.services.search.service.vector_search", fake_vector_search)
+    monkeypatch.setattr(
+        "backend.services.search.service.vector_search", fake_vector_search
+    )
 
     businesses = [
         _make_business(business_id=1, weighted_rating=4.8),
@@ -465,14 +538,18 @@ async def test_search_providers_sorts_by_rating_preference_after_reranking(monke
     assert [result.id for result in response.results] == [3, 2, 1]
 
 
-async def test_search_providers_sorts_by_distance_reference_after_reranking(monkeypatch) -> None:
+async def test_search_providers_sorts_by_distance_reference_after_reranking(
+    monkeypatch,
+) -> None:
     """distance_reference verildiğinde reranker sırası değil mesafeye
     yakınlık sırası görülmeli, sonuçlarda distance_km de dolu olmalı."""
 
     async def fake_vector_search(*args, **kwargs):
         return [(1, 0.9), (2, 0.8)]
 
-    monkeypatch.setattr("backend.services.search.service.vector_search", fake_vector_search)
+    monkeypatch.setattr(
+        "backend.services.search.service.vector_search", fake_vector_search
+    )
 
     far = _make_business(business_id=1, latitude=41.5, longitude=30.5)
     near = _make_business(business_id=2, latitude=40.771, longitude=29.921)
@@ -507,13 +584,20 @@ async def test_search_providers_includes_online_businesses_in_distance_sort_when
     async def fake_fetch_filtered_business_ids(*args, **kwargs):
         return {1, 2}
 
-    monkeypatch.setattr("backend.services.search.service.vector_search", fake_vector_search)
     monkeypatch.setattr(
-        "backend.services.search.service.fetch_filtered_business_ids", fake_fetch_filtered_business_ids
+        "backend.services.search.service.vector_search", fake_vector_search
+    )
+    monkeypatch.setattr(
+        "backend.services.search.service.fetch_filtered_business_ids",
+        fake_fetch_filtered_business_ids,
     )
 
-    far_physical = _make_business(business_id=1, latitude=41.5, longitude=30.5, online_available=False)
-    near_online = _make_business(business_id=2, latitude=40.771, longitude=29.921, online_available=True)
+    far_physical = _make_business(
+        business_id=1, latitude=41.5, longitude=30.5, online_available=False
+    )
+    near_online = _make_business(
+        business_id=2, latitude=40.771, longitude=29.921, online_available=True
+    )
     session = _make_session_returning([far_physical, near_online])
 
     response = await search_providers(
@@ -530,11 +614,15 @@ async def test_search_providers_includes_online_businesses_in_distance_sort_when
     assert [result.id for result in response.results] == [2, 1]
 
 
-async def test_search_providers_keeps_rerank_order_when_no_rating_preference(monkeypatch) -> None:
+async def test_search_providers_keeps_rerank_order_when_no_rating_preference(
+    monkeypatch,
+) -> None:
     async def fake_vector_search(*args, **kwargs):
         return [(1, 0.9), (2, 0.8), (3, 0.7)]
 
-    monkeypatch.setattr("backend.services.search.service.vector_search", fake_vector_search)
+    monkeypatch.setattr(
+        "backend.services.search.service.vector_search", fake_vector_search
+    )
 
     businesses = [
         _make_business(business_id=1, weighted_rating=4.8),

@@ -97,13 +97,17 @@ class BM25Index:
     """
 
     def __init__(self) -> None:
-        self._snapshot = _BM25Snapshot(bm25=None, business_ids=[], fingerprint=_EMPTY_FINGERPRINT)
+        self._snapshot = _BM25Snapshot(
+            bm25=None, business_ids=[], fingerprint=_EMPTY_FINGERPRINT
+        )
 
     def build(self, businesses: list[Business], fingerprint: Fingerprint) -> None:
         """Verilen işletme listesinden index'i sıfırdan kurar."""
         business_ids, documents = build_corpus(businesses)
         bm25 = BM25Okapi(documents) if documents else None
-        self._snapshot = _BM25Snapshot(bm25=bm25, business_ids=business_ids, fingerprint=fingerprint)
+        self._snapshot = _BM25Snapshot(
+            bm25=bm25, business_ids=business_ids, fingerprint=fingerprint
+        )
 
     async def refresh_if_stale(self, session: AsyncSession) -> bool:
         """Fingerprint değiştiyse index'i yeniden kurar, değiştiyse True döner.
@@ -176,4 +180,7 @@ async def periodic_refresh_loop(
             async with session_factory() as session:
                 await index.refresh_if_stale(session)
         except SQLAlchemyError as e:
-            logger.warning("BM25 index yenilemesi başarısız, bir sonraki döngüde tekrar denenecek: %s", e)
+            logger.warning(
+                "BM25 index yenilemesi başarısız, bir sonraki döngüde tekrar denenecek: %s",
+                e,
+            )

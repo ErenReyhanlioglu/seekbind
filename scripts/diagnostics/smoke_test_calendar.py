@@ -75,7 +75,9 @@ async def _find_conflict_free_slot(session: AsyncSession, user_id: int) -> int |
     busy_dates = {row[0].date() for row in booked_days.all()}
 
     candidates = await session.execute(
-        select(AppointmentSlot.id, AppointmentSlot.start_time).where(AppointmentSlot.is_booked.is_(False))
+        select(AppointmentSlot.id, AppointmentSlot.start_time).where(
+            AppointmentSlot.is_booked.is_(False)
+        )
     )
     for slot_id, start_time in candidates.all():
         if start_time.date() not in busy_dates:
@@ -86,21 +88,36 @@ async def _find_conflict_free_slot(session: AsyncSession, user_id: int) -> int |
 async def _find_other_booked_slot(session: AsyncSession, user_id: int) -> int | None:
     """Kullanıcının KENDİ rezervasyonu olmayan, başkası tarafından dolu bir slot bulur."""
     own_slot_ids = (
-        await session.execute(select(Booking.appointment_slot_id).where(Booking.user_id == user_id))
-    ).scalars().all()
+        (
+            await session.execute(
+                select(Booking.appointment_slot_id).where(Booking.user_id == user_id)
+            )
+        )
+        .scalars()
+        .all()
+    )
     result = await session.execute(
         select(AppointmentSlot.id)
-        .where(AppointmentSlot.is_booked.is_(True), AppointmentSlot.id.not_in(own_slot_ids))
+        .where(
+            AppointmentSlot.is_booked.is_(True), AppointmentSlot.id.not_in(own_slot_ids)
+        )
         .order_by(AppointmentSlot.id)
     )
     return result.scalars().first()
 
 
-async def _find_cross_business_conflict_slot(session: AsyncSession, user_id: int) -> int | None:
+async def _find_cross_business_conflict_slot(
+    session: AsyncSession, user_id: int
+) -> int | None:
     """Kullanıcının mevcut randevularından birinin zaman aralığına denk gelen,
-    FARKLI bir işletmedeki boş bir slot bulur (çapraz işletme çakışma senaryosu için)."""
+    FARKLI bir işletmedeki boş bir slot bulur (çapraz işletme çakışma senaryosu için).
+    """
     schedule = await session.execute(
-        select(AppointmentSlot.business_id, AppointmentSlot.start_time, Business.appointment_duration_min)
+        select(
+            AppointmentSlot.business_id,
+            AppointmentSlot.start_time,
+            Business.appointment_duration_min,
+        )
         .join(Booking, Booking.appointment_slot_id == AppointmentSlot.id)
         .join(Business, AppointmentSlot.business_id == Business.id)
         .where(Booking.user_id == user_id)
@@ -124,14 +141,18 @@ async def _find_cross_business_conflict_slot(session: AsyncSession, user_id: int
 
 
 async def main() -> None:
-    logging.basicConfig(level=logging.WARNING, format="%(asctime)s %(levelname)s %(message)s")
+    logging.basicConfig(
+        level=logging.WARNING, format="%(asctime)s %(levelname)s %(message)s"
+    )
 
     scenarios: list[dict] = []
     session_factory = get_session_factory()
     async with session_factory() as session:
         user = (await session.execute(select(UserProfile))).scalars().first()
         if user is None:
-            logger.error("UserProfile bulunamadı — önce 'uv run python -m scripts.seed_test_user' çalıştırılmalı")
+            logger.error(
+                "UserProfile bulunamadı — önce 'uv run python -m scripts.seed_test_user' çalıştırılmalı"
+            )
             return
 
         free_slot_id = await _find_conflict_free_slot(session, user.id)
@@ -142,18 +163,36 @@ async def main() -> None:
         other_booked_id = await _find_other_booked_slot(session, user.id)
         if other_booked_id is not None:
             result = await book_appointment(session, user.id, other_booked_id)
-            scenarios.append(_print_and_record("Slot başkası tarafından zaten dolu", result))
+            scenarios.append(
+                _print_and_record("Slot başkası tarafından zaten dolu", result)
+            )
 
-            result_filtered = await book_appointment(session, user.id, other_booked_id, max_price=1000)
-            scenarios.append(_print_and_record("Aynı senaryo, max_price=1000 filtresiyle", result_filtered))
+            result_filtered = await book_appointment(
+                session, user.id, other_booked_id, max_price=1000
+            )
+            scenarios.append(
+                _print_and_record(
+                    "Aynı senaryo, max_price=1000 filtresiyle", result_filtered
+                )
+            )
 
-            result_near = await book_appointment(session, user.id, other_booked_id, near_me=True)
-            scenarios.append(_print_and_record("Aynı senaryo, near_me=True (mesafeye göre sıralı)", result_near))
+            result_near = await book_appointment(
+                session, user.id, other_booked_id, near_me=True
+            )
+            scenarios.append(
+                _print_and_record(
+                    "Aynı senaryo, near_me=True (mesafeye göre sıralı)", result_near
+                )
+            )
 
         cross_conflict_id = await _find_cross_business_conflict_slot(session, user.id)
         if cross_conflict_id is not None:
             result = await book_appointment(session, user.id, cross_conflict_id)
-            scenarios.append(_print_and_record("Kullanıcının başka işletmedeki randevusuyla çakışma", result))
+            scenarios.append(
+                _print_and_record(
+                    "Kullanıcının başka işletmedeki randevusuyla çakışma", result
+                )
+            )
 
         # Hiçbir senaryo gerçekten kalıcı yazılmasın diye bilerek commit değil rollback.
         await session.rollback()
@@ -161,7 +200,9 @@ async def main() -> None:
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
     timestamp = datetime.now().strftime(TIMESTAMP_FORMAT)
     output_path = RESULTS_DIR / f"{timestamp}.json"
-    output_path.write_text(json.dumps(scenarios, ensure_ascii=False, indent=2), encoding="utf-8")
+    output_path.write_text(
+        json.dumps(scenarios, ensure_ascii=False, indent=2), encoding="utf-8"
+    )
     logger.info("Sonuçlar kaydedildi: %s", output_path)
     print(f"\nSonuçlar kaydedildi: {output_path}")
 

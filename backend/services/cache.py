@@ -111,10 +111,16 @@ class CachedEmbeddingProvider:
             try:
                 async with self._redis.pipeline() as pipe:
                     for index in miss_indices:
-                        pipe.set(keys[index], json.dumps(results[index]), ex=self._ttl_seconds)
+                        pipe.set(
+                            keys[index],
+                            json.dumps(results[index]),
+                            ex=self._ttl_seconds,
+                        )
                     await pipe.execute()
             except RedisError as e:
-                logger.warning("Redis'e embedding yazılamadı, sonuç yine de dönülüyor: %s", e)
+                logger.warning(
+                    "Redis'e embedding yazılamadı, sonuç yine de dönülüyor: %s", e
+                )
 
         return [vector for vector in results if vector is not None]
 
@@ -199,7 +205,12 @@ class CachedLLMProvider:
             # göstermemesi için (bkz. modül docstring'i).
             original = LLMResponse.model_validate_json(cached)
             return original.model_copy(
-                update={"from_cache": True, "prompt_tokens": 0, "completion_tokens": 0, "total_tokens": 0}
+                update={
+                    "from_cache": True,
+                    "prompt_tokens": 0,
+                    "completion_tokens": 0,
+                    "total_tokens": 0,
+                }
             )
 
         response = await self._inner.complete(
@@ -213,7 +224,9 @@ class CachedLLMProvider:
         try:
             await self._redis.set(key, response.model_dump_json(), ex=self._ttl_seconds)
         except RedisError as e:
-            logger.warning("Redis'e LLM cevabı yazılamadı, cevap yine de dönülüyor: %s", e)
+            logger.warning(
+                "Redis'e LLM cevabı yazılamadı, cevap yine de dönülüyor: %s", e
+            )
         return response
 
     async def close(self) -> None:

@@ -43,7 +43,9 @@ def compute_rating_baseline(raw_records: list[dict[str, Any]]) -> tuple[float, i
         if rating is None:
             continue
         ratings.append(rating)
-        review_counts.append(parse_review_count(data.get("reviews_original"), data.get("reviews", 0)))
+        review_counts.append(
+            parse_review_count(data.get("reviews_original"), data.get("reviews", 0))
+        )
 
     mean_rating = sum(ratings) / len(ratings)
     review_counts.sort()

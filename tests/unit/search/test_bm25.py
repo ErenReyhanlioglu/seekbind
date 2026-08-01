@@ -168,7 +168,9 @@ def test_bm25_index_search_returns_empty_list_for_empty_query_tokens() -> None:
 async def test_fetch_active_businesses_returns_scalars_as_list() -> None:
     session = AsyncMock()
     active_business = _make_business(business_id=1)
-    session.execute.return_value = SimpleNamespace(scalars=lambda: SimpleNamespace(all=lambda: [active_business]))
+    session.execute.return_value = SimpleNamespace(
+        scalars=lambda: SimpleNamespace(all=lambda: [active_business])
+    )
 
     result = await fetch_active_businesses(session)
 
@@ -184,10 +186,14 @@ async def test_compute_fingerprint_returns_count_and_max_updated_at() -> None:
     assert result == (5, None)
 
 
-async def test_refresh_if_stale_skips_rebuild_when_fingerprint_unchanged(monkeypatch) -> None:
+async def test_refresh_if_stale_skips_rebuild_when_fingerprint_unchanged(
+    monkeypatch,
+) -> None:
     index = BM25Index()
     index.build([], fingerprint=(3, None))
-    monkeypatch.setattr(bm25_module, "compute_fingerprint", AsyncMock(return_value=(3, None)))
+    monkeypatch.setattr(
+        bm25_module, "compute_fingerprint", AsyncMock(return_value=(3, None))
+    )
     fetch_mock = AsyncMock()
     monkeypatch.setattr(bm25_module, "fetch_active_businesses", fetch_mock)
 
@@ -201,8 +207,12 @@ async def test_refresh_if_stale_rebuilds_when_fingerprint_changed(monkeypatch) -
     index = BM25Index()
     index.build([], fingerprint=(1, None))
     new_business = _make_business(business_id=99)
-    monkeypatch.setattr(bm25_module, "compute_fingerprint", AsyncMock(return_value=(2, None)))
-    monkeypatch.setattr(bm25_module, "fetch_active_businesses", AsyncMock(return_value=[new_business]))
+    monkeypatch.setattr(
+        bm25_module, "compute_fingerprint", AsyncMock(return_value=(2, None))
+    )
+    monkeypatch.setattr(
+        bm25_module, "fetch_active_businesses", AsyncMock(return_value=[new_business])
+    )
 
     changed = await index.refresh_if_stale(AsyncMock())
 
@@ -235,7 +245,9 @@ class _FakeSessionFactory:
         return _FakeSessionCtx()
 
 
-async def test_periodic_refresh_loop_survives_transient_db_error_and_retries(monkeypatch) -> None:
+async def test_periodic_refresh_loop_survives_transient_db_error_and_retries(
+    monkeypatch,
+) -> None:
     """Bir yenileme denemesi SQLAlchemyError ile başarısız olursa döngü
     çökmemeli, bir sonraki cycle'da tekrar denemeli."""
     sleep_count = 0

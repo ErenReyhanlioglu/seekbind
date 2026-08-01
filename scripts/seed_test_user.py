@@ -30,14 +30,22 @@ TEST_BOOKING_COUNT: int = 5
 
 
 async def main() -> None:
-    logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
+    logging.basicConfig(
+        level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s"
+    )
 
     session_factory = get_session_factory()
     async with session_factory() as session:
         try:
-            await session.execute(delete(UserProfile).where(UserProfile.name == TEST_USER_NAME))
+            await session.execute(
+                delete(UserProfile).where(UserProfile.name == TEST_USER_NAME)
+            )
 
-            user = UserProfile(name=TEST_USER_NAME, latitude=REFERENCE_LATITUDE, longitude=REFERENCE_LONGITUDE)
+            user = UserProfile(
+                name=TEST_USER_NAME,
+                latitude=REFERENCE_LATITUDE,
+                longitude=REFERENCE_LONGITUDE,
+            )
             session.add(user)
             await session.flush()  # Booking'lerde kullanmak için user.id gerekiyor
 
@@ -54,13 +62,22 @@ async def main() -> None:
             )
             slot_ids = result.scalars().all()
 
-            session.add_all([Booking(user_id=user.id, appointment_slot_id=slot_id) for slot_id in slot_ids])
+            session.add_all(
+                [
+                    Booking(user_id=user.id, appointment_slot_id=slot_id)
+                    for slot_id in slot_ids
+                ]
+            )
             await session.commit()
         except Exception:
             await session.rollback()
             raise
 
-    logger.info("Test kullanıcı '%s' oluşturuldu, %d randevuya bağlandı", TEST_USER_NAME, len(slot_ids))
+    logger.info(
+        "Test kullanıcı '%s' oluşturuldu, %d randevuya bağlandı",
+        TEST_USER_NAME,
+        len(slot_ids),
+    )
 
 
 if __name__ == "__main__":

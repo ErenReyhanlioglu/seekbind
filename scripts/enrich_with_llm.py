@@ -25,7 +25,9 @@ logger = logging.getLogger(__name__)
 INPUT_FILE_PATH: Path = Path("data/processed/businesses.jsonl")
 OUTPUT_FILE_PATH: Path = Path("data/processed/businesses_enriched.jsonl")
 # __file__'a göre (proje köküne/CWD'ye göre değil) — bkz. backend/services/rag/prompts.py
-PROMPT_TEMPLATE_PATH: Path = Path(__file__).parent.parent / "backend" / "prompts" / "synthetic_enrichment.txt"
+PROMPT_TEMPLATE_PATH: Path = (
+    Path(__file__).parent.parent / "backend" / "prompts" / "synthetic_enrichment.txt"
+)
 ENTRY_DELIMITER: str = "---BUSINESS---"
 
 BATCH_SIZE: int = 6
@@ -108,9 +110,13 @@ def group_into_batches(
     return batches
 
 
-def build_batch_prompt(batch: list[ProcessedBusinessRecord], header_template: str, entry_template: str) -> str:
+def build_batch_prompt(
+    batch: list[ProcessedBusinessRecord], header_template: str, entry_template: str
+) -> str:
     """Header'ı bir kez, her işletme için entry şablonunu ayrı ayrı doldurup birleştirir."""
-    header = header_template.format(count=len(batch), type_normalized=batch[0].type_normalized)
+    header = header_template.format(
+        count=len(batch), type_normalized=batch[0].type_normalized
+    )
     entries = [
         entry_template.format(
             place_id=record.place_id,
@@ -119,9 +125,17 @@ def build_batch_prompt(batch: list[ProcessedBusinessRecord], header_template: st
             price_min=record.price_range_tl.min,
             price_max=record.price_range_tl.max,
             appointment_duration_min=record.appointment_duration_min,
-            online_text="online olarak da verilebiliyor" if record.online_available else "yüz yüze hizmet veriliyor",
+            online_text=(
+                "online olarak da verilebiliyor"
+                if record.online_available
+                else "yüz yüze hizmet veriliyor"
+            ),
             gender_text=GENDER_LABELS[record.gender],
-            rating=record.rating if record.rating is not None else "Henüz değerlendirilmemiş",
+            rating=(
+                record.rating
+                if record.rating is not None
+                else "Henüz değerlendirilmemiş"
+            ),
             reviews=record.reviews,
         )
         for record in batch
@@ -129,7 +143,9 @@ def build_batch_prompt(batch: list[ProcessedBusinessRecord], header_template: st
     return header + "\n\n" + "\n\n".join(entries)
 
 
-def call_llm_for_batch(client: OpenAI, model: str, prompt: str, timeout_seconds: int) -> list[dict]:
+def call_llm_for_batch(
+    client: OpenAI, model: str, prompt: str, timeout_seconds: int
+) -> list[dict]:
     """OpenAI'den bir batch için JSON sonuç listesi ister."""
     try:
         response = client.chat.completions.create(
@@ -171,7 +187,12 @@ def enrich_batch(
     try:
         results = call_llm_for_batch(client, model, prompt, timeout_seconds)
     except LLMEnrichmentError as e:
-        logger.warning("Batch başarısız (tip=%s, adet=%d): %s", batch[0].type_normalized, len(batch), e)
+        logger.warning(
+            "Batch başarısız (tip=%s, adet=%d): %s",
+            batch[0].type_normalized,
+            len(batch),
+            e,
+        )
         return batch
 
     by_place_id = {r.get("place_id"): r for r in results if isinstance(r, dict)}
@@ -200,7 +221,9 @@ def main(limit: int | None = None) -> None:
     güncellenir — yarıda kesilirse tekrar çalıştırıldığında kaldığı
     yerden devam eder, başarılı batch'ler için tekrar para harcanmaz.
     """
-    logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
+    logging.basicConfig(
+        level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s"
+    )
     settings = get_settings()
     client = OpenAI(api_key=settings.openai_api_key.get_secret_value())
     header_template, entry_template = load_prompt_template(PROMPT_TEMPLATE_PATH)
@@ -232,11 +255,22 @@ def main(limit: int | None = None) -> None:
             settings.llm_call_timeout_seconds,
         ):
             results[record.place_id] = record
-        logger.info("Batch %d/%d tamamlandı (tip=%s, adet=%d)", i, len(batches), batch[0].type_normalized, len(batch))
+        logger.info(
+            "Batch %d/%d tamamlandı (tip=%s, adet=%d)",
+            i,
+            len(batches),
+            batch[0].type_normalized,
+            len(batch),
+        )
         write_records(OUTPUT_FILE_PATH, [results.get(r.place_id, r) for r in records])
 
     basarili = sum(1 for r in results.values() if r.rich_description is not None)
-    logger.info("Tamamlandı. %d/%d kayıt için açıklama üretildi -> %s", basarili, len(records), OUTPUT_FILE_PATH)
+    logger.info(
+        "Tamamlandı. %d/%d kayıt için açıklama üretildi -> %s",
+        basarili,
+        len(records),
+        OUTPUT_FILE_PATH,
+    )
 
 
 if __name__ == "__main__":

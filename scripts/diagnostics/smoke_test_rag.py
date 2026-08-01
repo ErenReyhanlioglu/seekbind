@@ -56,7 +56,9 @@ EXPERIMENT_NAME: str = "rag_smoke_test"
 TIMESTAMP_FORMAT: str = "%Y-%m-%dT%H-%M-%S"
 
 
-def _print_and_record_intent(query: str, intent: ParsedIntent, from_cache: bool) -> dict:
+def _print_and_record_intent(
+    query: str, intent: ParsedIntent, from_cache: bool
+) -> dict:
     """Ham intent parsing çıktısını terminale yazdırır, JSON'a kaydedilecek yapıyı döner."""
     print(f"\n--- Intent ayrıştırma: '{query}' (cache'den mi: {from_cache}) ---")
     print(f"  semantic_query: {intent.semantic_query!r}")
@@ -66,11 +68,19 @@ def _print_and_record_intent(query: str, intent: ParsedIntent, from_cache: bool)
         f"online_only={intent.online_only}, weekend_open_only={intent.weekend_open_only}, "
         f"near_me={intent.near_me}"
     )
-    print(f"  zaman: day_of_week={intent.day_of_week}, time_of_day={intent.time_of_day}")
-    return {"query": query, "parsed_intent": intent.model_dump(), "intent_cache_hit": from_cache}
+    print(
+        f"  zaman: day_of_week={intent.day_of_week}, time_of_day={intent.time_of_day}"
+    )
+    return {
+        "query": query,
+        "parsed_intent": intent.model_dump(),
+        "intent_cache_hit": from_cache,
+    }
 
 
-def _print_and_record_recommendation(title: str, query: str, response) -> dict:  # noqa: ANN001
+def _print_and_record_recommendation(
+    title: str, query: str, response
+) -> dict:  # noqa: ANN001
     """RAG sonucunu terminale yazdırır, JSON'a kaydedilecek yapıyı döner.
 
     `top_results`, ProviderResult'ın TÜM alanlarını içerir (sadece fiyat
@@ -134,7 +144,9 @@ def _write_result(
         "scenarios": scenarios,
         "intent_diagnostics": intent_diagnostics,
     }
-    output_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+    output_path.write_text(
+        json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8"
+    )
     return output_path
 
 
@@ -152,7 +164,9 @@ async def main(
     fonksiyon sadece kendi kurduğu (`llm_provider=None` verildiğinde) client'ı
     kapatır, aksi halde aynı sağlayıcı ardışık çağrılarda ikinci kez
     kullanılmaya çalışıldığında "kapalı client" hatası alınırdı."""
-    logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
+    logging.basicConfig(
+        level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s"
+    )
 
     owns_llm_provider = llm_provider is None
 
@@ -182,8 +196,12 @@ async def main(
                 return
 
             async def run(title: str, query: str) -> None:
-                intent, intent_from_cache = await parse_intent(llm_provider, query, today)
-                intent_diagnostics.append(_print_and_record_intent(query, intent, intent_from_cache))
+                intent, intent_from_cache = await parse_intent(
+                    llm_provider, query, today
+                )
+                intent_diagnostics.append(
+                    _print_and_record_intent(query, intent, intent_from_cache)
+                )
 
                 response = await get_recommendation(
                     session=session,
@@ -196,12 +214,18 @@ async def main(
                     user_id=user.id,
                     today=today,
                 )
-                scenarios.append(_print_and_record_recommendation(title, query, response))
+                scenarios.append(
+                    _print_and_record_recommendation(title, query, response)
+                )
 
             if custom_query is not None:
                 await run(f"Özel sorgu: {custom_query}", custom_query)
                 output_path = _write_result(
-                    scenarios, intent_diagnostics, label, llm_provider.model, embedding_provider.model
+                    scenarios,
+                    intent_diagnostics,
+                    label,
+                    llm_provider.model,
+                    embedding_provider.model,
                 )
                 logger.info("Sonuçlar kaydedildi: %s", output_path)
                 return
@@ -210,13 +234,18 @@ async def main(
             await run("Happy path", "İzmit'te ucuz dişçi")
 
             # 2) Kitchen-sink — gün + saat + konum + cinsiyet + kategori + fiyat hepsi bir arada
-            await run("Kitchen-sink (tüm alanlar)", "Perşembe akşamı Kocaeli'de kadınlara özel ucuz kuaför")
+            await run(
+                "Kitchen-sink (tüm alanlar)",
+                "Perşembe akşamı Kocaeli'de kadınlara özel ucuz kuaför",
+            )
 
             # 3) Veri penceresi dışı gün — appointment_slots sadece 2026-07-25/31'i
             # kapsıyor (bu oturumda keşfettik); bugün çarşambaysa "pazartesi"
             # gelecek haftaya düşer, veri aralığının dışında kalır — zarif
             # bozulma (sabit mesaj, çökme yok) bekleniyor
-            await run("Veri penceresi dışı gün (boş sonuç beklenir)", "Pazartesi sabahı dişçi")
+            await run(
+                "Veri penceresi dışı gün (boş sonuç beklenir)", "Pazartesi sabahı dişçi"
+            )
 
             # 4) 27 listede olmayan kategori — None'a düşüp semantik aramaya
             # bırakılıyor mu (uydurma bir kategori değeri değil)
@@ -259,7 +288,9 @@ async def main(
 
             # 14) Çoklu kategori — sistem tek category alanı için tasarlandı,
             # iki farklı iş türü aynı anda istenirse ne olacağı belgelenmemişti
-            await run("Çoklu kategori (sistem sınırı)", "hem dişçi hem kuaför istiyorum")
+            await run(
+                "Çoklu kategori (sistem sınırı)", "hem dişçi hem kuaför istiyorum"
+            )
 
             # 15) Sadece konum, kategori/hizmet belirtilmeden — "yardım" testinden
             # farklı bir sinyal (belirsiz kelime değil, salt bir yer adı)
@@ -268,7 +299,10 @@ async def main(
             # 16) "Pahalı" (expensive) — şimdiye kadarki tüm fiyat testleri
             # "ucuz" idi, resolve_price_threshold()'ın expensive dalı (price_max'ın
             # 75. percentile'ı) hiç gerçek bir LLM çağrısıyla tetiklenmemişti
-            await run("Pahalı avukat (fiyat eşiği düşük olmalı)", "pahalı bir avukat istiyorum")
+            await run(
+                "Pahalı avukat (fiyat eşiği düşük olmalı)",
+                "pahalı bir avukat istiyorum",
+            )
 
             # 17) "Yakınımda" (near_me) — feat/near-filter: intent'in near_me=true
             # ayrıştırdığı, kullanıcının UserProfile referans konumunun bulunup
@@ -281,7 +315,10 @@ async def main(
             # ifadelerini de near_me=true'ya çevirdiği (sistemde yarıçap filtresi
             # olmadığı için bu bir eşik değil, aynı sıralama sinyaline dönüşüyor)
             # hiç gerçek bir LLM çağrısıyla doğrulanmamıştı
-            await run("Somut mesafe ifadesi (near_me'ye çevrilmeli)", "5 km uzaklıkta bir dişçi arıyorum")
+            await run(
+                "Somut mesafe ifadesi (near_me'ye çevrilmeli)",
+                "5 km uzaklıkta bir dişçi arıyorum",
+            )
 
             # 19) Yer adı + near_me AYRIMI — "İzmit'te" gibi bir yer adının
             # near_me'yi YANLIŞLIKLA tetiklememesi gerekiyor (kural 10'un ayrım
@@ -293,7 +330,10 @@ async def main(
             # gerçek veriyle birleştirdiği (apply_final_sort, search/service.py)
             # hiç gerçek bir uçtan uca çağrıyla doğrulanmamıştı, sadece unit
             # testte sentetik veriyle test edilmişti
-            await run("Yakınımda + en iyi puanlı (RRF füzyonu)", "yakınımda en iyi puanlı kuaförü bul")
+            await run(
+                "Yakınımda + en iyi puanlı (RRF füzyonu)",
+                "yakınımda en iyi puanlı kuaförü bul",
+            )
 
             # 21) near_me + online_only birlikte — online işletmelerin normalde
             # mesafe sıralamasından muaf tutulduğu, ama online_only AÇIKÇA
@@ -301,10 +341,17 @@ async def main(
             # online_exempt_from_distance parametresi) hiç gerçek bir çağrıyla
             # doğrulanmamıştı — bu tam da bu oturumda düzeltilen bir kablolama
             # hatasıydı (search_providers() online_only'yi hiç iletmiyordu)
-            await run("Yakınımda + online (muafiyet kalkmalı)", "yakınımda online bir ders almak istiyorum")
+            await run(
+                "Yakınımda + online (muafiyet kalkmalı)",
+                "yakınımda online bir ders almak istiyorum",
+            )
 
         output_path = _write_result(
-            scenarios, intent_diagnostics, label, llm_provider.model, embedding_provider.model
+            scenarios,
+            intent_diagnostics,
+            label,
+            llm_provider.model,
+            embedding_provider.model,
         )
         logger.info("Sonuçlar kaydedildi: %s", output_path)
         logger.info("Smoke test tamamlandı.")
@@ -322,7 +369,10 @@ async def main(
 def _parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
-        "label", nargs="?", default=None, help="Sonuç dosyasının adına eklenecek opsiyonel etiket"
+        "label",
+        nargs="?",
+        default=None,
+        help="Sonuç dosyasının adına eklenecek opsiyonel etiket",
     )
     parser.add_argument(
         "--query",

@@ -64,8 +64,12 @@ class Settings(BaseSettings):
     # OpenAI
     openai_api_key: SecretStr
     openai_embedding_model: str
-    openai_llm_model: str  # runtime aday — gpt-4o-mini (bkz. docs/adr/0008-llm-comparison-phase-4.md)
-    openai_enrichment_llm_model: str  # veri zenginleştirme, ADR-0001 ile sabit — gpt-4.1-mini
+    openai_llm_model: (
+        str  # runtime aday — gpt-4o-mini (bkz. docs/adr/0008-llm-comparison-phase-4.md)
+    )
+    openai_enrichment_llm_model: (
+        str  # veri zenginleştirme, ADR-0001 ile sabit — gpt-4.1-mini
+    )
 
     # Ollama (yerel sağlayıcı — fallback hedefi, bkz. docs/adr/0023-ablation-candidate-models.md)
     ollama_base_url: str

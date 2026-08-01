@@ -59,7 +59,9 @@ async def test_fallback_llm_uses_real_ollama_when_primary_fails() -> None:
     provider = FallbackLLMProvider(primary, secondary, enabled=True)
 
     try:
-        response = await provider.complete([ChatMessage(role="user", content="merhaba, kısaca kendini tanıt")])
+        response = await provider.complete(
+            [ChatMessage(role="user", content="merhaba, kısaca kendini tanıt")]
+        )
         assert response.provider == "ollama"
         assert response.content != ""
     finally:

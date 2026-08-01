@@ -12,7 +12,9 @@ def _session_returning(value: float | None) -> AsyncMock:
     return session
 
 
-async def test_resolve_price_threshold_returns_none_none_when_category_missing() -> None:
+async def test_resolve_price_threshold_returns_none_none_when_category_missing() -> (
+    None
+):
     session = AsyncMock()
 
     min_price, max_price = await resolve_price_threshold(session, None, "cheap")
@@ -21,7 +23,9 @@ async def test_resolve_price_threshold_returns_none_none_when_category_missing()
     session.execute.assert_not_called()
 
 
-async def test_resolve_price_threshold_returns_none_none_when_preference_missing() -> None:
+async def test_resolve_price_threshold_returns_none_none_when_preference_missing() -> (
+    None
+):
     session = AsyncMock()
 
     min_price, max_price = await resolve_price_threshold(session, "Diş Kliniği", None)
@@ -33,14 +37,16 @@ async def test_resolve_price_threshold_returns_none_none_when_preference_missing
 async def test_resolve_price_threshold_returns_max_price_for_cheap_preference() -> None:
     session = _session_returning(950.0)
 
-    min_price, max_price = await resolve_price_threshold(session, "Diş Kliniği", "cheap")
+    min_price, max_price = await resolve_price_threshold(
+        session, "Diş Kliniği", "cheap"
+    )
 
     assert min_price is None
     assert max_price == 950
 
 
 async def test_resolve_price_threshold_cheap_queries_price_min_column() -> None:
-    """"cheap" eşiği, price_min <= max_price şeklinde uygulanıyor
+    """ "cheap" eşiği, price_min <= max_price şeklinde uygulanıyor
     (filters.py'deki overlap mantığı) — yani percentile de price_min
     kolonundan hesaplanmalı, price_max'tan DEĞİL. İlk implementasyonda
     tam olarak bu ters karıştırılmıştı (gerçek DB'de doğrulandı: bir
@@ -59,7 +65,9 @@ async def test_resolve_price_threshold_cheap_queries_price_min_column() -> None:
     assert "price_max" not in executed_statement
 
 
-async def test_resolve_price_threshold_returns_min_price_for_expensive_preference() -> None:
+async def test_resolve_price_threshold_returns_min_price_for_expensive_preference() -> (
+    None
+):
     session = _session_returning(12000.0)
 
     min_price, max_price = await resolve_price_threshold(session, "Avukat", "expensive")
@@ -69,7 +77,7 @@ async def test_resolve_price_threshold_returns_min_price_for_expensive_preferenc
 
 
 async def test_resolve_price_threshold_expensive_queries_price_max_column() -> None:
-    """"expensive" eşiği price_max >= min_price şeklinde uygulanıyor —
+    """ "expensive" eşiği price_max >= min_price şeklinde uygulanıyor —
     percentile price_max kolonundan hesaplanmalı, price_min'den değil
     (bkz. test_resolve_price_threshold_cheap_queries_price_min_column)."""
     session = _session_returning(15000.0)
@@ -81,11 +89,15 @@ async def test_resolve_price_threshold_expensive_queries_price_max_column() -> N
     assert "price_min" not in executed_statement
 
 
-async def test_resolve_price_threshold_returns_none_when_category_has_no_businesses() -> None:
+async def test_resolve_price_threshold_returns_none_when_category_has_no_businesses() -> (
+    None
+):
     """percentile_cont, hiç satır yoksa NULL/None döner — bu durumda da
     filtre uygulanmamalı, hata fırlatılmamalı."""
     session = _session_returning(None)
 
-    min_price, max_price = await resolve_price_threshold(session, "Hiç Olmayan Kategori", "cheap")
+    min_price, max_price = await resolve_price_threshold(
+        session, "Hiç Olmayan Kategori", "cheap"
+    )
 
     assert (min_price, max_price) == (None, None)

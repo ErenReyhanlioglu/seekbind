@@ -20,7 +20,12 @@ def test_normalize_turkish_text_removes_punctuation() -> None:
 
 
 def test_tokenize_splits_normalized_text_into_words() -> None:
-    assert tokenize("Merhaba, dünya! İyi günler.") == ["merhaba", "dünya", "iyi", "günler"]
+    assert tokenize("Merhaba, dünya! İyi günler.") == [
+        "merhaba",
+        "dünya",
+        "iyi",
+        "günler",
+    ]
 
 
 def test_tokenize_returns_empty_list_for_empty_string() -> None:

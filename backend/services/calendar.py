@@ -26,7 +26,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from backend.api.schemas import BookingAlternative, BookResponse, ProviderResult
 from backend.db.models import AppointmentSlot, Booking, Business
 from backend.services.search import apply_final_sort, compute_distance_km
-from backend.services.search.availability import DateAvailabilityFilter, fetch_available_business_ids
+from backend.services.search.availability import (
+    DateAvailabilityFilter,
+    fetch_available_business_ids,
+)
 from backend.services.user_location import get_user_reference_location
 
 ALTERNATIVE_LIMIT: int = 5
@@ -40,7 +43,9 @@ class SlotNotFoundError(CalendarServiceError):
     """Verilen appointment_slot_id'ye karşılık gelen bir slot yoksa."""
 
 
-def _to_provider_result(business: Business, distance_reference: tuple[float, float] | None) -> ProviderResult:
+def _to_provider_result(
+    business: Business, distance_reference: tuple[float, float] | None
+) -> ProviderResult:
     """Business ORM nesnesini ProviderResult'a eşler.
 
     `search/service.py`'deki aynı isimli fonksiyonun eşdeğeri — `near_me`
@@ -48,9 +53,15 @@ def _to_provider_result(business: Business, distance_reference: tuple[float, flo
     doldurulur, aksi halde None kalır.
     """
     distance_km = None
-    if distance_reference is not None and business.latitude is not None and business.longitude is not None:
+    if (
+        distance_reference is not None
+        and business.latitude is not None
+        and business.longitude is not None
+    ):
         ref_lat, ref_lon = distance_reference
-        distance_km = compute_distance_km(ref_lat, ref_lon, business.latitude, business.longitude)
+        distance_km = compute_distance_km(
+            ref_lat, ref_lon, business.latitude, business.longitude
+        )
     return ProviderResult(
         id=business.id,
         title=business.title,
@@ -91,14 +102,18 @@ async def _fetch_slot(
     return row[0], row[1], row[2], row[3], row[4]
 
 
-def _slots_overlap(start_a: datetime, duration_a: int, start_b: datetime, duration_b: int) -> bool:
+def _slots_overlap(
+    start_a: datetime, duration_a: int, start_b: datetime, duration_b: int
+) -> bool:
     """İki randevu süresinin (kendi süreleri kadar) zaman olarak çakışıp çakışmadığını kontrol eder."""
     end_a = start_a + timedelta(minutes=duration_a)
     end_b = start_b + timedelta(minutes=duration_b)
     return start_a < end_b and start_b < end_a
 
 
-async def _fetch_user_schedule(session: AsyncSession, user_id: int) -> list[tuple[datetime, int]]:
+async def _fetch_user_schedule(
+    session: AsyncSession, user_id: int
+) -> list[tuple[datetime, int]]:
     """Kullanıcının mevcut tüm rezervasyonlarının (başlangıç, süre) listesini döner."""
     result = await session.execute(
         select(AppointmentSlot.start_time, Business.appointment_duration_min)
@@ -110,11 +125,17 @@ async def _fetch_user_schedule(session: AsyncSession, user_id: int) -> list[tupl
 
 
 async def _has_user_conflict(
-    session: AsyncSession, user_id: int, candidate_start: datetime, candidate_duration: int
+    session: AsyncSession,
+    user_id: int,
+    candidate_start: datetime,
+    candidate_duration: int,
 ) -> bool:
     """Verilen aday slotun, kullanıcının mevcut randevularından biriyle çakışıp çakışmadığını kontrol eder."""
     schedule = await _fetch_user_schedule(session, user_id)
-    return any(_slots_overlap(candidate_start, candidate_duration, start, duration) for start, duration in schedule)
+    return any(
+        _slots_overlap(candidate_start, candidate_duration, start, duration)
+        for start, duration in schedule
+    )
 
 
 async def _find_same_business_alternatives(
@@ -140,7 +161,10 @@ async def _find_same_business_alternatives(
 
     alternatives: list[BookingAlternative] = []
     for slot_id, start_time, business in result.all():
-        if any(_slots_overlap(start_time, business.appointment_duration_min, s, d) for s, d in schedule):
+        if any(
+            _slots_overlap(start_time, business.appointment_duration_min, s, d)
+            for s, d in schedule
+        ):
             continue
         alternatives.append(
             BookingAlternative(
@@ -206,7 +230,13 @@ async def _find_cross_business_alternatives(
     mesafeye göre sıralanır; sıralama mantığı burada tekrar yazılmaz.
     """
     candidate_ids = await _same_category_candidate_ids(
-        session, original_business_id, category, online_only, gender, min_price, max_price
+        session,
+        original_business_id,
+        category,
+        online_only,
+        gender,
+        min_price,
+        max_price,
     )
     if not candidate_ids:
         return []
@@ -220,7 +250,12 @@ async def _find_cross_business_alternatives(
     day_start = datetime.combine(target_date, time.min)
     day_end = datetime.combine(target_date, time.max)
     result = await session.execute(
-        select(AppointmentSlot.id, AppointmentSlot.business_id, AppointmentSlot.start_time, Business)
+        select(
+            AppointmentSlot.id,
+            AppointmentSlot.business_id,
+            AppointmentSlot.start_time,
+            Business,
+        )
         .join(Business, AppointmentSlot.business_id == Business.id)
         .where(
             AppointmentSlot.business_id.in_(available_ids),
@@ -236,7 +271,10 @@ async def _find_cross_business_alternatives(
     for slot_id, business_id, start_time, business in result.all():
         if business_id in best_per_business:
             continue  # bu işletmeden zaten (en erken olduğu için ilk görülen) bir slot seçildi
-        if any(_slots_overlap(start_time, business.appointment_duration_min, s, d) for s, d in schedule):
+        if any(
+            _slots_overlap(start_time, business.appointment_duration_min, s, d)
+            for s, d in schedule
+        ):
             continue
         best_per_business[business_id] = (slot_id, start_time, business)
 
@@ -302,7 +340,10 @@ async def _claim_slot(session: AsyncSession, appointment_slot_id: int) -> bool:
     """
     result = await session.execute(
         update(AppointmentSlot)
-        .where(AppointmentSlot.id == appointment_slot_id, AppointmentSlot.is_booked.is_(False))
+        .where(
+            AppointmentSlot.id == appointment_slot_id,
+            AppointmentSlot.is_booked.is_(False),
+        )
         .values(is_booked=True)
     )
     # AsyncSession.execute()'ün dönüş tipi Pyright için genel Result[Any] —
@@ -338,20 +379,42 @@ async def book_appointment(
     if slot is None:
         raise SlotNotFoundError(f"appointment_slot_id={appointment_slot_id} bulunamadı")
 
-    distance_reference = await get_user_reference_location(session, user_id) if near_me else None
+    distance_reference = (
+        await get_user_reference_location(session, user_id) if near_me else None
+    )
 
     business_id, category, start_time, duration_min, is_booked = slot
-    if is_booked or await _has_user_conflict(session, user_id, start_time, duration_min):
+    if is_booked or await _has_user_conflict(
+        session, user_id, start_time, duration_min
+    ):
         alternatives = await _find_alternatives(
-            session, user_id, business_id, category, appointment_slot_id, start_time,
-            online_only, gender, min_price, max_price, distance_reference,
+            session,
+            user_id,
+            business_id,
+            category,
+            appointment_slot_id,
+            start_time,
+            online_only,
+            gender,
+            min_price,
+            max_price,
+            distance_reference,
         )
         return BookResponse(success=False, alternatives=alternatives)
 
     if not await _claim_slot(session, appointment_slot_id):
         alternatives = await _find_alternatives(
-            session, user_id, business_id, category, appointment_slot_id, start_time,
-            online_only, gender, min_price, max_price, distance_reference,
+            session,
+            user_id,
+            business_id,
+            category,
+            appointment_slot_id,
+            start_time,
+            online_only,
+            gender,
+            min_price,
+            max_price,
+            distance_reference,
         )
         return BookResponse(success=False, alternatives=alternatives)
 

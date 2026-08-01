@@ -60,10 +60,16 @@ def build_working_hours(type_normalized: str) -> WorkingHours:
 
     weekday = _apply_jitter(template["weekday"], None, open_jitter, close_jitter)
     saturday = _apply_jitter(
-        template["saturday"], SATURDAY_OPEN_PROBABILITY.get(type_normalized), open_jitter, close_jitter
+        template["saturday"],
+        SATURDAY_OPEN_PROBABILITY.get(type_normalized),
+        open_jitter,
+        close_jitter,
     )
     sunday = _apply_jitter(
-        template["sunday"], SUNDAY_OPEN_PROBABILITY.get(type_normalized), open_jitter, close_jitter
+        template["sunday"],
+        SUNDAY_OPEN_PROBABILITY.get(type_normalized),
+        open_jitter,
+        close_jitter,
     )
     return WorkingHours(weekday=weekday, saturday=saturday, sunday=sunday)
 
@@ -78,7 +84,9 @@ def _day_hours(working_hours: WorkingHours, day: date) -> WorkingHoursDay:
     return working_hours.weekday
 
 
-def generate_slots(working_hours: WorkingHours, duration_min: int) -> tuple[list[str], list[str]]:
+def generate_slots(
+    working_hours: WorkingHours, duration_min: int
+) -> tuple[list[str], list[str]]:
     """Önümüzdeki SLOT_GENERATION_DAYS_AHEAD gün için müsait/dolu slotları üretir."""
     available: list[str] = []
     booked: list[str] = []
@@ -90,8 +98,12 @@ def generate_slots(working_hours: WorkingHours, duration_min: int) -> tuple[list
         if hours.open is None or hours.close is None:
             continue
 
-        slot_start = datetime.combine(current_day, datetime.strptime(hours.open, TIME_FORMAT).time())
-        day_close = datetime.combine(current_day, datetime.strptime(hours.close, TIME_FORMAT).time())
+        slot_start = datetime.combine(
+            current_day, datetime.strptime(hours.open, TIME_FORMAT).time()
+        )
+        day_close = datetime.combine(
+            current_day, datetime.strptime(hours.close, TIME_FORMAT).time()
+        )
 
         while slot_start + timedelta(minutes=duration_min) <= day_close:
             slot_str = slot_start.strftime(SLOT_DATETIME_FORMAT)

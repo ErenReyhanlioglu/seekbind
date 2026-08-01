@@ -17,7 +17,9 @@ def _build_active_only_filter(extra_filter: Filter | None) -> Filter:
     bir Condition geldiğinde (örn. ileride translate_filters_to_qdrant tek
     koşullu bir filtre üretirse) sessizce yanlış davranırdı.
     """
-    must_conditions: list[Condition] = [FieldCondition(key="is_active", match=MatchValue(value=True))]
+    must_conditions: list[Condition] = [
+        FieldCondition(key="is_active", match=MatchValue(value=True))
+    ]
     if extra_filter is not None and extra_filter.must is not None:
         extra_must = extra_filter.must
         if isinstance(extra_must, list):
