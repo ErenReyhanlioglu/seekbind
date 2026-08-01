@@ -144,3 +144,25 @@ Proje kökünde `docker-compose.yml` ile PostgreSQL, Qdrant ve Langfuse (+ kendi
 | Qdrant | `localhost:6333` | Embedding'lerin tutulduğu vektör veritabanı |
 | Langfuse | `localhost:3000` | LLM çağrılarının izlendiği web arayüzü |
 | Langfuse DB | (dışarı açık değil) | Langfuse'un kendi iç verisi için ayrı Postgres |
+
+---
+
+## CI'yi Push Etmeden Önce Lokalde Çalıştırma
+
+`.github/workflows/ci.yml`'deki 5 job'ın lokal karşılıkları — push'tan önce
+aynı kontrolleri kendi makinende çalıştırmak için:
+
+| CI job | Lokal komut |
+|---|---|
+| **lint** | `uv run black --check .` ardından `uv run ruff check .` |
+| **unit-test** | `uv run pytest --cov=backend --cov-report= --cov-fail-under=0` |
+| **integration-test** | `uv run pytest -m "integration and not requires_ollama and not requires_seed_data" --cov=backend --cov-report= --cov-fail-under=0` |
+| **coverage-report** | (unit + integration ayrı `COVERAGE_FILE` ile koşulduysa) `uv run coverage combine` ardından `uv run coverage report -m` |
+| **build** | `docker build -f docker/Dockerfile.backend -t seekbind-backend:ci .` |
+
+**Not:** lint ve build CI ile birebir aynı. Testlerde tek fark — CI,
+entegrasyon testleri için tertemiz/boş bir Postgres kullanıyor (sadece
+`business_types` seed'li), lokal `docker compose` stack'inde ise gerçek
+478 işletme seed'li. Bu bir üst küme olduğu için testleri kırmaz, ama
+CI'nin %100 birebir klonu değil — tam eşleşme istenirse `.env.ci`'deki
+değerlerle ayrı/boş container'lar açmak gerekir.

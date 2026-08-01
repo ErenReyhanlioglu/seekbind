@@ -48,7 +48,7 @@ test kanıtı ve "SeekBind 2.0" notu için bkz. [ADR-0017](adr/0017-tool-calling
 
 ## Faz 6 — Değerlendirme
 
-- ⬜ `feature/ragas-testset` — 100 test sorusu hazırlama (`evaluation/test_set.json`)
+- ✅ `feature/ragas-testset` — 100 test sorusu hazırlama (`evaluation/test_set.json`)
 - ⬜ `feature/ragas-evaluation` — RAGAS ile Faithfulness/Relevancy/Precision/Recall ölçümü; evaluator modeli için bkz. [ADR-0009](adr/0009-ragas-evaluator-model.md). Ablasyon aday kümesi kesinleşti — 2 LLM × 2 embedding = 4 kombinasyon (`embeddingmagibu-200m` gerçek kanıtlara dayanarak kapsam dışı bırakıldı), bkz. [ADR-0023](adr/0023-ablation-candidate-models.md); tam mı kademeli mi çalıştırılacağı pilot teste bağlı, henüz kesinleşmedi. `seed` parametresi (LLM çağrı tekrarlanabilirliği) bu fazda tekrar değerlendirilecek — bkz. ADR-0023 güncelleme notu
 
 ## Faz 7 — Frontend

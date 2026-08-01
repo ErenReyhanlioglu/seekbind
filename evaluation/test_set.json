@@ -1,0 +1,1788 @@
+[
+  {
+    "id": "q001",
+    "question": "İzmit'te güvenilir bir diş kliniği arıyorum",
+    "category": "Diş Kliniği",
+    "intent_tags": [
+      "simple"
+    ],
+    "expected_business_ids": [
+      16,
+      1,
+      4,
+      20,
+      15
+    ],
+    "reference": "İyi değerlendirilen Diş Kliniği seçenekleri arasında Diş Hekimi Ahmet Melih Bozoğlu Diş Kliniği ve Yahyakaptan Diş Hekimi Aydın Cevizli- İzmit Nöbetçi Diş - Kocaeli İzmit Acil 7/24 Diş Kliniği -İzmit özel Diş Hastanesi öne çıkıyor (puanları 4.9-5.0/5 arasında), fiyatlar 3446-7949 TL arasında değişiyor."
+  },
+  {
+    "id": "q002",
+    "question": "Ucuz bir dişçi önerir misin, implant yaptıracağım",
+    "category": "Diş Kliniği",
+    "intent_tags": [
+      "price_preference:cheap"
+    ],
+    "expected_business_ids": [
+      5,
+      7,
+      8,
+      11,
+      19
+    ],
+    "reference": "Uygun fiyatlı 5 Diş Kliniği seçeneği bulundu, örnek olarak Özel Dentkartepe Ağız Ve Diş Sağlığı Polikliniği ve Diş Hekimi Tarık Can Kara , İzmit/Kocaeli sayılabilir (puanları 4.5-4.9/5 arasında, fiyatlar 576-7423 TL arasında değişiyor)."
+  },
+  {
+    "id": "q003",
+    "question": "Cumartesi günü öğleden sonra müsait bir diş kliniği var mı?",
+    "category": "Diş Kliniği",
+    "intent_tags": [
+      "day_of_week:cumartesi",
+      "time_of_day:afternoon"
+    ],
+    "expected_business_ids": [
+      1,
+      2,
+      3,
+      6,
+      7,
+      9,
+      11,
+      15,
+      16,
+      17,
+      19,
+      20
+    ],
+    "reference": "Cumartesi günü öğleden sonra müsait 12 Diş Kliniği seçeneği bulundu, örnek olarak Diş Hekimi Ahmet Melih Bozoğlu Diş Kliniği ve Yahyakaptan Diş Hekimi Aydın Cevizli- İzmit Nöbetçi Diş - Kocaeli İzmit Acil 7/24 Diş Kliniği -İzmit özel Diş Hastanesi sayılabilir (puanları 4.3-5.0/5 arasında, fiyatlar 753-7949 TL arasında değişiyor)."
+  },
+  {
+    "id": "q004",
+    "question": "Göz muayenesi için bir uzman önerir misin?",
+    "category": "Göz Doktoru",
+    "intent_tags": [
+      "simple"
+    ],
+    "expected_business_ids": [
+      26,
+      23,
+      21,
+      22,
+      24
+    ],
+    "reference": "İyi değerlendirilen Göz Doktoru seçenekleri arasında Op. Dr. Çağrı Yiğit ve Kocaeli Göz Doktoru -Op.Dr.Mustafa Şahiner,Lazer cerrahisi,SMILE lazer,Akıllı Mercek,Keratokonus,Göz Çizdirme öne çıkıyor (puanları 4.8-4.9/5 arasında), fiyatlar 568-1438 TL arasında değişiyor."
+  },
+  {
+    "id": "q005",
+    "question": "Hafta içi akşam saatlerinde açık bir göz doktoru var mı?",
+    "category": "Göz Doktoru",
+    "intent_tags": [
+      "time_of_day:evening"
+    ],
+    "expected_business_ids": [
+      26,
+      23,
+      21,
+      22,
+      24
+    ],
+    "reference": "İyi değerlendirilen Göz Doktoru seçenekleri arasında Op. Dr. Çağrı Yiğit ve Kocaeli Göz Doktoru -Op.Dr.Mustafa Şahiner,Lazer cerrahisi,SMILE lazer,Akıllı Mercek,Keratokonus,Göz Çizdirme öne çıkıyor (puanları 4.8-4.9/5 arasında), fiyatlar 568-1438 TL arasında değişiyor."
+  },
+  {
+    "id": "q006",
+    "question": "Kaygı bozukluğu için bir psikolog arıyorum",
+    "category": "Psikolog",
+    "intent_tags": [
+      "simple"
+    ],
+    "expected_business_ids": [
+      29,
+      45,
+      34,
+      32,
+      44
+    ],
+    "reference": "İyi değerlendirilen Psikolog seçenekleri arasında Klinik Psikolog Sema Nur Atıcı - Kocaeli Klinik Psikolog ve Uzman Psikolog Selin Küçük öne çıkıyor (puanları 4.8-4.9/5 arasında), fiyatlar 603-2495 TL arasında değişiyor."
+  },
+  {
+    "id": "q007",
+    "question": "Online seans yapan bir psikolog var mı?",
+    "category": "Psikolog",
+    "intent_tags": [
+      "online_only"
+    ],
+    "expected_business_ids": [
+      29,
+      28,
+      30,
+      31,
+      32,
+      33,
+      34,
+      35,
+      36,
+      37,
+      38,
+      39,
+      40,
+      41,
+      42,
+      43,
+      44,
+      45,
+      46,
+      47
+    ],
+    "reference": "Online hizmet veren 20 Psikolog seçeneği bulundu, örnek olarak Klinik Psikolog Sema Nur Atıcı - Kocaeli Klinik Psikolog ve Uzman Psikolog Selin Küçük sayılabilir (puanları 4.7-4.9/5 arasında, fiyatlar 603-2495 TL arasında değişiyor)."
+  },
+  {
+    "id": "q008",
+    "question": "Kadın bir psikologla görüşmek istiyorum, uygun fiyatlı olsun",
+    "category": "Psikolog",
+    "intent_tags": [
+      "gender:female",
+      "price_preference:cheap",
+      "expected_empty"
+    ],
+    "expected_business_ids": [],
+    "reference": "Psikolog kategorisinde hem kadın hem uygun fiyatlı (kategorinin en düşük çeyrek fiyat aralığı) kriterlerini birlikte karşılayan bir işletme bulunmuyor."
+  },
+  {
+    "id": "q009",
+    "question": "Bel fıtığı için iyi bir fizyoterapist önerir misin?",
+    "category": "Fizyoterapist",
+    "intent_tags": [
+      "simple"
+    ],
+    "expected_business_ids": [
+      49,
+      64,
+      60,
+      54,
+      52
+    ],
+    "reference": "İyi değerlendirilen Fizyoterapist seçenekleri arasında İzmit Kocaeli Fizyoterapist Muhammed Oğuz Çelen ve Fizyoterapist Ömer SAYMA & Fizik Tedavi öne çıkıyor (puanı 4.9/5), fiyatlar 423-1478 TL arasında değişiyor."
+  },
+  {
+    "id": "q010",
+    "question": "Pazartesi sabah erken saatte müsait bir fizyoterapist var mı?",
+    "category": "Fizyoterapist",
+    "intent_tags": [
+      "day_of_week:pazartesi",
+      "time_of_day:morning"
+    ],
+    "expected_business_ids": [
+      48,
+      49,
+      50,
+      51,
+      52,
+      53,
+      54,
+      55,
+      56,
+      57,
+      58,
+      59,
+      60,
+      61,
+      62,
+      63,
+      64,
+      65,
+      66,
+      67
+    ],
+    "reference": "Pazartesi günü sabah müsait 20 Fizyoterapist seçeneği bulundu, örnek olarak İzmit Kocaeli Fizyoterapist Muhammed Oğuz Çelen ve Fizyoterapist Ömer SAYMA & Fizik Tedavi sayılabilir (puanları 4.6-4.9/5 arasında, fiyatlar 423-1493 TL arasında değişiyor)."
+  },
+  {
+    "id": "q011",
+    "question": "Spor sakatlığı sonrası rehabilitasyon yapan bir fizyoterapist lazım",
+    "category": "Fizyoterapist",
+    "intent_tags": [
+      "simple"
+    ],
+    "expected_business_ids": [
+      49,
+      64,
+      60,
+      54,
+      52
+    ],
+    "reference": "İyi değerlendirilen Fizyoterapist seçenekleri arasında İzmit Kocaeli Fizyoterapist Muhammed Oğuz Çelen ve Fizyoterapist Ömer SAYMA & Fizik Tedavi öne çıkıyor (puanı 4.9/5), fiyatlar 423-1478 TL arasında değişiyor."
+  },
+  {
+    "id": "q012",
+    "question": "Saçımı boyatmak istiyorum, iyi bir kuaför önerir misin?",
+    "category": "Kuaför",
+    "intent_tags": [
+      "simple"
+    ],
+    "expected_business_ids": [
+      82,
+      85,
+      70,
+      84,
+      87
+    ],
+    "reference": "İyi değerlendirilen Kuaför seçenekleri arasında Gökdemir Hair Design Studio ve KUAFÖR ARZU ERTÜRK HAİR MAKEUP öne çıkıyor (puanı 4.9/5), fiyatlar 186-1196 TL arasında değişiyor."
+  },
+  {
+    "id": "q013",
+    "question": "Erkeklere özel, uygun fiyatlı bir kuaför var mı?",
+    "category": "Kuaför",
+    "intent_tags": [
+      "gender:male",
+      "price_preference:cheap",
+      "expected_empty"
+    ],
+    "expected_business_ids": [],
+    "reference": "Kuaför kategorisinde hem erkeklere özel hem uygun fiyatlı kriterlerini birlikte karşılayan bir işletme bulunmuyor."
+  },
+  {
+    "id": "q014",
+    "question": "Pazar günü açık bir kuaför var mı?",
+    "category": "Kuaför",
+    "intent_tags": [
+      "day_of_week:pazar"
+    ],
+    "expected_business_ids": [
+      69,
+      70,
+      71,
+      73,
+      74,
+      75,
+      76,
+      80,
+      81,
+      82,
+      83,
+      84,
+      85
+    ],
+    "reference": "Pazar günü müsait 13 Kuaför seçeneği bulundu, örnek olarak Gökdemir Hair Design Studio ve KUAFÖR ARZU ERTÜRK HAİR MAKEUP sayılabilir (puanları 4.4-4.9/5 arasında, fiyatlar 186-1199 TL arasında değişiyor)."
+  },
+  {
+    "id": "q015",
+    "question": "Sakal tıraşı için iyi bir berber biliyor musun?",
+    "category": "Berber",
+    "intent_tags": [
+      "simple"
+    ],
+    "expected_business_ids": [
+      92,
+      94,
+      95,
+      90,
+      88
+    ],
+    "reference": "İyi değerlendirilen Berber seçenekleri arasında DeBatu HairDesing ve Hair Doctor Onur Topova Erkek Kuaförü öne çıkıyor (puanları 4.9-5.0/5 arasında), fiyatlar 141-393 TL arasında değişiyor."
+  },
+  {
+    "id": "q016",
+    "question": "Cuma akşamı müsait bir berber lazım",
+    "category": "Berber",
+    "intent_tags": [
+      "day_of_week:cuma",
+      "time_of_day:evening"
+    ],
+    "expected_business_ids": [
+      88,
+      89,
+      90,
+      91,
+      92,
+      93,
+      94,
+      95,
+      96,
+      97,
+      98,
+      99,
+      100,
+      101,
+      102,
+      103,
+      104
+    ],
+    "reference": "Cuma günü akşam müsait 17 Berber seçeneği bulundu, örnek olarak DeBatu HairDesing ve Hair Doctor Onur Topova Erkek Kuaförü sayılabilir (puanları 4.2-5.0/5 arasında, fiyatlar 103-399 TL arasında değişiyor)."
+  },
+  {
+    "id": "q017",
+    "question": "Öğrenci bütçesine uygun bir berber var mı?",
+    "category": "Berber",
+    "intent_tags": [
+      "price_preference:cheap"
+    ],
+    "expected_business_ids": [
+      88,
+      91,
+      94,
+      98,
+      103
+    ],
+    "reference": "Uygun fiyatlı 5 Berber seçeneği bulundu, örnek olarak Hair Doctor Onur Topova Erkek Kuaförü ve Men's grooming güngör Akıncı barber business sayılabilir (puanları 4.7-5.0/5 arasında, fiyatlar 103-357 TL arasında değişiyor)."
+  },
+  {
+    "id": "q018",
+    "question": "Cilt bakımı ve makyaj hizmeti veren bir güzellik salonu arıyorum",
+    "category": "Güzellik Salonu",
+    "intent_tags": [
+      "simple"
+    ],
+    "expected_business_ids": [
+      123,
+      106,
+      112,
+      121,
+      113
+    ],
+    "reference": "İyi değerlendirilen Güzellik Salonu seçenekleri arasında Olab Beauty - Güzellik Merkezi - Cilt Bakımı & Protez Tırnak & Kafa Masajı ve SOCİAL BEAUTY AESTHETİC GÜZELLİK MERKEZİ - Saç Terapisi - Cilt Bakımı - Protez Tırnak - Lazer Epilasyon öne çıkıyor (puanları 4.8-4.9/5 arasında), fiyatlar 825-1976 TL arasında değişiyor."
+  },
+  {
+    "id": "q019",
+    "question": "Kadınlara özel, pahalı olmayan bir güzellik salonu önerir misin?",
+    "category": "Güzellik Salonu",
+    "intent_tags": [
+      "gender:female",
+      "price_preference:cheap"
+    ],
+    "expected_business_ids": [
+      110,
+      114,
+      115,
+      116,
+      122
+    ],
+    "reference": "Kadınlara özel, uygun fiyatlı 5 Güzellik Salonu seçeneği bulundu, örnek olarak İzmit Esse VİP Güzellik Merkezi ve Deniz Ülker Beauty sayılabilir (puanları 4.5-4.8/5 arasında, fiyatlar 250-1638 TL arasında değişiyor)."
+  },
+  {
+    "id": "q020",
+    "question": "Hafta sonu açık bir güzellik salonu var mı?",
+    "category": "Güzellik Salonu",
+    "intent_tags": [
+      "weekend_open_only"
+    ],
+    "expected_business_ids": [
+      105,
+      106,
+      107,
+      108,
+      109,
+      110,
+      111,
+      113,
+      114,
+      115,
+      116,
+      117,
+      118,
+      119,
+      120,
+      121,
+      122,
+      123,
+      124
+    ],
+    "reference": "Hafta sonu açık 19 Güzellik Salonu seçeneği bulundu, örnek olarak Olab Beauty - Güzellik Merkezi - Cilt Bakımı & Protez Tırnak & Kafa Masajı ve SOCİAL BEAUTY AESTHETİC GÜZELLİK MERKEZİ - Saç Terapisi - Cilt Bakımı - Protez Tırnak - Lazer Epilasyon sayılabilir (puanları 4.3-4.9/5 arasında, fiyatlar 250-1976 TL arasında değişiyor)."
+  },
+  {
+    "id": "q021",
+    "question": "Jel manikür yaptırabileceğim bir nail salon önerir misin?",
+    "category": "Nail Salon",
+    "intent_tags": [
+      "simple"
+    ],
+    "expected_business_ids": [
+      131,
+      126,
+      128,
+      132,
+      133
+    ],
+    "reference": "İyi değerlendirilen Nail Salon seçenekleri arasında Meysa Nail Studio ve Beyza Mumcu Nail Art Studio | Kocaeli Protez Tırnak öne çıkıyor (puanları 4.8-4.9/5 arasında), fiyatlar 160-472 TL arasında değişiyor."
+  },
+  {
+    "id": "q022",
+    "question": "Salı günü öğleden sonra müsait bir nail salon var mı?",
+    "category": "Nail Salon",
+    "intent_tags": [
+      "day_of_week:salı",
+      "time_of_day:afternoon"
+    ],
+    "expected_business_ids": [
+      133,
+      134,
+      125,
+      126,
+      127,
+      128,
+      129,
+      130,
+      131,
+      132,
+      135,
+      136,
+      137,
+      138,
+      139,
+      140,
+      141,
+      142
+    ],
+    "reference": "Salı günü öğleden sonra müsait 18 Nail Salon seçeneği bulundu, örnek olarak Meysa Nail Studio ve Beyza Mumcu Nail Art Studio | Kocaeli Protez Tırnak sayılabilir (puanları 4.3-4.9/5 arasında, fiyatlar 160-597 TL arasında değişiyor)."
+  },
+  {
+    "id": "q023",
+    "question": "Uygun fiyatlı bir nail salon arıyorum",
+    "category": "Nail Salon",
+    "intent_tags": [
+      "price_preference:cheap"
+    ],
+    "expected_business_ids": [
+      133,
+      127,
+      128,
+      132,
+      136
+    ],
+    "reference": "Uygun fiyatlı 5 Nail Salon seçeneği bulundu, örnek olarak Augee Nail Studio | İzmit Protez Tırnak - İpek Kirpik ve Protez Tırnak İzmit Çinare sayılabilir (puanları 4.6-4.8/5 arasında, fiyatlar 160-582 TL arasında değişiyor)."
+  },
+  {
+    "id": "q024",
+    "question": "Lazer epilasyon yaptıran bir merkez önerir misin?",
+    "category": "Epilasyon Merkezi",
+    "intent_tags": [
+      "simple"
+    ],
+    "expected_business_ids": [
+      145,
+      151,
+      143,
+      146,
+      150
+    ],
+    "reference": "İyi değerlendirilen Epilasyon Merkezi seçenekleri arasında Viva Vibe Güzellik Salonu ve TrendEstetik Güzellik Merkezi öne çıkıyor (puanları 4.8-4.9/5 arasında), fiyatlar 314-1434 TL arasında değişiyor."
+  },
+  {
+    "id": "q025",
+    "question": "Kadınlara özel bir epilasyon merkezi var mı?",
+    "category": "Epilasyon Merkezi",
+    "intent_tags": [
+      "gender:female"
+    ],
+    "expected_business_ids": [
+      143,
+      144,
+      145,
+      146,
+      147,
+      148,
+      149
+    ],
+    "reference": "Kadınlara özel 7 Epilasyon Merkezi seçeneği bulundu, örnek olarak Viva Vibe Güzellik Salonu ve E.L.M Poliklinik sayılabilir (puanları 4.3-4.9/5 arasında, fiyatlar 388-1496 TL arasında değişiyor)."
+  },
+  {
+    "id": "q026",
+    "question": "Akne tedavisi için bir cilt bakım merkezi önerir misin?",
+    "category": "Cilt Bakım Merkezi",
+    "intent_tags": [
+      "simple"
+    ],
+    "expected_business_ids": [
+      152,
+      153
+    ],
+    "reference": "İyi değerlendirilen Cilt Bakım Merkezi seçenekleri arasında Sudabe Yılmaz Estetik Ve Güzellik ve Sıla Bülbül Beauty Home | Lazer Epilasyon, Microblading, Dudak Vitamin, Kirpik Lifting, Hydrafacial, Dudak Renklendirme öne çıkıyor (puanları 4.8-4.9/5 arasında), fiyatlar 592-1995 TL arasında değişiyor."
+  },
+  {
+    "id": "q027",
+    "question": "Kilo vermek için iyi bir spor salonu arıyorum",
+    "category": "Spor Salonu",
+    "intent_tags": [
+      "simple"
+    ],
+    "expected_business_ids": [
+      171,
+      163,
+      159,
+      156,
+      167
+    ],
+    "reference": "İyi değerlendirilen Spor Salonu seçenekleri arasında İZMİT TRİO FITNESS ve Fitness Time öne çıkıyor (puanları 4.8-4.9/5 arasında), fiyatlar 1512-2979 TL arasında değişiyor."
+  },
+  {
+    "id": "q028",
+    "question": "Kadınlara özel bir spor salonu var mı?",
+    "category": "Spor Salonu",
+    "intent_tags": [
+      "gender:female",
+      "expected_empty"
+    ],
+    "expected_business_ids": [],
+    "reference": "Spor Salonu kategorisindeki 20 işletmenin tamamı unisex olarak kayıtlı — kadınlara özel (yalnızca kadın) etiketli bir spor salonu bulunmuyor."
+  },
+  {
+    "id": "q029",
+    "question": "Öğrenci bütçesine uygun bir spor salonu önerir misin?",
+    "category": "Spor Salonu",
+    "intent_tags": [
+      "price_preference:cheap"
+    ],
+    "expected_business_ids": [
+      154,
+      160,
+      161,
+      168,
+      169
+    ],
+    "reference": "Uygun fiyatlı 5 Spor Salonu seçeneği bulundu, örnek olarak Bath Fit Spa Kocaeli ve MooiFit İzmit Alikahya Şube sayılabilir (puanları 4.2-4.6/5 arasında, fiyatlar 551-1911 TL arasında değişiyor)."
+  },
+  {
+    "id": "q030",
+    "question": "Yüzme dersi de veren bir havuz arıyorum",
+    "category": "Yüzme Havuzu",
+    "intent_tags": [
+      "simple"
+    ],
+    "expected_business_ids": [
+      174,
+      191,
+      181,
+      179,
+      177
+    ],
+    "reference": "İyi değerlendirilen Yüzme Havuzu seçenekleri arasında KOCAELİ BELEDİYESİ PLAJYOLU YÜZME HAVUZU ve Diyar Havuz öne çıkıyor (puanları 4.6-4.7/5 arasında), fiyatlar 365-1421 TL arasında değişiyor."
+  },
+  {
+    "id": "q031",
+    "question": "Çarşamba akşamı müsait bir yüzme havuzu var mı?",
+    "category": "Yüzme Havuzu",
+    "intent_tags": [
+      "day_of_week:çarşamba",
+      "time_of_day:evening"
+    ],
+    "expected_business_ids": [
+      174,
+      175,
+      176,
+      177,
+      178,
+      179,
+      180,
+      181,
+      182,
+      183,
+      184,
+      185,
+      186,
+      187,
+      188,
+      189,
+      190,
+      191,
+      192
+    ],
+    "reference": "Çarşamba günü akşam müsait 19 Yüzme Havuzu seçeneği bulundu, örnek olarak KOCAELİ BELEDİYESİ PLAJYOLU YÜZME HAVUZU ve Diyar Havuz sayılabilir (puanları 3.8-4.7/5 arasında, fiyatlar 330-1500 TL arasında değişiyor)."
+  },
+  {
+    "id": "q032",
+    "question": "Ailece gidebileceğimiz uygun fiyatlı bir yüzme havuzu önerir misin?",
+    "category": "Yüzme Havuzu",
+    "intent_tags": [
+      "price_preference:cheap"
+    ],
+    "expected_business_ids": [
+      174,
+      180,
+      181,
+      187,
+      189
+    ],
+    "reference": "Uygun fiyatlı 5 Yüzme Havuzu seçeneği bulundu, örnek olarak KOCAELİ BELEDİYESİ PLAJYOLU YÜZME HAVUZU ve KAPALI YÜZME HAVUZU sayılabilir (puanları 3.8-4.7/5 arasında, fiyatlar 330-1467 TL arasında değişiyor)."
+  },
+  {
+    "id": "q033",
+    "question": "Başlangıç seviyesi yoga dersi veren bir stüdyo arıyorum",
+    "category": "Yoga Stüdyosu",
+    "intent_tags": [
+      "simple"
+    ],
+    "expected_business_ids": [
+      207,
+      209,
+      203,
+      205,
+      210
+    ],
+    "reference": "İyi değerlendirilen Yoga Stüdyosu seçenekleri arasında Melike Doğan Pilates Stüdyo (Bayanlara Özel Stüdyo) ve FitActiv Pilates Güzellik Bölgesel İncelme ve Zayıflama öne çıkıyor (puanları 4.8-4.9/5 arasında), fiyatlar 394-1199 TL arasında değişiyor."
+  },
+  {
+    "id": "q034",
+    "question": "Sabah erken saatte yoga dersi olan bir yer var mı?",
+    "category": "Yoga Stüdyosu",
+    "intent_tags": [
+      "time_of_day:morning"
+    ],
+    "expected_business_ids": [
+      207,
+      209,
+      203,
+      205,
+      210
+    ],
+    "reference": "İyi değerlendirilen Yoga Stüdyosu seçenekleri arasında Melike Doğan Pilates Stüdyo (Bayanlara Özel Stüdyo) ve FitActiv Pilates Güzellik Bölgesel İncelme ve Zayıflama öne çıkıyor (puanları 4.8-4.9/5 arasında), fiyatlar 394-1199 TL arasında değişiyor."
+  },
+  {
+    "id": "q035",
+    "question": "Online yoga dersi veren bir stüdyo önerir misin?",
+    "category": "Yoga Stüdyosu",
+    "intent_tags": [
+      "online_only"
+    ],
+    "expected_business_ids": [
+      193,
+      194,
+      195,
+      196,
+      197,
+      198,
+      199,
+      200,
+      201,
+      202,
+      203,
+      204,
+      205,
+      206,
+      207,
+      208,
+      209,
+      210,
+      211,
+      212
+    ],
+    "reference": "Online hizmet veren 20 Yoga Stüdyosu seçeneği bulundu, örnek olarak Melike Doğan Pilates Stüdyo (Bayanlara Özel Stüdyo) ve FitActiv Pilates Güzellik Bölgesel İncelme ve Zayıflama sayılabilir (puanları 4.5-4.9/5 arasında, fiyatlar 394-1199 TL arasında değişiyor)."
+  },
+  {
+    "id": "q036",
+    "question": "Matematik özel dersi verebilecek biri lazım",
+    "category": "Özel Ders",
+    "intent_tags": [
+      "simple"
+    ],
+    "expected_business_ids": [
+      219,
+      214,
+      224,
+      215,
+      216
+    ],
+    "reference": "İyi değerlendirilen Özel Ders seçenekleri arasında İzmit Matematik ve 41 Zirveİz - Kocaeli Özel Ders öne çıkıyor (puanı 4.9/5), fiyatlar 504-988 TL arasında değişiyor."
+  },
+  {
+    "id": "q037",
+    "question": "Online özel ders veren birini önerir misin?",
+    "category": "Özel Ders",
+    "intent_tags": [
+      "online_only"
+    ],
+    "expected_business_ids": [
+      213,
+      214,
+      215,
+      216,
+      217,
+      218,
+      219,
+      220,
+      221,
+      222,
+      223,
+      224,
+      225,
+      226,
+      227,
+      228,
+      229,
+      230,
+      231,
+      232
+    ],
+    "reference": "Online hizmet veren 20 Özel Ders seçeneği bulundu, örnek olarak İzmit Matematik ve 41 Zirveİz - Kocaeli Özel Ders sayılabilir (puanları 4.7-4.9/5 arasında, fiyatlar 432-993 TL arasında değişiyor)."
+  },
+  {
+    "id": "q038",
+    "question": "Uygun fiyatlı özel ders veren biri var mı?",
+    "category": "Özel Ders",
+    "intent_tags": [
+      "price_preference:cheap"
+    ],
+    "expected_business_ids": [
+      217,
+      219,
+      225,
+      228,
+      231
+    ],
+    "reference": "Uygun fiyatlı 5 Özel Ders seçeneği bulundu, örnek olarak İzmit Matematik ve Tasarı Kurs (LGS-YKS- Özel Ders) sayılabilir (puanları 4.7-4.9/5 arasında, fiyatlar 432-923 TL arasında değişiyor)."
+  },
+  {
+    "id": "q039",
+    "question": "İngilizce öğrenmek için iyi bir dil kursu arıyorum",
+    "category": "Dil Kursu",
+    "intent_tags": [
+      "simple"
+    ],
+    "expected_business_ids": [
+      249,
+      247,
+      242,
+      244,
+      233
+    ],
+    "reference": "İyi değerlendirilen Dil Kursu seçenekleri arasında Uzman Akademi Hızlı Okuma Kursu Kocaeli ve Lingua Point (İzmit/Kocaeli) öne çıkıyor (puanları 4.9-5.0/5 arasında), fiyatlar 2526-7835 TL arasında değişiyor."
+  },
+  {
+    "id": "q040",
+    "question": "Akşamları online ders veren bir dil kursu var mı?",
+    "category": "Dil Kursu",
+    "intent_tags": [
+      "online_only",
+      "time_of_day:evening"
+    ],
+    "expected_business_ids": [
+      233,
+      234,
+      235,
+      236,
+      237,
+      238,
+      239,
+      240,
+      241,
+      242,
+      243,
+      244,
+      245,
+      246,
+      247,
+      248,
+      249,
+      250,
+      251,
+      252
+    ],
+    "reference": "Online hizmet veren 20 Dil Kursu seçeneği bulundu, örnek olarak Uzman Akademi Hızlı Okuma Kursu Kocaeli ve Lingua Point (İzmit/Kocaeli) sayılabilir (puanları 4.4-5.0/5 arasında, fiyatlar 1905-7965 TL arasında değişiyor)."
+  },
+  {
+    "id": "q041",
+    "question": "Hafta sonu ders veren bir dil kursu önerir misin?",
+    "category": "Dil Kursu",
+    "intent_tags": [
+      "weekend_open_only"
+    ],
+    "expected_business_ids": [
+      234,
+      236,
+      239,
+      240,
+      242,
+      245,
+      246,
+      248,
+      249,
+      251
+    ],
+    "reference": "Hafta sonu açık 10 Dil Kursu seçeneği bulundu, örnek olarak Uzman Akademi Hızlı Okuma Kursu Kocaeli ve American LIFE Yahya Kaptan Dil Okulu sayılabilir (puanları 4.4-5.0/5 arasında, fiyatlar 2526-7965 TL arasında değişiyor)."
+  },
+  {
+    "id": "q042",
+    "question": "Ehliyet almak için güvenilir bir sürücü kursu arıyorum",
+    "category": "Sürücü Kursu",
+    "intent_tags": [
+      "simple"
+    ],
+    "expected_business_ids": [
+      253,
+      255,
+      254,
+      260,
+      262
+    ],
+    "reference": "İyi değerlendirilen Sürücü Kursu seçenekleri arasında Bimser Sürücü Kursu ve Çarşı Sürücü Kursu öne çıkıyor (puanları 4.9-5.0/5 arasında), fiyatlar 9541-19989 TL arasında değişiyor."
+  },
+  {
+    "id": "q043",
+    "question": "Kadın kursiyerlere özel bir sürücü kursu var mı?",
+    "category": "Sürücü Kursu",
+    "intent_tags": [
+      "gender:female",
+      "expected_empty"
+    ],
+    "expected_business_ids": [],
+    "reference": "Sürücü Kursu kategorisindeki 20 işletmenin tamamı unisex olarak kayıtlı — kadın kursiyerlere özel etiketli bir sürücü kursu bulunmuyor."
+  },
+  {
+    "id": "q044",
+    "question": "En uygun fiyatlı sürücü kursunu bulur musun?",
+    "category": "Sürücü Kursu",
+    "intent_tags": [
+      "price_preference:cheap"
+    ],
+    "expected_business_ids": [
+      253,
+      256,
+      266,
+      268,
+      271
+    ],
+    "reference": "Uygun fiyatlı 5 Sürücü Kursu seçeneği bulundu, örnek olarak Bimser Sürücü Kursu ve ÖNER SÜRÜCÜ KURSU sayılabilir (puanları 4.8-5.0/5 arasında, fiyatlar 8467-16248 TL arasında değişiyor)."
+  },
+  {
+    "id": "q045",
+    "question": "Gitar dersi veren bir müzik kursu arıyorum",
+    "category": "Müzik Kursu",
+    "intent_tags": [
+      "simple"
+    ],
+    "expected_business_ids": [
+      280,
+      292,
+      274,
+      278,
+      276
+    ],
+    "reference": "İyi değerlendirilen Müzik Kursu seçenekleri arasında Özel Atmaca Bilim ve Sanat Akademisi ve ARTCLAN3 RESİM ATÖLYESİ öne çıkıyor (puanları 4.8-4.9/5 arasında), fiyatlar 623-1193 TL arasında değişiyor."
+  },
+  {
+    "id": "q046",
+    "question": "Çocuğum için piyano dersi veren bir yer önerir misin?",
+    "category": "Müzik Kursu",
+    "intent_tags": [
+      "simple"
+    ],
+    "expected_business_ids": [
+      280,
+      292,
+      274,
+      278,
+      276
+    ],
+    "reference": "İyi değerlendirilen Müzik Kursu seçenekleri arasında Özel Atmaca Bilim ve Sanat Akademisi ve ARTCLAN3 RESİM ATÖLYESİ öne çıkıyor (puanları 4.8-4.9/5 arasında), fiyatlar 623-1193 TL arasında değişiyor."
+  },
+  {
+    "id": "q047",
+    "question": "Hafta sonu müzik dersi veren bir kurs var mı?",
+    "category": "Müzik Kursu",
+    "intent_tags": [
+      "weekend_open_only"
+    ],
+    "expected_business_ids": [
+      273,
+      274,
+      275,
+      277,
+      279,
+      280,
+      283,
+      287,
+      288,
+      289,
+      292
+    ],
+    "reference": "Hafta sonu açık 11 Müzik Kursu seçeneği bulundu, örnek olarak Özel Atmaca Bilim ve Sanat Akademisi ve ARTCLAN3 RESİM ATÖLYESİ sayılabilir (puanları 4.7-4.9/5 arasında, fiyatlar 623-1198 TL arasında değişiyor)."
+  },
+  {
+    "id": "q048",
+    "question": "Periyodik bakım yaptırmak istiyorum, güvenilir bir oto servis önerir misin?",
+    "category": "Oto Servis",
+    "intent_tags": [
+      "simple"
+    ],
+    "expected_business_ids": [
+      312,
+      293,
+      303,
+      294,
+      310
+    ],
+    "reference": "İyi değerlendirilen Oto Servis seçenekleri arasında Motrio Servisi Renaz Otomotiv ve Özlü Otomotiv | İzmit Oto Servis (Özel) öne çıkıyor (puanları 4.8-4.9/5 arasında), fiyatlar 2534-13657 TL arasında değişiyor."
+  },
+  {
+    "id": "q049",
+    "question": "Uygun fiyatlı bir oto servis arıyorum",
+    "category": "Oto Servis",
+    "intent_tags": [
+      "price_preference:cheap"
+    ],
+    "expected_business_ids": [
+      297,
+      300,
+      305,
+      310,
+      311
+    ],
+    "reference": "Uygun fiyatlı 5 Oto Servis seçeneği bulundu, örnek olarak Genç Oto Özel Servis ve M&S OTOMOTİV İZMİT sayılabilir (puanları 3.6-4.8/5 arasında, fiyatlar 512-14196 TL arasında değişiyor)."
+  },
+  {
+    "id": "q050",
+    "question": "Pazartesi sabah erken açık bir oto servis var mı?",
+    "category": "Oto Servis",
+    "intent_tags": [
+      "day_of_week:pazartesi",
+      "time_of_day:morning"
+    ],
+    "expected_business_ids": [
+      293,
+      294,
+      295,
+      296,
+      297,
+      298,
+      299,
+      300,
+      301,
+      302,
+      303,
+      304,
+      305,
+      306,
+      307,
+      308,
+      309,
+      310,
+      311,
+      312
+    ],
+    "reference": "Pazartesi günü sabah müsait 20 Oto Servis seçeneği bulundu, örnek olarak Motrio Servisi Renaz Otomotiv ve Özlü Otomotiv | İzmit Oto Servis (Özel) sayılabilir (puanları 3.6-4.9/5 arasında, fiyatlar 512-14906 TL arasında değişiyor)."
+  },
+  {
+    "id": "q051",
+    "question": "Evimde priz arızası var, bir elektrikçi lazım",
+    "category": "Elektrikçi",
+    "intent_tags": [
+      "simple"
+    ],
+    "expected_business_ids": [
+      313,
+      317,
+      316,
+      323,
+      314
+    ],
+    "reference": "İyi değerlendirilen Elektrikçi seçenekleri arasında SİPAHİ ELEKTRİK ELEKTRONİK ve Özkardeş Elektrik öne çıkıyor (puanları 4.8-4.9/5 arasında), fiyatlar 688-2998 TL arasında değişiyor."
+  },
+  {
+    "id": "q052",
+    "question": "Bugün gelebilecek acil bir elektrikçi var mı?",
+    "category": "Elektrikçi",
+    "intent_tags": [
+      "simple"
+    ],
+    "expected_business_ids": [
+      313,
+      317,
+      316,
+      323,
+      314
+    ],
+    "reference": "İyi değerlendirilen Elektrikçi seçenekleri arasında SİPAHİ ELEKTRİK ELEKTRONİK ve Özkardeş Elektrik öne çıkıyor (puanları 4.8-4.9/5 arasında), fiyatlar 688-2998 TL arasında değişiyor."
+  },
+  {
+    "id": "q053",
+    "question": "Uygun fiyatlı bir elektrikçi önerir misin?",
+    "category": "Elektrikçi",
+    "intent_tags": [
+      "price_preference:cheap"
+    ],
+    "expected_business_ids": [
+      317,
+      325,
+      326,
+      327,
+      331
+    ],
+    "reference": "Uygun fiyatlı 5 Elektrikçi seçeneği bulundu, örnek olarak Özkardeş Elektrik ve Pehlivan elektrik - 7/24 Arıza & Bakım Onarım Tepecik sayılabilir (puanları 4.8-4.9/5 arasında, fiyatlar 332-2513 TL arasında değişiyor)."
+  },
+  {
+    "id": "q054",
+    "question": "Musluğum akıtıyor, bir tesisatçı önerir misin?",
+    "category": "Tesisatçı",
+    "intent_tags": [
+      "simple"
+    ],
+    "expected_business_ids": [
+      349,
+      342,
+      350,
+      337,
+      347
+    ],
+    "reference": "İyi değerlendirilen Tesisatçı seçenekleri arasında TOPRAK TESİSAT VE ELEKTRİK ve Nehir Tesisat öne çıkıyor (puanları 4.9-5.0/5 arasında), fiyatlar 1145-2971 TL arasında değişiyor."
+  },
+  {
+    "id": "q055",
+    "question": "Hafta sonu gelebilecek bir tesisatçı var mı?",
+    "category": "Tesisatçı",
+    "intent_tags": [
+      "weekend_open_only"
+    ],
+    "expected_business_ids": [
+      335,
+      336,
+      338,
+      340,
+      341,
+      343,
+      346,
+      348,
+      350
+    ],
+    "reference": "Hafta sonu açık 9 Tesisatçı seçeneği bulundu, örnek olarak Hamitoğlu Tesisat tıkanık açma su kaçak tespiti ve Yardımlar Tesisat sayılabilir (puanları 4.8-4.9/5 arasında, fiyatlar 818-3000 TL arasında değişiyor)."
+  },
+  {
+    "id": "q056",
+    "question": "Kombi bakımı yapan bir tesisatçı arıyorum",
+    "category": "Tesisatçı",
+    "intent_tags": [
+      "simple"
+    ],
+    "expected_business_ids": [
+      349,
+      342,
+      350,
+      337,
+      347
+    ],
+    "reference": "İyi değerlendirilen Tesisatçı seçenekleri arasında TOPRAK TESİSAT VE ELEKTRİK ve Nehir Tesisat öne çıkıyor (puanları 4.9-5.0/5 arasında), fiyatlar 1145-2971 TL arasında değişiyor."
+  },
+  {
+    "id": "q057",
+    "question": "Klimamın gazını doldurmam lazım, bir servis önerir misin?",
+    "category": "Klima Servisi",
+    "intent_tags": [
+      "simple"
+    ],
+    "expected_business_ids": [
+      372,
+      355,
+      357,
+      359,
+      371
+    ],
+    "reference": "İyi değerlendirilen Klima Servisi seçenekleri arasında Y/B teknik kombi klima radyant ısıtma Soğutma sistemleri ve İZMİT KOMBİ SERVİSİ öne çıkıyor (puanları 4.8-4.9/5 arasında), fiyatlar 1772-3930 TL arasında değişiyor."
+  },
+  {
+    "id": "q058",
+    "question": "Cuma günü müsait bir klima servisi var mı?",
+    "category": "Klima Servisi",
+    "intent_tags": [
+      "day_of_week:cuma"
+    ],
+    "expected_business_ids": [
+      358,
+      359,
+      353,
+      354,
+      355,
+      356,
+      357,
+      360,
+      361,
+      362,
+      363,
+      364,
+      365,
+      366,
+      367,
+      368,
+      369,
+      370,
+      371,
+      372
+    ],
+    "reference": "Cuma günü müsait 20 Klima Servisi seçeneği bulundu, örnek olarak Y/B teknik kombi klima radyant ısıtma Soğutma sistemleri ve İZMİT KOMBİ SERVİSİ sayılabilir (puanları 4.7-4.9/5 arasında, fiyatlar 533-3944 TL arasında değişiyor)."
+  },
+  {
+    "id": "q059",
+    "question": "Uygun fiyatlı klima bakım servisi arıyorum",
+    "category": "Klima Servisi",
+    "intent_tags": [
+      "price_preference:cheap"
+    ],
+    "expected_business_ids": [
+      353,
+      356,
+      362,
+      368,
+      369
+    ],
+    "reference": "Uygun fiyatlı 5 Klima Servisi seçeneği bulundu, örnek olarak KOCAELİ FERAH KLİMA ve OKUMUŞ KLİMA VE KOMBİ sayılabilir (puanları 4.7-4.8/5 arasında, fiyatlar 533-3897 TL arasında değişiyor)."
+  },
+  {
+    "id": "q060",
+    "question": "Telefonumun ekranı kırıldı, tamir eden bir yer arıyorum",
+    "category": "Telefon Tamiri",
+    "intent_tags": [
+      "simple"
+    ],
+    "expected_business_ids": [
+      374,
+      382,
+      377,
+      381,
+      387
+    ],
+    "reference": "İyi değerlendirilen Telefon Tamiri seçenekleri arasında Âlâ Telefon Aksesuar Teknoloji ve CEP Fix öne çıkıyor (puanları 4.9-5.0/5 arasında), fiyatlar 313-4951 TL arasında değişiyor."
+  },
+  {
+    "id": "q061",
+    "question": "Aynı gün teslim yapan bir telefon tamircisi var mı?",
+    "category": "Telefon Tamiri",
+    "intent_tags": [
+      "simple"
+    ],
+    "expected_business_ids": [
+      374,
+      382,
+      377,
+      381,
+      387
+    ],
+    "reference": "İyi değerlendirilen Telefon Tamiri seçenekleri arasında Âlâ Telefon Aksesuar Teknoloji ve CEP Fix öne çıkıyor (puanları 4.9-5.0/5 arasında), fiyatlar 313-4951 TL arasında değişiyor."
+  },
+  {
+    "id": "q062",
+    "question": "Uygun fiyatlı telefon tamiri yapan bir yer önerir misin?",
+    "category": "Telefon Tamiri",
+    "intent_tags": [
+      "price_preference:cheap"
+    ],
+    "expected_business_ids": [
+      373,
+      374,
+      380,
+      381,
+      382
+    ],
+    "reference": "Uygun fiyatlı 5 Telefon Tamiri seçeneği bulundu, örnek olarak Âlâ Telefon Aksesuar Teknoloji ve CEP Fix sayılabilir (puanları 4.7-5.0/5 arasında, fiyatlar 313-4139 TL arasında değişiyor)."
+  },
+  {
+    "id": "q063",
+    "question": "Kedimin aşı zamanı geldi, bir veteriner önerir misin?",
+    "category": "Veteriner",
+    "intent_tags": [
+      "simple"
+    ],
+    "expected_business_ids": [
+      406,
+      397,
+      398,
+      396,
+      407
+    ],
+    "reference": "İyi değerlendirilen Veteriner seçenekleri arasında HIÇKIDIK PETSHOP AKVARYUM İZMİT ve Fauna Veteriner Kliniği Kocaeli öne çıkıyor (puanları 4.8-4.9/5 arasında), fiyatlar 347-2952 TL arasında değişiyor."
+  },
+  {
+    "id": "q064",
+    "question": "Pazar günü açık bir veteriner var mı?",
+    "category": "Veteriner",
+    "intent_tags": [
+      "day_of_week:pazar",
+      "expected_empty"
+    ],
+    "expected_business_ids": [],
+    "reference": "Veteriner kategorisinde pazar günü açık hiçbir işletme bulunmuyor — hafta sonu çalışma saatleri genelde sadece cumartesiyi kapsıyor."
+  },
+  {
+    "id": "q065",
+    "question": "Uygun fiyatlı bir veteriner arıyorum",
+    "category": "Veteriner",
+    "intent_tags": [
+      "price_preference:cheap"
+    ],
+    "expected_business_ids": [
+      394,
+      400,
+      403,
+      406,
+      408
+    ],
+    "reference": "Uygun fiyatlı 5 Veteriner seçeneği bulundu, örnek olarak HIÇKIDIK PETSHOP AKVARYUM İZMİT ve Pasteur Veterinary sayılabilir (puanları 4.0-4.9/5 arasında, fiyatlar 332-2950 TL arasında değişiyor)."
+  },
+  {
+    "id": "q066",
+    "question": "Düğün fotoğrafçısı arıyorum",
+    "category": "Fotoğrafçı",
+    "intent_tags": [
+      "simple"
+    ],
+    "expected_business_ids": [
+      411,
+      414,
+      430,
+      417,
+      422
+    ],
+    "reference": "İyi değerlendirilen Fotoğrafçı seçenekleri arasında Stüdyo Levent (foto star) ve Foto Klinik izmit öne çıkıyor (puanları 4.9-5.0/5 arasında), fiyatlar 5115-14926 TL arasında değişiyor."
+  },
+  {
+    "id": "q067",
+    "question": "Hafta sonu müsait bir fotoğrafçı var mı?",
+    "category": "Fotoğrafçı",
+    "intent_tags": [
+      "weekend_open_only"
+    ],
+    "expected_business_ids": [
+      411,
+      415,
+      416,
+      417,
+      418,
+      419,
+      420,
+      421,
+      422,
+      423,
+      424,
+      426,
+      427,
+      428
+    ],
+    "reference": "Hafta sonu açık 14 Fotoğrafçı seçeneği bulundu, örnek olarak Stüdyo Levent (foto star) ve Moda Fotoğrafçılık İzmit sayılabilir (puanları 4.5-5.0/5 arasında, fiyatlar 1193-14926 TL arasında değişiyor)."
+  },
+  {
+    "id": "q068",
+    "question": "Uygun fiyatlı bir fotoğrafçı önerir misin?",
+    "category": "Fotoğrafçı",
+    "intent_tags": [
+      "price_preference:cheap"
+    ],
+    "expected_business_ids": [
+      419,
+      421,
+      424,
+      426,
+      427
+    ],
+    "reference": "Uygun fiyatlı 5 Fotoğrafçı seçeneği bulundu, örnek olarak KOCAELİ DÜĞÜN FOTOĞRAFÇISI ® ve Kocaeli Düğün Fotoğrafçısı - İzmit Düğün Çekimi - Kocaeli Düğün Klibi - Doğukan Şimdi Production sayılabilir (puanları 4.5-4.8/5 arasında, fiyatlar 1193-14784 TL arasında değişiyor)."
+  },
+  {
+    "id": "q069",
+    "question": "Vekaletname çıkarmak için bir noter önerir misin?",
+    "category": "Noter",
+    "intent_tags": [
+      "simple"
+    ],
+    "expected_business_ids": [
+      431,
+      432,
+      433,
+      434,
+      435
+    ],
+    "reference": "İyi değerlendirilen Noter seçenekleri arasında 7. Noter ve Kocaeli 6. Noterliği öne çıkıyor (bu işletmeler için puan/yorum verisi yok), fiyatlar 763-1908 TL arasında değişiyor."
+  },
+  {
+    "id": "q070",
+    "question": "Sabah erken açık bir noter var mı?",
+    "category": "Noter",
+    "intent_tags": [
+      "time_of_day:morning"
+    ],
+    "expected_business_ids": [
+      431,
+      432,
+      433,
+      434,
+      435
+    ],
+    "reference": "İyi değerlendirilen Noter seçenekleri arasında 7. Noter ve Kocaeli 6. Noterliği öne çıkıyor (bu işletmeler için puan/yorum verisi yok), fiyatlar 763-1908 TL arasında değişiyor."
+  },
+  {
+    "id": "q071",
+    "question": "Şirketim için bir muhasebeci arıyorum",
+    "category": "Muhasebeci",
+    "intent_tags": [
+      "simple"
+    ],
+    "expected_business_ids": [
+      440,
+      439,
+      441,
+      443,
+      451
+    ],
+    "reference": "İyi değerlendirilen Muhasebeci seçenekleri arasında Serbest Muhasebeci Mali Müşavir Erçin KERİNÇ ve Serbest Muhasebeci Mali Müşavir Mehmet Dolgun öne çıkıyor (puanları 4.8-4.9/5 arasında), fiyatlar 1569-4985 TL arasında değişiyor."
+  },
+  {
+    "id": "q072",
+    "question": "Online danışmanlık veren bir muhasebeci var mı?",
+    "category": "Muhasebeci",
+    "intent_tags": [
+      "online_only"
+    ],
+    "expected_business_ids": [
+      439,
+      444,
+      440,
+      441,
+      442,
+      443,
+      445,
+      446,
+      447,
+      448,
+      449,
+      450,
+      451,
+      452,
+      453,
+      454,
+      455,
+      456,
+      457,
+      458
+    ],
+    "reference": "Online hizmet veren 20 Muhasebeci seçeneği bulundu, örnek olarak Serbest Muhasebeci Mali Müşavir Erçin KERİNÇ ve Serbest Muhasebeci Mali Müşavir Mehmet Dolgun sayılabilir (puanları 4.5-4.9/5 arasında, fiyatlar 1192-5000 TL arasında değişiyor)."
+  },
+  {
+    "id": "q073",
+    "question": "Uygun fiyatlı bir mali müşavir önerir misin?",
+    "category": "Muhasebeci",
+    "intent_tags": [
+      "price_preference:cheap"
+    ],
+    "expected_business_ids": [
+      441,
+      445,
+      446,
+      456,
+      458
+    ],
+    "reference": "Uygun fiyatlı 5 Muhasebeci seçeneği bulundu, örnek olarak AKTAN MALİ MÜŞAVIRLİK Serbest Muhasebeci Mali Müşavir Ercan AKTAN\" ve SERBEST MUHASEBECİ MALİ MÜŞAVİR ÇİĞDEM KURŞUN GÖÇMEN sayılabilir (puanı 4.8/5, fiyatlar 1192-4969 TL arasında değişiyor)."
+  },
+  {
+    "id": "q074",
+    "question": "Boşanma davası için bir avukat arıyorum",
+    "category": "Avukat",
+    "intent_tags": [
+      "simple"
+    ],
+    "expected_business_ids": [
+      460,
+      463,
+      467,
+      466,
+      473
+    ],
+    "reference": "İyi değerlendirilen Avukat seçenekleri arasında Aktepe & Yavuz Hukuk Bürosu | Kocaeli/İzmit Avukat | Koceli Boşanma Avukatı | Kocaeli Miras Avukatı | Ceza Avukatı ve Kocaeli Avukat | İzmit Avukat | A&G HUKUK BÜROSU öne çıkıyor (puanı 4.9/5), fiyatlar 4088-19452 TL arasında değişiyor."
+  },
+  {
+    "id": "q075",
+    "question": "Online danışmanlık veren bir avukat var mı?",
+    "category": "Avukat",
+    "intent_tags": [
+      "online_only"
+    ],
+    "expected_business_ids": [
+      459,
+      460,
+      461,
+      462,
+      463,
+      464,
+      465,
+      466,
+      467,
+      468,
+      469,
+      470,
+      471,
+      472,
+      473,
+      474,
+      475,
+      476,
+      477,
+      478
+    ],
+    "reference": "Online hizmet veren 20 Avukat seçeneği bulundu, örnek olarak Aktepe & Yavuz Hukuk Bürosu | Kocaeli/İzmit Avukat | Koceli Boşanma Avukatı | Kocaeli Miras Avukatı | Ceza Avukatı ve Kocaeli Avukat | İzmit Avukat | A&G HUKUK BÜROSU sayılabilir (puanları 4.8-4.9/5 arasında, fiyatlar 2209-19930 TL arasında değişiyor)."
+  },
+  {
+    "id": "q076",
+    "question": "Uygun fiyatlı bir avukat önerir misin?",
+    "category": "Avukat",
+    "intent_tags": [
+      "price_preference:cheap"
+    ],
+    "expected_business_ids": [
+      459,
+      463,
+      468,
+      471,
+      478
+    ],
+    "reference": "Uygun fiyatlı 5 Avukat seçeneği bulundu, örnek olarak Kocaeli Avukat | İzmit Avukat | A&G HUKUK BÜROSU ve Kocaeli Avukat Zihni Tolga Şenol | İzmit Avukat | Kocaeli Kira Avukatı | Kocaeli Ceza Avukatı | Miras,Gayrimenkul Avukatı sayılabilir (puanları 4.8-4.9/5 arasında, fiyatlar 2209-18244 TL arasında değişiyor)."
+  },
+  {
+    "id": "q077",
+    "question": "Hem saçımı kestirip hem cilt bakımı yaptırabileceğim bir yer var mı?",
+    "category": null,
+    "intent_tags": [
+      "multi_category_ambiguous"
+    ],
+    "expected_business_ids": [
+      123,
+      106,
+      112,
+      121,
+      113
+    ],
+    "reference": "Hem saç hem cilt bakımını tek çatı altında sunan en yakın kategori Güzellik Salonu. Örnek olarak Olab Beauty - Güzellik Merkezi - Cilt Bakımı & Protez Tırnak & Kafa Masajı ve SOCİAL BEAUTY AESTHETİC GÜZELLİK MERKEZİ - Saç Terapisi - Cilt Bakımı - Protez Tırnak - Lazer Epilasyon gösterilebilir, fiyatlar 825-1976 TL arasında değişiyor."
+  },
+  {
+    "id": "q078",
+    "question": "Arabamın hem periyodik bakımını yaptırıp hem klimasını kontrol ettirebileceğim bir yer arıyorum",
+    "category": null,
+    "intent_tags": [
+      "multi_category_ambiguous"
+    ],
+    "expected_business_ids": [
+      312,
+      293,
+      303,
+      294,
+      310
+    ],
+    "reference": "Tam kapsamlı oto servisler genelde klima kontrolünü de bakım paketine dahil ediyor, ayrı bir klima servisine gerek kalmıyor. Örnek olarak Motrio Servisi Renaz Otomotiv ve Özlü Otomotiv | İzmit Oto Servis (Özel) gösterilebilir, fiyatlar 2534-13657 TL arasında değişiyor."
+  },
+  {
+    "id": "q079",
+    "question": "Çocuğuma hem özel ders hem müzik dersi verecek birini arıyorum",
+    "category": null,
+    "intent_tags": [
+      "multi_category_ambiguous"
+    ],
+    "expected_business_ids": [
+      219,
+      214,
+      224,
+      215,
+      216,
+      280,
+      292,
+      274,
+      278,
+      276
+    ],
+    "reference": "Bu iki ihtiyaç (özel ders ve müzik dersi) farklı uzmanlık alanları — muhtemelen iki ayrı öğretmen/kurum gerekecek. Örnek olarak Özel Atmaca Bilim ve Sanat Akademisi ve İzmit Matematik gösterilebilir, fiyatlar 504-1193 TL arasında değişiyor."
+  },
+  {
+    "id": "q080",
+    "question": "Diş kontrolü ve göz muayenesi için aynı gün randevu alabileceğim yerler var mı?",
+    "category": null,
+    "intent_tags": [
+      "multi_category_ambiguous"
+    ],
+    "expected_business_ids": [
+      16,
+      1,
+      4,
+      20,
+      15,
+      26,
+      23,
+      21,
+      22,
+      24
+    ],
+    "reference": "Diş kontrolü ve göz muayenesi farklı uzmanlık alanları — aynı gün için iki ayrı randevu gerekecek. Örnek olarak Diş Hekimi Ahmet Melih Bozoğlu Diş Kliniği ve Yahyakaptan Diş Hekimi Aydın Cevizli- İzmit Nöbetçi Diş - Kocaeli İzmit Acil 7/24 Diş Kliniği -İzmit özel Diş Hastanesi gösterilebilir, fiyatlar 568-7949 TL arasında değişiyor."
+  },
+  {
+    "id": "q081",
+    "question": "Şu an bulunduğum yere yakın bir veteriner önerir misin?",
+    "category": "Veteriner",
+    "intent_tags": [
+      "near_me"
+    ],
+    "expected_business_ids": [
+      399,
+      396,
+      401,
+      400,
+      394
+    ],
+    "reference": "Sana en yakın Veteriner seçenekleri arasında Masal Veteriner Polikliniği ve UZMAN VETERİNER KLİNİĞİ İZMİT KOCAELİ bulunuyor, fiyatlar 415-2950 TL arasında değişiyor."
+  },
+  {
+    "id": "q082",
+    "question": "Yakınımdaki en iyi kuaförü söyler misin?",
+    "category": "Kuaför",
+    "intent_tags": [
+      "near_me",
+      "rating_preference:high"
+    ],
+    "expected_business_ids": [
+      70,
+      87,
+      68,
+      74,
+      83
+    ],
+    "reference": "En yüksek puanlı sana yakın Kuaför seçeneği olarak Mustafa Turan Bay Bayan Kuaför Yahya Kaptan İzmit Kocaeli ve Emre Yıldız Hair Stylist öne çıkıyor (puanları 4.7-4.9/5 arasında)."
+  },
+  {
+    "id": "q083",
+    "question": "Bana yakın bir oto servis lazım, acil",
+    "category": "Oto Servis",
+    "intent_tags": [
+      "near_me"
+    ],
+    "expected_business_ids": [
+      297,
+      312,
+      293,
+      310,
+      299
+    ],
+    "reference": "Sana en yakın Oto Servis seçenekleri arasında Motrio Servisi Renaz Otomotiv ve Özlü Otomotiv | İzmit Oto Servis (Özel) bulunuyor, fiyatlar 2210-13657 TL arasında değişiyor."
+  },
+  {
+    "id": "q084",
+    "question": "Yakınımda cumartesi açık bir spor salonu var mı?",
+    "category": "Spor Salonu",
+    "intent_tags": [
+      "near_me",
+      "weekend_open_only"
+    ],
+    "expected_business_ids": [
+      154,
+      160,
+      158,
+      162,
+      159
+    ],
+    "reference": "Sana en yakın Spor Salonu seçenekleri arasında Body Club Sport Center ve Bath Fit Spa Kocaeli bulunuyor, fiyatlar 725-2842 TL arasında değişiyor."
+  },
+  {
+    "id": "q085",
+    "question": "En yüksek puanlı diş kliniğini önerir misin?",
+    "category": "Diş Kliniği",
+    "intent_tags": [
+      "rating_preference:high"
+    ],
+    "expected_business_ids": [
+      16,
+      1,
+      4,
+      20,
+      15
+    ],
+    "reference": "En yüksek puanlı Diş Kliniği seçeneği olarak Diş Hekimi Ahmet Melih Bozoğlu Diş Kliniği ve Yahyakaptan Diş Hekimi Aydın Cevizli- İzmit Nöbetçi Diş - Kocaeli İzmit Acil 7/24 Diş Kliniği -İzmit özel Diş Hastanesi öne çıkıyor (puanları 4.9-5.0/5 arasında)."
+  },
+  {
+    "id": "q086",
+    "question": "Kocaeli'deki en kötü avukatı söyle, ona gitmeyeyim",
+    "category": "Avukat",
+    "intent_tags": [
+      "rating_preference:low"
+    ],
+    "expected_business_ids": [
+      469,
+      468,
+      472,
+      477,
+      478
+    ],
+    "reference": "En düşük puanlı Avukat seçeneği olarak KOCAELİ İZMİT AVUKAT MUSTAFA GAFFAR TANYILDIZ ve Avukat Mehmet Can AKYILDIZ öne çıkıyor (puanı 4.8/5) — bunlardan kaçınmak isteyebilirsin."
+  },
+  {
+    "id": "q087",
+    "question": "En iyi değerlendirilen fizyoterapisti bulur musun?",
+    "category": "Fizyoterapist",
+    "intent_tags": [
+      "rating_preference:high"
+    ],
+    "expected_business_ids": [
+      49,
+      64,
+      60,
+      54,
+      52
+    ],
+    "reference": "En yüksek puanlı Fizyoterapist seçeneği olarak İzmit Kocaeli Fizyoterapist Muhammed Oğuz Çelen ve Fizyoterapist Ömer SAYMA & Fizik Tedavi öne çıkıyor (puanı 4.9/5)."
+  },
+  {
+    "id": "q088",
+    "question": "Puanı en düşük oto servisi hangisi, kaçınmak istiyorum",
+    "category": "Oto Servis",
+    "intent_tags": [
+      "rating_preference:low"
+    ],
+    "expected_business_ids": [
+      297,
+      300,
+      309,
+      308,
+      301
+    ],
+    "reference": "En düşük puanlı Oto Servis seçeneği olarak M&R Oto Tamirhanesi ve Cakir Oto Ford Ozel Servisi öne çıkıyor (puanları 3.6-4.4/5 arasında) — bunlardan kaçınmak isteyebilirsin."
+  },
+  {
+    "id": "q089",
+    "question": "Ola Kuaför İzmit'in fiyatları nasıl?",
+    "category": "Kuaför",
+    "intent_tags": [
+      "named_business"
+    ],
+    "expected_business_ids": [
+      71
+    ],
+    "reference": "Ola Kuaför İzmit (620-1129 TL, 4.4/5, female) gerçek bir kayıt, verilen bilgi bu işletmeye ait."
+  },
+  {
+    "id": "q090",
+    "question": "Yuvam Veteriner Kliniği hangi hizmetleri veriyor?",
+    "category": "Veteriner",
+    "intent_tags": [
+      "named_business"
+    ],
+    "expected_business_ids": [
+      400
+    ],
+    "reference": "Yuvam Veteriner Kliniği (483-2950 TL, 4.3/5, unisex) gerçek bir kayıt, verilen bilgi bu işletmeye ait."
+  },
+  {
+    "id": "q091",
+    "question": "Kocaeli 3. Noterliği'nin çalışma saatleri nedir?",
+    "category": "Noter",
+    "intent_tags": [
+      "named_business"
+    ],
+    "expected_business_ids": [
+      437
+    ],
+    "reference": "Kocaeli 3. Noterliği (1580-1904 TL, puan verisi yok, unisex) gerçek bir kayıt, verilen bilgi bu işletmeye ait."
+  },
+  {
+    "id": "q092",
+    "question": "TOSCAR Premium Service güvenilir mi?",
+    "category": "Oto Servis",
+    "intent_tags": [
+      "named_business"
+    ],
+    "expected_business_ids": [
+      294
+    ],
+    "reference": "TOSCAR Premium Service | İzmit Oto Servis & Mekanik Tamir (5428-7934 TL, 4.8/5, unisex) gerçek bir kayıt, verilen bilgi bu işletmeye ait."
+  },
+  {
+    "id": "q093",
+    "question": "Dişim çok ağrıyor, ne yapmalıyım?",
+    "category": "Diş Kliniği",
+    "intent_tags": [
+      "vague_implicit_category"
+    ],
+    "expected_business_ids": [
+      16,
+      1,
+      4,
+      20,
+      15
+    ],
+    "reference": "Diş ağrısı büyük olasılıkla bir diş kliniğine gitmeyi gerektirir. İyi değerlendirilen Diş Kliniği seçenekleri arasında Diş Hekimi Ahmet Melih Bozoğlu Diş Kliniği ve Yahyakaptan Diş Hekimi Aydın Cevizli- İzmit Nöbetçi Diş - Kocaeli İzmit Acil 7/24 Diş Kliniği -İzmit özel Diş Hastanesi öne çıkıyor (puanları 4.9-5.0/5 arasında), fiyatlar 3446-7949 TL arasında değişiyor."
+  },
+  {
+    "id": "q094",
+    "question": "Saçlarım çok yıpranmış, iyi bir bakım yaptırmak istiyorum",
+    "category": "Kuaför",
+    "intent_tags": [
+      "vague_implicit_category"
+    ],
+    "expected_business_ids": [
+      82,
+      85,
+      70,
+      84,
+      87
+    ],
+    "reference": "Yıpranmış saçlar için en uygun adres bir kuaför. İyi değerlendirilen Kuaför seçenekleri arasında Gökdemir Hair Design Studio ve KUAFÖR ARZU ERTÜRK HAİR MAKEUP öne çıkıyor (puanı 4.9/5), fiyatlar 186-1196 TL arasında değişiyor."
+  },
+  {
+    "id": "q095",
+    "question": "Kedimin aşılarını yaptırmam gerekiyor ama nereye gideceğimi bilmiyorum",
+    "category": "Veteriner",
+    "intent_tags": [
+      "vague_implicit_category"
+    ],
+    "expected_business_ids": [
+      406,
+      397,
+      398,
+      396,
+      407
+    ],
+    "reference": "Kedi aşıları için bir veteriner kliniğine gidilmesi gerekir. İyi değerlendirilen Veteriner seçenekleri arasında HIÇKIDIK PETSHOP AKVARYUM İZMİT ve Fauna Veteriner Kliniği Kocaeli öne çıkıyor (puanları 4.8-4.9/5 arasında), fiyatlar 347-2952 TL arasında değişiyor."
+  },
+  {
+    "id": "q096",
+    "question": "Arabamdan tuhaf bir ses geliyor, bakılması lazım",
+    "category": "Oto Servis",
+    "intent_tags": [
+      "vague_implicit_category"
+    ],
+    "expected_business_ids": [
+      312,
+      293,
+      303,
+      294,
+      310
+    ],
+    "reference": "Araçtan gelen tuhaf sesler için bir oto servise bakılması gerekir. İyi değerlendirilen Oto Servis seçenekleri arasında Motrio Servisi Renaz Otomotiv ve Özlü Otomotiv | İzmit Oto Servis (Özel) öne çıkıyor (puanları 4.8-4.9/5 arasında), fiyatlar 2534-13657 TL arasında değişiyor."
+  },
+  {
+    "id": "q097",
+    "question": "Online muayene yapan bir diş kliniği var mı?",
+    "category": "Diş Kliniği",
+    "intent_tags": [
+      "online_only",
+      "expected_empty"
+    ],
+    "expected_business_ids": [],
+    "reference": "Diş Kliniği kategorisindeki işletmelerin hiçbiri online hizmet vermiyor (diş tedavisi doğası gereği yüz yüze yapılır) — online muayene yapan bir diş kliniği bulunmuyor."
+  },
+  {
+    "id": "q098",
+    "question": "Uzaktan/online hizmet veren bir kuaför önerir misin?",
+    "category": "Kuaför",
+    "intent_tags": [
+      "online_only",
+      "expected_empty"
+    ],
+    "expected_business_ids": [],
+    "reference": "Kuaför kategorisindeki işletmelerin hiçbiri online hizmet vermiyor (saç kesimi/bakımı yüz yüze bir hizmettir) — uzaktan hizmet veren bir kuaför bulunmuyor."
+  },
+  {
+    "id": "q099",
+    "question": "Yakınımda bir eczane var mı?",
+    "category": null,
+    "intent_tags": [
+      "out_of_scope_category",
+      "expected_empty"
+    ],
+    "expected_business_ids": [],
+    "reference": "Eczane, SeekBind'in desteklediği 27 kategoriden biri değil — bu kapsamda bir işletme kaydı bulunmuyor."
+  },
+  {
+    "id": "q100",
+    "question": "7/24 açık bir noter var mı?",
+    "category": "Noter",
+    "intent_tags": [
+      "expected_empty"
+    ],
+    "expected_business_ids": [],
+    "reference": "Hiçbir noter 7/24 açık değil, çalışma saatleri gündüz mesai saatleriyle sınırlı — 7/24 açık bir noter bulunmuyor."
+  }
+]
