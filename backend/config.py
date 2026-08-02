@@ -5,11 +5,27 @@ buradaki Settings sınıfı üzerinden alır, hiçbir yerde URL/port/credential
 hardcoded yazılmaz.
 """
 
+from datetime import date
 from functools import lru_cache
 from typing import Literal
 
 from pydantic import SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+# SeekBind gerçek bir canlı ürün değil, tek seferlik sentetik veriyle
+# (`scripts/seed_db.py`) doldurulmuş bir demo/portföy projesi —
+# `appointment_slots` seed anından itibaren sadece sınırlı bir pencere
+# için üretiliyor (bkz. `scripts/synthetic/schedule.py`
+# `SLOT_GENERATION_DAYS_AHEAD`) ve otomatik yenilenmiyor. `date.today()`
+# kullanmak, gerçek takvim ilerledikçe tüm gün/saat bazlı aramaların
+# (ve RAGAS test setinin) sessizce sıfır sonuç dönmesine yol açar —
+# veri yeniden seed edilene kadar TÜM "bugün" referansları bu sabit
+# tarihe kilitleniyor. 25 Temmuz 2026 bilerek seçildi: seed penceresinin
+# (25-31 Temmuz) İLK günü olduğu için, `resolve_day_of_week`'in "bugün
+# dahil en yakın tekrar" mantığıyla hesapladığı 7 hedef gün de (Pazartesi-
+# Pazar) bu pencere içinde kalıyor — başka bir gün seçilirse (örn. bir
+# Pazartesi), "gelecek Cumartesi/Pazar" hesabı pencerenin dışına taşabilir.
+DEMO_REFERENCE_TODAY: date = date(2026, 7, 25)
 
 # LLM çağrılarında izin verilen maksimum bekleme süresi (saniye)
 LLM_CALL_TIMEOUT_SECONDS: int = 30
