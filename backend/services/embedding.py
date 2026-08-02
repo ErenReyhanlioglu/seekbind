@@ -192,10 +192,12 @@ def get_embedding_provider(*, allow_fallback: bool = True) -> EmbeddingProvider:
     """Kullanılacak embedding sağlayıcısını (Redis cache + fallback ile
     sarılmış olarak) önbellekten döner.
 
-    Birincil her zaman OpenAI, ikincil her zaman Ollama (bkz.
-    `backend.services.fallback.FallbackEmbeddingProvider`) —
-    `ACTIVE_LLM_PROVIDER`'ın aksine embedding tarafında "tamamen yerel çalış"
-    diye ayrı bir seçim yok (bkz. ADR-0023), OpenAI hep birincil.
+    `ACTIVE_EMBEDDING_PROVIDER=ollama` iken (bkz. ADR-0024 "Güncelleme" notu)
+    OpenAI hiç construct edilmez, doğrudan Redis cache'e sarılmış
+    `OllamaEmbedding` döner — `get_llm_provider()`'daki `ACTIVE_LLM_PROVIDER`
+    dalıyla aynı desen, yerel/bütçe kısıtlı geliştirme için. Aksi halde
+    (varsayılan `"openai"`) davranış değişmedi: birincil her zaman OpenAI,
+    ikincil her zaman Ollama (bkz. `backend.services.fallback.FallbackEmbeddingProvider`).
 
     `allow_fallback=False`, toplu yükleme gibi (bkz. `scripts.load_embeddings`)
     senaryolarda fallback'i tamamen devre dışı bırakır — OpenAI geçici olarak
@@ -222,6 +224,9 @@ def get_embedding_provider(*, allow_fallback: bool = True) -> EmbeddingProvider:
         "enabled": settings.enable_cache,
         "ttl_seconds": settings.embedding_cache_ttl_seconds,
     }
+
+    if settings.active_embedding_provider == "ollama":
+        return CachedEmbeddingProvider(OllamaEmbedding(), redis_client, **cache_kwargs)
 
     primary = CachedEmbeddingProvider(OpenAIEmbedding(), redis_client, **cache_kwargs)
     if not allow_fallback:
