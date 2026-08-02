@@ -13,10 +13,9 @@ SeekBind, [DateBind](https://datebind.com) randevu platformu için geliştirilen
 5. Uygunluk skoruna göre sıralanmış sonuçlar kart listesi olarak sunulur
 6. Her kartta ilgili sağlayıcının DateBind randevu sayfasına yönlendiren buton bulunur
 
-`/recommend` isteğinin bu adımların arkasında gerçekte hangi sırayla,
-hangi dış sistemlere (Redis, Postgres, Qdrant, LLM/embedding API'leri,
-Jina, Langfuse) uğrayarak ilerlediğinin detaylı diyagramı için bkz.
-[docs/request_lifecycle.md](docs/request_lifecycle.md).
+Mimarinin C4 modeline göre 4 zoom seviyesinde (genel bağlamdan
+`/recommend` isteğinin tam adım-adım akışına kadar) diyagramları için
+bkz. [docs/architecture/](docs/architecture/README.md).
 
 ## Teknik Altyapı
 
@@ -79,14 +78,49 @@ Ryzen 7 6800H, 32 GB RAM, **NVIDIA RTX 3050 Laptop (4 GB VRAM)**:
 beklenen bir donanım kısıtı, mimari farkı değil. Detay için bkz.
 [docs/ragas_evaluation.md](docs/ragas_evaluation.md).
 
-**Gözlemlenebilirlik**
-- Langfuse ile tüm LLM çağrıları, token maliyetleri ve yanıt süreleri izlenmektedir
+**Kullanılan Teknolojiler**
 
-**Tech Stack**
-- Backend: Python, FastAPI
-- Veritabanı: PostgreSQL, Qdrant (vektör DB)
-- Frontend: React
-- Altyapı: Docker
+**Backend**
+- Python 3.12, [FastAPI](https://fastapi.tiangolo.com/) + Uvicorn
+- [Pydantic](https://docs.pydantic.dev/) / pydantic-settings — validation + config
+- [SQLAlchemy](https://www.sqlalchemy.org/) (async) + [Alembic](https://alembic.sqlalchemy.org/) — ORM + migration
+- asyncpg, httpx (async HTTP)
+
+**AI / LLM**
+- OpenAI API — `gpt-4o-mini` (runtime LLM), `text-embedding-3-small` (embedding), `gpt-4.1-mini` (veri zenginleştirme + RAGAS evaluator)
+- [Ollama](https://ollama.com/) — `qwen3:4b-instruct` + `qwen3-embedding:0.6b` (yerel fallback)
+- [LangChain](https://www.langchain.com/) — RAGAS entegrasyonu için
+- [RAGAS](https://docs.ragas.io/) — Faithfulness/Answer Relevancy/Context Precision/Recall + deterministik ID-bazlı metrikler
+- [Jina AI](https://jina.ai/reranker/) — cross-encoder reranking
+
+**Arama**
+- [Qdrant](https://qdrant.tech/) — vektör veritabanı
+- `rank-bm25` — lexical (BM25) arama
+- Hybrid search (BM25 + vektör, Reciprocal Rank Fusion)
+
+**Veri Katmanı**
+- PostgreSQL
+- Redis — LLM/embedding cache + rate limiting
+
+**Gözlemlenebilirlik**
+- [Langfuse](https://langfuse.com/) — LLM çağrıları, token maliyetleri, yanıt süreleri
+
+**Test & Kalite**
+- pytest + pytest-asyncio + pytest-cov, coverage.py (**%90 eşik**)
+- pyright (statik tip kontrolü, 0 hata kuralı)
+- ruff + black (lint/format), mccabe (siklomatik karmaşıklık)
+- GitHub Actions — lint, unit-test, integration-test, coverage-report, build
+
+**Altyapı & Araçlar**
+- Docker + Docker Compose
+- [uv](https://docs.astral.sh/uv/) — bağımlılık/ortam yönetimi
+- Git + GitHub
+
+**Frontend** (planlanan — Faz 7)
+- React ([21st.dev](https://21st.dev/) MCP ile üretilecek)
+
+**Veri Toplama**
+- [SerpAPI](https://serpapi.com/) — Google Maps üzerinden gerçek işletme verisi
 
 ## Kurulum
 

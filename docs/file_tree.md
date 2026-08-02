@@ -33,7 +33,13 @@ seekbind/
 │   ├── database_schema.md        — ER diyagramı + tasarım kararları
 │   ├── prompts.md                — backend/prompts/ dosyalarının indeksi
 │   ├── ragas_evaluation.md       — RAGAS 2×2 ablasyon sonuçları
-│   ├── request_lifecycle.md      — /recommend istek yaşam döngüsü (mermaid sequence diyagramları)
+│   ├── architecture/             — C4 modeline göre 4 zoom seviyesinde mimari diyagramlar
+│   │   ├── README.md             — okuma sırası + C4 açıklaması
+│   │   ├── 1-context.md          — sistem bağlamı (kimlerle/nelerle konuşuyor)
+│   │   ├── 2-container.md        — büyük parçalar (API, Postgres, Qdrant, Redis...)
+│   │   ├── 3-component.md        — Backend API'nin içindeki modüller
+│   │   ├── 4-code-request-lifecycle.md        — /recommend'in tam adım-adım akışı
+│   │   └── 4-code-provider-fallback-cache.md  — LLM/embedding cache+fallback mekaniği
 │   └── adr/                      — mimari kararlar (ADR), her karar kendi dosyasında
 │       ├── README.md             — ADR indeksi + format açıklaması
 │       └── 0000-...-0027-...md   — 28 numaralı ADR dosyası
