@@ -180,12 +180,21 @@ async def test_openai_embedding_close_closes_underlying_client() -> None:
     provider._client.close.assert_awaited_once()
 
 
-def test_get_embedding_provider_returns_openai_primary_wrapped_in_fallback_and_cache() -> (
-    None
-):
+def test_get_embedding_provider_returns_openai_primary_wrapped_in_fallback_and_cache(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     """`get_embedding_provider()` artık çıplak `OpenAIEmbedding` değil,
     Redis cache + Ollama fallback ile sarılmış hâlini döner (bkz.
-    backend/services/cache.py, backend/services/fallback.py)."""
+    backend/services/cache.py, backend/services/fallback.py).
+
+    Gerçek settings'in `active_embedding_provider`'ı ne olursa olsun bu test
+    hep "openai" davranışını doğrulasın diye açıkça pin'lenir (bkz.
+    `tests/unit/test_llm.py`'deki aynı desen)."""
+    real_settings = embedding_module.get_settings()
+    fake_settings = real_settings.model_copy(
+        update={"active_embedding_provider": "openai"}
+    )
+    monkeypatch.setattr(embedding_module, "get_settings", lambda: fake_settings)
     get_embedding_provider.cache_clear()
 
     try:
@@ -201,11 +210,20 @@ def test_get_embedding_provider_returns_openai_primary_wrapped_in_fallback_and_c
         get_embedding_provider.cache_clear()
 
 
-def test_get_embedding_provider_with_allow_fallback_false_returns_bare_cached_primary() -> (
-    None
-):
+def test_get_embedding_provider_with_allow_fallback_false_returns_bare_cached_primary(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     """`scripts.load_embeddings`'in kullandığı yol — toplu yükleme sırasında
-    fallback bilinçli olarak devre dışı (bkz. get_embedding_provider docstring'i)."""
+    fallback bilinçli olarak devre dışı (bkz. get_embedding_provider docstring'i).
+
+    `active_embedding_provider` açıkça "openai" pin'lenir — aksi halde gerçek
+    settings "ollama" ise `allow_fallback` hiç değerlendirilmeden erken
+    dönülür, bu test "openai" dalını test edemez."""
+    real_settings = embedding_module.get_settings()
+    fake_settings = real_settings.model_copy(
+        update={"active_embedding_provider": "openai"}
+    )
+    monkeypatch.setattr(embedding_module, "get_settings", lambda: fake_settings)
     get_embedding_provider.cache_clear()
 
     try:
@@ -221,5 +239,28 @@ def test_get_embedding_provider_returns_same_instance_on_repeated_calls() -> Non
 
     try:
         assert get_embedding_provider() is get_embedding_provider()
+    finally:
+        get_embedding_provider.cache_clear()
+
+
+def test_get_embedding_provider_returns_ollama_when_configured(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """`ACTIVE_EMBEDDING_PROVIDER=ollama` iken `get_embedding_provider()`
+    OpenAI'ı hiç construct etmeden çıplak `CachedEmbeddingProvider(OllamaEmbedding)`
+    döner — `FallbackEmbeddingProvider`'a hiç sarılmaz (bkz.
+    `tests/unit/test_llm.py::test_get_llm_provider_returns_ollama_when_configured`
+    ile aynı desen, ADR-0024 Güncelleme notu)."""
+    real_settings = embedding_module.get_settings()
+    fake_settings = real_settings.model_copy(
+        update={"active_embedding_provider": "ollama"}
+    )
+    monkeypatch.setattr(embedding_module, "get_settings", lambda: fake_settings)
+    get_embedding_provider.cache_clear()
+
+    try:
+        provider = get_embedding_provider()
+        assert isinstance(provider, CachedEmbeddingProvider)
+        assert isinstance(provider._inner, OllamaEmbedding)  # type: ignore[attr-defined]
     finally:
         get_embedding_provider.cache_clear()

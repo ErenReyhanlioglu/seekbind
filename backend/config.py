@@ -93,7 +93,13 @@ class Settings(BaseSettings):
     ollama_llm_model: str
 
     # Aktif LLM sağlayıcısı (bkz. docs/adr/0008-llm-comparison-phase-4.md)
-    active_llm_provider: Literal["openai", "ollama"] = "openai"
+    active_llm_provider: Literal["openai", "ollama"] = "ollama"
+
+    # Aktif embedding sağlayıcısı (bkz. docs/adr/0024-fallback-mechanism.md
+    # "Güncelleme" notu) — "ollama" seçilirse OpenAI'a hiç istek atılmaz,
+    # doğrudan yerel Qwen embedding kullanılır (yerel geliştirme / bütçe
+    # kısıtı senaryosu için)
+    active_embedding_provider: Literal["openai", "ollama"] = "ollama"
 
     # Jina AI (reranker)
     jina_api_key: SecretStr

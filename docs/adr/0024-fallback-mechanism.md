@@ -131,6 +131,26 @@ en çok gerektiği anda yeni bir başarısızlık noktası eklemek olurdu.
   belirgin şekilde zayıf). Bu, RAGAS'ın kesin retrieval metriklerinin yerini
   tutmuyor ama erken bir uyarı sinyali — Faz 6'da dikkate alınmalı.
 
+## Güncelleme (2026-08-02)
+
+Yukarıdaki karar ("canlı sistemde 'aktif embedding sağlayıcısı' diye bir
+ayar bilinçli olarak yok") yerel geliştirme ihtiyacıyla revize edildi:
+OpenAI bütçesi tükendiğinde localde frontend/arama testi yapabilmek için
+`ACTIVE_LLM_PROVIDER`'la simetrik yeni bir config eklendi:
+`ACTIVE_EMBEDDING_PROVIDER: Literal["openai", "ollama"] = "openai"`
+(`backend/config.py`). `"ollama"` seçilince `get_embedding_provider()`
+`OpenAIEmbedding`'i hiç construct etmiyor, doğrudan Redis cache'e sarılmış
+`OllamaEmbedding` dönüyor — `FallbackEmbeddingProvider` hiç devreye
+girmiyor.
+
+Bu, yukarıdaki asimetri gerekçesini (Ollama'nın farklı vektör uzayı ->
+farklı Qdrant collection) geçersiz kılmıyor: `get_qdrant_collection_name()`
+hâlâ `provider.name`'den collection adını türetiyor, `"ollama"` seçiliyken
+bu doğrudan `businesses_ollama-qwen3-embedding-0-6b`'ye çözülüyor — bu
+collection zaten 478 işletmeyle dolu (yukarıdaki "Sonuçlar" bölümü).
+Toplu yükleme (`scripts/load_embeddings.py`) davranışı değişmedi, o hâlâ
+kendi `--provider` CLI flag'iyle bağımsız çalışıyor.
+
 ## Bilinen sınırlar
 
 - Circuit breaker yok — primary çökükken her istek yine de tam
