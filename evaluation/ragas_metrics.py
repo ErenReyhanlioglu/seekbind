@@ -13,6 +13,8 @@ Bu yüzden bu 2 metrik için hem tüm sorunun hem de bu etiketlileri hariç
 tutan alt kümenin ortalaması ayrı ayrı raporlanır.
 """
 
+import math
+
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 from ragas import EvaluationDataset, SingleTurnSample, evaluate
 from ragas.cost import TokenUsage, get_token_usage_for_openai
@@ -22,6 +24,12 @@ from backend.config import get_settings
 from evaluation.ragas_traces import EXPECTED_EMPTY_TAG
 
 EVALUATOR_LLM_MODEL: str = "gpt-4.1-mini"  # ADR-0009 — runtime adaylarından biri değil
+METRIC_NAMES: tuple[str, ...] = (
+    "faithfulness",
+    "answer_relevancy",
+    "context_precision",
+    "context_recall",
+)
 
 
 def _build_ragas_dataset(traces: list[dict]) -> EvaluationDataset:
@@ -49,10 +57,19 @@ def _segment_mean(
     Precision anlamsız kalabilir (bkz. ADR-0009 2026-08-01 güncellemesi) —
     ikinci değer bunları hariç tutar. Hiç `expected_empty` yoksa (küçük bir
     pilot alt kümesinde olabilir) None döner.
+
+    RAGAS bazen (expected_empty OLMAYAN) tekil bir soruda da NaN döndürüyor
+    (gerçek bir koşumda gözlendi, ADR-0009'daki context-boş vakasından ayrı
+    bir durum) — `sum()` tek bir NaN'la bile tüm ortalamayı NaN'a çeviriyordu
+    (gerçek bir bug, 100 sorunun aggregate'ini kullanılamaz hale getirmişti).
+    Bu yüzden NaN'lı sorular ortalamadan hariç tutulur.
     """
-    all_mean = sum(scores) / len(scores)
+    valid_scores = [s for s in scores if not math.isnan(s)]
+    all_mean = sum(valid_scores) / len(valid_scores)
     non_empty = [
-        s for s, t in zip(scores, traces) if EXPECTED_EMPTY_TAG not in t["intent_tags"]
+        s
+        for s, t in zip(scores, traces)
+        if EXPECTED_EMPTY_TAG not in t["intent_tags"] and not math.isnan(s)
     ]
     non_empty_mean = sum(non_empty) / len(non_empty) if non_empty else None
     return all_mean, non_empty_mean
@@ -94,6 +111,46 @@ def _serialize_token_usage(usage: TokenUsage | list[TokenUsage]) -> list[dict]:
     return [usage.model_dump()]
 
 
+def _clean_score(value: float) -> float | None:
+    """RAGAS context boşken (`expected_empty` sorular) NaN dönebilir —
+    JSON'a yazılabilmesi için None'a çevrilir (aksi halde geçersiz JSON çıkar)."""
+    return None if math.isnan(value) else value
+
+
+def _build_per_question_scores(
+    traces: list[dict], metric_scores: dict[str, list[float]]
+) -> list[dict[str, str | float | None]]:
+    """Aggregate ortalamanın arkasındaki soru bazlı ham skorları döner.
+
+    Hangi sorunun düşük çektiğini görmek için artık evaluator'ı
+    (gpt-4.1-mini, ücretli) tekrar çalıştırmaya gerek kalmıyor.
+    """
+    return [
+        {
+            "id": trace["id"],
+            **{name: _clean_score(scores[i]) for name, scores in metric_scores.items()},
+        }
+        for i, trace in enumerate(traces)
+    ]
+
+
+def _build_metrics_summary(
+    metric_scores: dict[str, list[float]], traces: list[dict]
+) -> dict[str, dict[str, float | None]]:
+    """4 metriğin segmentli (tümü / `expected_empty` hariç) ortalamasını döner."""
+    summary: dict[str, dict[str, float | None]] = {}
+    for metric_name in ("faithfulness", "answer_relevancy"):
+        all_mean, _ = _segment_mean(metric_scores[metric_name], traces)
+        summary[metric_name] = {"mean_all": all_mean}
+    for metric_name in ("context_precision", "context_recall"):
+        all_mean, non_empty_mean = _segment_mean(metric_scores[metric_name], traces)
+        summary[metric_name] = {
+            "mean_all": all_mean,
+            "mean_excluding_expected_empty": non_empty_mean,
+        }
+    return summary
+
+
 def run_ragas_metrics(traces: list[dict]) -> dict:
     """Kayıtlı trace'lerden RAGAS'ın 4 metriğini hesaplar, segmentli özet döner.
 
@@ -101,6 +158,10 @@ def run_ragas_metrics(traces: list[dict]) -> dict:
     etmek yerine (güncel fiyat değişirse yanıltıcı kalır), sadece gerçek ham
     token sayısı raporlanır; pilot sırasında Eren bunu OpenAI'nin kendi
     dashboard'ıyla karşılaştırır.
+
+    Aggregate ortalamanın yanında soru bazlı ham skorlar da (`per_question`)
+    kaydedilir — düşük skorlu soruları bulmak için evaluator'ı tekrar
+    çalıştırmaya gerek kalmasın diye.
     """
     dataset = _build_ragas_dataset(traces)
     metrics = [Faithfulness(), AnswerRelevancy(), ContextPrecision(), ContextRecall()]
@@ -115,22 +176,13 @@ def run_ragas_metrics(traces: list[dict]) -> dict:
     # EvaluationResult döner, ama evaluate()'in dönüş tipi statik olarak
     # Union[EvaluationResult, Executor] — Executor'da bu metodlar yok.
     df = result.to_pandas()  # pyright: ignore[reportAttributeAccessIssue]
-
-    metrics_summary: dict[str, dict[str, float | None]] = {}
-    for metric_name in ("faithfulness", "answer_relevancy"):
-        all_mean, _ = _segment_mean(df[metric_name].tolist(), traces)
-        metrics_summary[metric_name] = {"mean_all": all_mean}
-    for metric_name in ("context_precision", "context_recall"):
-        all_mean, non_empty_mean = _segment_mean(df[metric_name].tolist(), traces)
-        metrics_summary[metric_name] = {
-            "mean_all": all_mean,
-            "mean_excluding_expected_empty": non_empty_mean,
-        }
+    metric_scores = {name: df[name].tolist() for name in METRIC_NAMES}
 
     return {
         "sample_count": len(traces),
         "total_tokens": _serialize_token_usage(
             result.total_tokens()  # pyright: ignore[reportAttributeAccessIssue]
         ),
-        "metrics": metrics_summary,
+        "metrics": _build_metrics_summary(metric_scores, traces),
+        "per_question": _build_per_question_scores(traces, metric_scores),
     }
