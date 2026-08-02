@@ -20,7 +20,7 @@ from backend.db.models import UserProfile
 from backend.db.qdrant import get_qdrant_client
 from backend.db.session import get_session_factory
 from backend.services.embedding import EmbeddingProvider
-from backend.services.llm import LLMProvider
+from backend.services.llm import ChatMessage, LLMProvider
 from backend.services.rag import get_recommendation
 from backend.services.rag.recommendation import (
     RECOMMENDATION_RESULT_LIMIT,
@@ -32,6 +32,7 @@ logger = logging.getLogger(__name__)
 
 TEST_SET_PATH: Path = Path("evaluation/test_set.json")
 EXPECTED_EMPTY_TAG: str = "expected_empty"
+_WARMUP_TEXT: str = "merhaba"  # içeriği önemsiz, sadece modeli belleğe yükletmek için
 
 
 def load_questions() -> list[dict]:
@@ -81,11 +82,10 @@ async def _collect_trace_for_question(
     # gösterdiği metnin ta kendisi (backend/services/rag/recommendation.py) —
     # Faithfulness'ın kontrol edeceği "context" bu olmalı, ayrı bir formatlama
     # icat edilmedi.
+    shown_results = response.results[:RECOMMENDATION_RESULT_LIMIT]
     contexts = [
         _format_business_for_prompt(i, business)
-        for i, business in enumerate(
-            response.results[:RECOMMENDATION_RESULT_LIMIT], start=1
-        )
+        for i, business in enumerate(shown_results, start=1)
     ]
     return {
         "id": question["id"],
@@ -95,7 +95,40 @@ async def _collect_trace_for_question(
         "answer": response.recommendation,
         "contexts": contexts,
         "reference": question["reference"],
+        # deterministic_metrics.py'nin ID-bazlı metrikleri (Top-1/MRR/Recall@K/
+        # Precision@K) için — RAGAS'ın LLM-yargıcı sadece `contexts`'in metnini
+        # görür, ID'leri hiç bilmez, bu yüzden ayrı saklanır.
+        "result_ids": [business.id for business in shown_results],
+        "expected_business_ids": question["expected_business_ids"],
     }
+
+
+async def _warm_up_providers(
+    llm_provider: LLMProvider, embedding_provider: EmbeddingProvider
+) -> None:
+    """İlk gerçek soru gelmeden LLM'i ve embedding modelini bir kez çağırıp
+    belleğe yükletir.
+
+    Ollama'da model belleğe yüklü değilse ilk çağrı, hem model yükleme hem
+    çıkarım süresini `LLM_CALL_TIMEOUT_SECONDS`'a (30sn) sığdırmaya
+    çalışır — sığmazsa `q001` gerçek bir kalite sorunu olmadan fallback
+    mesajına düşer, metrikleri anlamsızca kirletir (gerçek bir vaka:
+    `qwen3:4b-instruct` ilk çağrıda VRAM'e yüklenirken zaman aşımına uğradı).
+    OpenAI sağlayıcılarında bu çağrı zaten hızlı, zarar vermez.
+
+    SIRA BİLEREK ÖNEMLİ: Ollama, VRAM yetersiz kaldığında GEÇ yüklenen modeli
+    CPU'ya taşıyor — LLM (token token üretim, GPU'dan çok kazanır) önce
+    yükleniyor ki GPU'yu o kapsın; embedding (tek seferlik forward-pass,
+    CPU'da da nispeten hızlı kalır) sonra yüklenip VRAM yetmezse CPU'ya
+    taşsın. Bu iki satırın sırasını değiştirmek önceliği tersine çevirir.
+    """
+    await llm_provider.complete(
+        [ChatMessage(role="user", content=_WARMUP_TEXT)],
+        temperature=0.0,
+        max_tokens=5,
+        langfuse_name="warmup",
+    )
+    await embedding_provider.embed_batch([_WARMUP_TEXT])
 
 
 async def collect_traces(
@@ -121,6 +154,9 @@ async def collect_traces(
     reranker_provider = get_reranker_provider()
     session_factory = get_session_factory()
     bm25_index = BM25Index()
+
+    logger.info("Sağlayıcılar ısıtılıyor (soğuk başlangıcı önlemek için)...")
+    await _warm_up_providers(llm_provider, embedding_provider)
 
     traces: list[dict] = []
     try:
