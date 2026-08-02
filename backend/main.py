@@ -5,6 +5,7 @@ from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager, suppress
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 
 from backend.api.routes import router
@@ -60,8 +61,15 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
 
 def create_app() -> FastAPI:
     """FastAPI uygulamasını oluşturur."""
+    settings = get_settings()
     app = FastAPI(title="SeekBind API", lifespan=lifespan)
     app.add_middleware(GZipMiddleware, minimum_size=500)
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=settings.cors_allowed_origins,
+        allow_methods=["GET", "POST"],
+        allow_headers=["*"],
+    )
     app.add_middleware(
         RateLimitMiddleware
     )  # GZip'ten SONRA — en dışta, isteği ilk karşılayan
