@@ -142,6 +142,7 @@ Proje kökünde `docker-compose.yml` ile PostgreSQL, Qdrant ve Langfuse (+ kendi
 |---|---|---|
 | PostgreSQL (app) | `localhost:5432` | Uygulama verisi (sağlayıcılar, randevular vb.) |
 | Qdrant | `localhost:6333` | Embedding'lerin tutulduğu vektör veritabanı |
+| Redis | `localhost:6379` | Embedding/LLM cache'i (`feature/cache-layer`) + rate limiting (`feature/middleware`) |
 | Langfuse | `localhost:3000` | LLM çağrılarının izlendiği web arayüzü |
 | Langfuse DB | (dışarı açık değil) | Langfuse'un kendi iç verisi için ayrı Postgres |
 
