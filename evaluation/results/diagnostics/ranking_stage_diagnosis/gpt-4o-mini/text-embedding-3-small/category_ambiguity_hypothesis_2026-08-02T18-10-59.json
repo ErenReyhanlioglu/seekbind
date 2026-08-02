@@ -1,0 +1,642 @@
+{
+  "records": [
+    {
+      "id": "q077",
+      "question": "Hem saçımı kestirip hem cilt bakımı yaptırabileceğim bir yer var mı?",
+      "semantic_query": "saçımı kestirip hem cilt bakımı yaptırabileceğim bir yer var mı?",
+      "category_filter": null,
+      "rating_preference": null,
+      "expected_ids": [
+        106,
+        112,
+        113,
+        121,
+        123
+      ],
+      "stage_best_rank_of_expected": {
+        "1_vector_only": 5,
+        "2_bm25_only": 2,
+        "3_rrf_candidate_pool": 2,
+        "5_post_rerank": 6,
+        "7_final_top_shown": null
+      },
+      "final_top_ids": [
+        103,
+        93,
+        91,
+        101,
+        102
+      ],
+      "final_top_titles": [
+        "The Barber House",
+        "Kocaeli İzmit Business Berber Shop",
+        "KUAFÖR SERHAT",
+        "Barber Level Up | Erkek Kuaförü",
+        "Yıldız Erkek Kuaförü Ercan"
+      ],
+      "final_top1_correct": false
+    },
+    {
+      "id": "q078",
+      "question": "Arabamın hem periyodik bakımını yaptırıp hem klimasını kontrol ettirebileceğim bir yer arıyorum",
+      "semantic_query": "Arabamın hem periyodik bakımını yaptırıp hem klimasını kontrol ettirebileceğim bir yer arıyorum",
+      "category_filter": "Oto Servis",
+      "rating_preference": null,
+      "expected_ids": [
+        293,
+        294,
+        303,
+        310,
+        312
+      ],
+      "stage_best_rank_of_expected": {
+        "1_vector_only": 6,
+        "2_bm25_only": 1,
+        "3_rrf_candidate_pool": 4,
+        "5_post_rerank": 3,
+        "7_final_top_shown": 3
+      },
+      "final_top_ids": [
+        295,
+        309,
+        294,
+        312,
+        299
+      ],
+      "final_top_titles": [
+        "araç tamir oto servis bakım mekanik elektrik motor şanzıman izmit kocaeli",
+        "Kocaeli Yılmazlar Otomotiv",
+        "TOSCAR Premium Service | İzmit Oto Servis & Mekanik Tamir",
+        "Motrio Servisi Renaz Otomotiv",
+        "DRNEKİN OTO İZMİT HASAR ONARIM MERKEZi"
+      ],
+      "final_top1_correct": false
+    },
+    {
+      "id": "q079",
+      "question": "Çocuğuma hem özel ders hem müzik dersi verecek birini arıyorum",
+      "semantic_query": "Çocuğuma hem özel ders hem müzik dersi verecek birini arıyorum",
+      "category_filter": null,
+      "rating_preference": null,
+      "expected_ids": [
+        214,
+        215,
+        216,
+        219,
+        224,
+        274,
+        276,
+        278,
+        280,
+        292
+      ],
+      "stage_best_rank_of_expected": {
+        "1_vector_only": 2,
+        "2_bm25_only": 2,
+        "3_rrf_candidate_pool": 2,
+        "5_post_rerank": 1,
+        "7_final_top_shown": 1
+      },
+      "final_top_ids": [
+        280,
+        275,
+        289,
+        285,
+        284
+      ],
+      "final_top_titles": [
+        "Özel Atmaca Bilim ve Sanat Akademisi",
+        "Özel İzmit Kumru Sanat Müzik Kursu",
+        "Özel Filiz Özar Bale Ve Müzik Kursu",
+        "KO-MEK - Kocaeli Büyükşehir Belediyesi Meslek ve Sanat Eğitimi Kursları",
+        "İzmit Belediyesi Sanat Akademisi"
+      ],
+      "final_top1_correct": true
+    },
+    {
+      "id": "q080",
+      "question": "Diş kontrolü ve göz muayenesi için aynı gün randevu alabileceğim yerler var mı?",
+      "semantic_query": "Diş kontrolü ve göz muayenesi için aynı gün randevu alabileceğim yerler var mı?",
+      "category_filter": null,
+      "rating_preference": null,
+      "expected_ids": [
+        1,
+        4,
+        15,
+        16,
+        20,
+        21,
+        22,
+        23,
+        24,
+        26
+      ],
+      "stage_best_rank_of_expected": {
+        "1_vector_only": 3,
+        "2_bm25_only": 3,
+        "3_rrf_candidate_pool": 1,
+        "5_post_rerank": 1,
+        "7_final_top_shown": 1
+      },
+      "final_top_ids": [
+        21,
+        1,
+        26,
+        4,
+        124
+      ],
+      "final_top_titles": [
+        "Dünyagöz İzmit Hastanesi",
+        "Yahyakaptan Diş Hekimi Aydın Cevizli- İzmit Nöbetçi Diş - Kocaeli İzmit Acil 7/24 Diş Kliniği -İzmit özel Diş Hastanesi",
+        "Op. Dr. Çağrı Yiğit",
+        "Diş Hekimi Uğur Ümit - İzmit Nöbetçi Dişçi | Kocaeli 7/24 Açık Acil Özel Diş Hastanesi",
+        "Greenmed İzmit Kişisel Bakım Merkezi"
+      ],
+      "final_top1_correct": true
+    },
+    {
+      "id": "q093",
+      "question": "Dişim çok ağrıyor, ne yapmalıyım?",
+      "semantic_query": "Dişim çok ağrıyor, ne yapmalıyım?",
+      "category_filter": null,
+      "rating_preference": null,
+      "expected_ids": [
+        1,
+        4,
+        15,
+        16,
+        20
+      ],
+      "stage_best_rank_of_expected": {
+        "1_vector_only": 2,
+        "2_bm25_only": 17,
+        "3_rrf_candidate_pool": 2,
+        "5_post_rerank": 2,
+        "7_final_top_shown": 2
+      },
+      "final_top_ids": [
+        52,
+        1,
+        3,
+        2,
+        4
+      ],
+      "final_top_titles": [
+        "Fizyoterapist Deniz Ulaş Akdoğan",
+        "Yahyakaptan Diş Hekimi Aydın Cevizli- İzmit Nöbetçi Diş - Kocaeli İzmit Acil 7/24 Diş Kliniği -İzmit özel Diş Hastanesi",
+        "Dentriva Diş Yahyakaptan - İzmit İmplant-İzmit Nöbetçi Diş-İzmit Diş Teli-İzmit Çocuk Diş-İzmit Ortodonti-İzmit Pedodonti",
+        "Dentizmit Ağız ve Diş Sağlığı Polikliniği - Dent İzmit Diş Sağlığı",
+        "Diş Hekimi Uğur Ümit - İzmit Nöbetçi Dişçi | Kocaeli 7/24 Açık Acil Özel Diş Hastanesi"
+      ],
+      "final_top1_correct": false
+    },
+    {
+      "id": "q094",
+      "question": "Saçlarım çok yıpranmış, iyi bir bakım yaptırmak istiyorum",
+      "semantic_query": "Saçlarım çok yıpranmış, iyi bir bakım yaptırmak istiyorum",
+      "category_filter": "Güzellik Salonu",
+      "rating_preference": null,
+      "expected_ids": [
+        70,
+        82,
+        84,
+        85,
+        87
+      ],
+      "stage_best_rank_of_expected": {
+        "1_vector_only": null,
+        "2_bm25_only": null,
+        "3_rrf_candidate_pool": null,
+        "5_post_rerank": null,
+        "7_final_top_shown": null
+      },
+      "final_top_ids": [
+        118,
+        106,
+        124,
+        105,
+        112
+      ],
+      "final_top_titles": [
+        "tuba demir art&brows",
+        "SOCİAL BEAUTY AESTHETİC GÜZELLİK MERKEZİ - Saç Terapisi - Cilt Bakımı - Protez Tırnak - Lazer Epilasyon",
+        "Greenmed İzmit Kişisel Bakım Merkezi",
+        "Brassiva Estetik & Güzellik",
+        "Gülseren güzellik"
+      ],
+      "final_top1_correct": false
+    },
+    {
+      "id": "q095",
+      "question": "Kedimin aşılarını yaptırmam gerekiyor ama nereye gideceğimi bilmiyorum",
+      "semantic_query": "Kedimin aşılarını yaptırmam gerekiyor ama nereye gideceğimi bilmiyorum",
+      "category_filter": "Veteriner",
+      "rating_preference": null,
+      "expected_ids": [
+        391,
+        392,
+        394,
+        396,
+        399,
+        400,
+        401,
+        402,
+        405,
+        406,
+        407,
+        408,
+        410
+      ],
+      "stage_best_rank_of_expected": {
+        "1_vector_only": 1,
+        "2_bm25_only": null,
+        "3_rrf_candidate_pool": 1,
+        "5_post_rerank": 1,
+        "7_final_top_shown": 1
+      },
+      "final_top_ids": [
+        407,
+        401,
+        405,
+        399,
+        408
+      ],
+      "final_top_titles": [
+        "Clinic İzmit Veteriner | Değirmendere",
+        "Animalistan Veteriner Polikliniği",
+        "PETLAND PETSHOP",
+        "UZMAN VETERİNER KLİNİĞİ İZMİT KOCAELİ",
+        "Pasteur Veterinary"
+      ],
+      "final_top1_correct": true
+    },
+    {
+      "id": "q096",
+      "question": "Arabamdan tuhaf bir ses geliyor, bakılması lazım",
+      "semantic_query": "Arabamdan tuhaf bir ses geliyor, bakılması lazım",
+      "category_filter": "Oto Servis",
+      "rating_preference": null,
+      "expected_ids": [
+        293,
+        294,
+        303,
+        310,
+        312
+      ],
+      "stage_best_rank_of_expected": {
+        "1_vector_only": 4,
+        "2_bm25_only": null,
+        "3_rrf_candidate_pool": 4,
+        "5_post_rerank": 5,
+        "7_final_top_shown": 5
+      },
+      "final_top_ids": [
+        298,
+        311,
+        295,
+        297,
+        303
+      ],
+      "final_top_titles": [
+        "İstanbul Oto Servis",
+        "M&S OTOMOTİV İZMİT",
+        "araç tamir oto servis bakım mekanik elektrik motor şanzıman izmit kocaeli",
+        "Auto King - İzmit Oto Servis",
+        "Fehimler Oto KİA&HYUNDAİ ÖZEL SERVİS"
+      ],
+      "final_top1_correct": false
+    },
+    {
+      "id": "q001",
+      "question": "İzmit'te güvenilir bir diş kliniği arıyorum",
+      "semantic_query": "İzmit'te güvenilir bir diş kliniği arıyorum",
+      "category_filter": "Diş Kliniği",
+      "rating_preference": null,
+      "expected_ids": [
+        1,
+        4,
+        15,
+        16,
+        20
+      ],
+      "stage_best_rank_of_expected": {
+        "1_vector_only": 1,
+        "2_bm25_only": 1,
+        "3_rrf_candidate_pool": 1,
+        "5_post_rerank": 1,
+        "7_final_top_shown": 1
+      },
+      "final_top_ids": [
+        1,
+        3,
+        5,
+        2,
+        6
+      ],
+      "final_top_titles": [
+        "Yahyakaptan Diş Hekimi Aydın Cevizli- İzmit Nöbetçi Diş - Kocaeli İzmit Acil 7/24 Diş Kliniği -İzmit özel Diş Hastanesi",
+        "Dentriva Diş Yahyakaptan - İzmit İmplant-İzmit Nöbetçi Diş-İzmit Diş Teli-İzmit Çocuk Diş-İzmit Ortodonti-İzmit Pedodonti",
+        "DentAtlas Ağız Ve Diş Sağlığı Polikliniği",
+        "Dentizmit Ağız ve Diş Sağlığı Polikliniği - Dent İzmit Diş Sağlığı",
+        "Özel Marka Ağız ve Diş Sağlığı Polikliniği"
+      ],
+      "final_top1_correct": true
+    },
+    {
+      "id": "q004",
+      "question": "Göz muayenesi için bir uzman önerir misin?",
+      "semantic_query": "Göz muayenesi için bir uzman önerir misin?",
+      "category_filter": "Göz Doktoru",
+      "rating_preference": null,
+      "expected_ids": [
+        21,
+        22,
+        23,
+        24,
+        26
+      ],
+      "stage_best_rank_of_expected": {
+        "1_vector_only": 2,
+        "2_bm25_only": 2,
+        "3_rrf_candidate_pool": 2,
+        "5_post_rerank": 1,
+        "7_final_top_shown": 1
+      },
+      "final_top_ids": [
+        26,
+        25,
+        27,
+        21,
+        23
+      ],
+      "final_top_titles": [
+        "Op. Dr. Çağrı Yiğit",
+        "Veni Vidi Göz İzmit",
+        "Prof. Dr. Orhan Elibol",
+        "Dünyagöz İzmit Hastanesi",
+        "Kocaeli Göz Doktoru -Op.Dr.Mustafa Şahiner,Lazer cerrahisi,SMILE lazer,Akıllı Mercek,Keratokonus,Göz Çizdirme"
+      ],
+      "final_top1_correct": true
+    },
+    {
+      "id": "q006",
+      "question": "Kaygı bozukluğu için bir psikolog arıyorum",
+      "semantic_query": "Kaygı bozukluğu için bir psikolog arıyorum",
+      "category_filter": "Psikolog",
+      "rating_preference": null,
+      "expected_ids": [
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        35,
+        37,
+        39,
+        41,
+        42,
+        47
+      ],
+      "stage_best_rank_of_expected": {
+        "1_vector_only": 1,
+        "2_bm25_only": 1,
+        "3_rrf_candidate_pool": 1,
+        "5_post_rerank": 1,
+        "7_final_top_shown": 1
+      },
+      "final_top_ids": [
+        30,
+        35,
+        37,
+        28,
+        31
+      ],
+      "final_top_titles": [
+        "Klinik Psikolog Oğuzcan AYLI | İzmit Psikolog | Kocaeli Psikolog | Psikolog",
+        "Psikolog Asya Özcan",
+        "Nur Çelen Psikolog ve Danışmanlık",
+        "Klinik Psikolog Enes Topuz | Kocaeli Klinik Psikolog | İzmit Klinik Psikolog",
+        "Klinik Psikolog Ecenur EFE BAŞARIR | Kocaeli"
+      ],
+      "final_top1_correct": true
+    },
+    {
+      "id": "q011",
+      "question": "Spor sakatlığı sonrası rehabilitasyon yapan bir fizyoterapist lazım",
+      "semantic_query": "Spor sakatlığı sonrası rehabilitasyon yapan bir fizyoterapist lazım",
+      "category_filter": "Fizyoterapist",
+      "rating_preference": null,
+      "expected_ids": [
+        48,
+        50,
+        52,
+        53,
+        54,
+        55,
+        57,
+        60,
+        61,
+        62,
+        64,
+        67
+      ],
+      "stage_best_rank_of_expected": {
+        "1_vector_only": 1,
+        "2_bm25_only": 1,
+        "3_rrf_candidate_pool": 1,
+        "5_post_rerank": 1,
+        "7_final_top_shown": 1
+      },
+      "final_top_ids": [
+        54,
+        57,
+        55,
+        64,
+        67
+      ],
+      "final_top_titles": [
+        "Fizyoterapist Gülşah SAKINÇ TOPRAK",
+        "Sefa KOLAY Fizyoterapist | Kocaeli İzmit Fizyoterapi | Manuel Terapi",
+        "Uzman Fizyoterapist Fatih Tezel Fizyoterapi ve Sağlıklı Yaşam Merkezi",
+        "Fizyoterapist Ömer SAYMA & Fizik Tedavi",
+        "Fizyoterapist Ece Karakoç"
+      ],
+      "final_top1_correct": true
+    },
+    {
+      "id": "q012",
+      "question": "Saçımı boyatmak istiyorum, iyi bir kuaför önerir misin?",
+      "semantic_query": "Saçımı boyatmak istiyorum, iyi bir kuaför önerir misin?",
+      "category_filter": "Kuaför",
+      "rating_preference": "high",
+      "expected_ids": [
+        69,
+        70,
+        71,
+        72,
+        73,
+        75,
+        76,
+        77,
+        78,
+        80,
+        81,
+        82,
+        83,
+        84,
+        85,
+        87
+      ],
+      "stage_best_rank_of_expected": {
+        "1_vector_only": 1,
+        "2_bm25_only": 1,
+        "3_rrf_candidate_pool": 1,
+        "5_post_rerank": 1,
+        "6_post_final_sort": 1,
+        "7_final_top_shown": 1
+      },
+      "final_top_ids": [
+        82,
+        85,
+        70,
+        84,
+        87
+      ],
+      "final_top_titles": [
+        "Gökdemir Hair Design Studio",
+        "KUAFÖR ARZU ERTÜRK HAİR MAKEUP",
+        "Mustafa Turan Bay Bayan Kuaför Yahya Kaptan İzmit Kocaeli",
+        "Serkan Aygün Hair Designer",
+        "Emre Yıldız Hair Stylist"
+      ],
+      "final_top1_correct": true
+    },
+    {
+      "id": "q015",
+      "question": "Sakal tıraşı için iyi bir berber biliyor musun?",
+      "semantic_query": "Sakal tıraşı için iyi bir berber biliyor musun?",
+      "category_filter": "Berber",
+      "rating_preference": "high",
+      "expected_ids": [
+        88,
+        90,
+        92,
+        94,
+        95
+      ],
+      "stage_best_rank_of_expected": {
+        "1_vector_only": 4,
+        "2_bm25_only": 5,
+        "3_rrf_candidate_pool": 4,
+        "5_post_rerank": 6,
+        "6_post_final_sort": 1,
+        "7_final_top_shown": 1
+      },
+      "final_top_ids": [
+        92,
+        94,
+        95,
+        90,
+        88
+      ],
+      "final_top_titles": [
+        "DeBatu HairDesing",
+        "Hair Doctor Onur Topova Erkek Kuaförü",
+        "BayLoca3 Erkek Kuaförü",
+        "LİVA BERBER",
+        "Men's grooming güngör Akıncı barber business"
+      ],
+      "final_top1_correct": true
+    },
+    {
+      "id": "q018",
+      "question": "Cilt bakımı ve makyaj hizmeti veren bir güzellik salonu arıyorum",
+      "semantic_query": "Cilt bakımı ve makyaj hizmeti veren bir güzellik salonu arıyorum",
+      "category_filter": "Güzellik Salonu",
+      "rating_preference": null,
+      "expected_ids": [
+        108,
+        110,
+        111,
+        112,
+        113,
+        117,
+        119,
+        120,
+        121,
+        122,
+        123,
+        124
+      ],
+      "stage_best_rank_of_expected": {
+        "1_vector_only": 1,
+        "2_bm25_only": 1,
+        "3_rrf_candidate_pool": 1,
+        "5_post_rerank": 1,
+        "7_final_top_shown": 1
+      },
+      "final_top_ids": [
+        123,
+        121,
+        110,
+        112,
+        113
+      ],
+      "final_top_titles": [
+        "Olab Beauty - Güzellik Merkezi - Cilt Bakımı & Protez Tırnak & Kafa Masajı",
+        "Viva İzmit Güzellik Merkezi",
+        "İzmit Esse VİP Güzellik Merkezi",
+        "Gülseren güzellik",
+        "Cheri Bakım Güzellik İzmit"
+      ],
+      "final_top1_correct": true
+    },
+    {
+      "id": "q021",
+      "question": "Jel manikür yaptırabileceğim bir nail salon önerir misin?",
+      "semantic_query": "Jel manikür yaptırabileceğim bir nail salon önerir misin?",
+      "category_filter": "Nail Salon",
+      "rating_preference": null,
+      "expected_ids": [
+        125,
+        126,
+        127,
+        128,
+        129,
+        130,
+        131,
+        132,
+        134,
+        136,
+        137,
+        138,
+        139,
+        140,
+        142
+      ],
+      "stage_best_rank_of_expected": {
+        "1_vector_only": 1,
+        "2_bm25_only": 1,
+        "3_rrf_candidate_pool": 1,
+        "5_post_rerank": 1,
+        "7_final_top_shown": 1
+      },
+      "final_top_ids": [
+        137,
+        127,
+        125,
+        142,
+        129
+      ],
+      "final_top_titles": [
+        "Rain Nail Studio",
+        "cherry nail art İzmit",
+        "Hazal Özmen Nail STUDİO- İzmit Protez Tırnak",
+        "NUREFŞAN KOCA NAIL STUDIO & BEAUTY",
+        "Merve Vatansever Nail Art izmit Kocaeli"
+      ],
+      "final_top1_correct": true
+    }
+  ]
+}

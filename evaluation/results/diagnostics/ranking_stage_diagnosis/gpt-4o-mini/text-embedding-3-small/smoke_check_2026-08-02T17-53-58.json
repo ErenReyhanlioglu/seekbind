@@ -1,0 +1,82 @@
+{
+  "records": [
+    {
+      "id": "q009",
+      "question": "Bel fıtığı için iyi bir fizyoterapist önerir misin?",
+      "semantic_query": "Bel fıtığı için iyi bir fizyoterapist önerir misin?",
+      "category_filter": "Fizyoterapist",
+      "rating_preference": "high",
+      "expected_ids": [
+        50,
+        52,
+        56,
+        58,
+        60,
+        61,
+        64,
+        65,
+        66,
+        67
+      ],
+      "stage_best_rank_of_expected": {
+        "1_vector_only": 1,
+        "2_bm25_only": 1,
+        "3_rrf_candidate_pool": 1,
+        "5_post_rerank": 1,
+        "6_post_final_sort": 2,
+        "7_final_top_shown": 2
+      },
+      "final_top_ids": [
+        49,
+        64,
+        60,
+        54,
+        52
+      ],
+      "final_top_titles": [
+        "İzmit Kocaeli Fizyoterapist Muhammed Oğuz Çelen",
+        "Fizyoterapist Ömer SAYMA & Fizik Tedavi",
+        "Abdullah Okur, Uzman Fizyoterapist Osteopat",
+        "Fizyoterapist Gülşah SAKINÇ TOPRAK",
+        "Fizyoterapist Deniz Ulaş Akdoğan"
+      ],
+      "final_top1_correct": false
+    },
+    {
+      "id": "q033",
+      "question": "Başlangıç seviyesi yoga dersi veren bir stüdyo arıyorum",
+      "semantic_query": "Başlangıç seviyesi yoga dersi veren bir stüdyo arıyorum",
+      "category_filter": "Yoga Stüdyosu",
+      "rating_preference": null,
+      "expected_ids": [
+        203,
+        205,
+        207,
+        209,
+        210
+      ],
+      "stage_best_rank_of_expected": {
+        "1_vector_only": 5,
+        "2_bm25_only": 1,
+        "3_rrf_candidate_pool": 5,
+        "5_post_rerank": 9,
+        "7_final_top_shown": null
+      },
+      "final_top_ids": [
+        200,
+        195,
+        204,
+        212,
+        194
+      ],
+      "final_top_titles": [
+        "Dharma Stüdyo",
+        "Yoga Gülşen Stüdyo Akademi",
+        "Salt pilates ve yoga",
+        "Hilal Kukul Yoga & Pilates",
+        "Ness Yoga ve Pilates Studio"
+      ],
+      "final_top1_correct": false
+    }
+  ]
+}

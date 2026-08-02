@@ -1,0 +1,64 @@
+{
+  "sample_count": 4,
+  "total_tokens": [
+    {
+      "input_tokens": 29645,
+      "output_tokens": 5007,
+      "model": "gpt-4.1-mini-2025-04-14"
+    }
+  ],
+  "metrics": {
+    "faithfulness": {
+      "mean_all": 0.6583333333333333
+    },
+    "answer_relevancy": {
+      "mean_all": 0.39511365917651864
+    },
+    "context_precision": {
+      "mean_all": 0.4999999999625,
+      "mean_excluding_expected_empty": 0.6666666666166666
+    },
+    "context_recall": {
+      "mean_all": 0.25,
+      "mean_excluding_expected_empty": 0.3333333333333333
+    }
+  },
+  "per_question": [
+    {
+      "id": "q001",
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.7589613668815036,
+      "context_precision": 0.9999999999,
+      "context_recall": 0.0
+    },
+    {
+      "id": "q026",
+      "faithfulness": 0.9333333333333333,
+      "answer_relevancy": 0.821493269824571,
+      "context_precision": 0.99999999995,
+      "context_recall": 1.0
+    },
+    {
+      "id": "q051",
+      "faithfulness": 0.7,
+      "answer_relevancy": 0.0,
+      "context_precision": 0.0,
+      "context_recall": 0.0
+    },
+    {
+      "id": "q008",
+      "faithfulness": 0.0,
+      "answer_relevancy": 0.0,
+      "context_precision": 0.0,
+      "context_recall": 0.0
+    }
+  ],
+  "deterministic_metrics": {
+    "expected_empty_accuracy": 1.0,
+    "top1_accuracy": 0.6666666666666666,
+    "pooled_context_precision": 0.3333333333333333,
+    "mrr": 0.7777777777777778,
+    "recall_at_5": 0.4666666666666666,
+    "precision_at_5": 0.4666666666666666
+  }
+}
