@@ -9,7 +9,7 @@ from datetime import date
 from functools import lru_cache
 from typing import Literal
 
-from pydantic import SecretStr
+from pydantic import Field, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 # SeekBind gerçek bir canlı ürün değil, tek seferlik sentetik veriyle
@@ -136,6 +136,12 @@ class Settings(BaseSettings):
 
     # Sağlayıcılar arası fallback (OpenAI -> Ollama, bkz. docs/adr/0024-fallback-mechanism.md)
     enable_fallback: bool = True
+
+    # CORS - frontend'in (Vite dev server) API'ye tarayıcıdan istek atabilmesi
+    # için izin verilen origin'ler
+    cors_allowed_origins: list[str] = Field(
+        default_factory=lambda: ["http://localhost:5173"]
+    )
 
 
 @lru_cache
