@@ -1,5 +1,15 @@
 # SeekBind — AI Destekli Randevu Öneri Sistemi
 
+![CI](https://github.com/ErenReyhanlioglu/seekbind/actions/workflows/ci.yml/badge.svg)
+![Coverage](https://img.shields.io/badge/coverage-99%25_min-brightgreen)
+![Python](https://img.shields.io/badge/python-3.12-blue)
+![License](https://img.shields.io/badge/license-MIT-green)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.139+-009688?logo=fastapi)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-336791?logo=postgresql)
+![Docker](https://img.shields.io/badge/Docker-compose-2496ED?logo=docker)
+![OpenAI](https://img.shields.io/badge/OpenAI-API-412991?logo=openai)
+![Ollama](https://img.shields.io/badge/Ollama-fallback-000000?logo=ollama)
+
 ## Proje Hakkında
 
 SeekBind, [DateBind](https://datebind.com) randevu platformu için geliştirilen yapay zeka destekli bir hizmet arama ve öneri sistemidir. Kullanıcılar doğal dil ile ihtiyaçlarını ifade ederek *"Yarın sabah için İzmit'te uygun fiyatlı bir dişçi istiyorum"* kendilerine en uygun hizmet sağlayıcıları ve müsait randevu slotlarını görebilir.
@@ -158,6 +168,14 @@ uv run python -m scripts.enrich_with_llm     # LLM ile açıklama/keyword üreti
 > Proje dosya yapısına genel bakış için bkz. [docs/file_tree.md](docs/file_tree.md).
 > Frontend henüz geliştirilmedi (planlanan). Yukarıdaki adımlar veri
 > hazırlama pipeline'ını kapsar.
+
+## Dokümantasyon
+
+- [Yol Haritası](docs/roadmap.md) — faz/branch planı, ne tamamlandı ne planlı
+- [Mimari Diyagramlar](docs/architecture/README.md) — C4 modeline göre 4 seviyeli diyagramlar (context → container → component → code)
+- [Mimari Kararlar (ADR)](docs/adr/README.md) — 28 karar, her biri kendi bağlamı/gerekçesiyle
+- [Veritabanı Şeması](docs/database_schema.md) — ER diyagramı + tasarım kararları
+- [RAGAS Değerlendirmesi](docs/ragas_evaluation.md) — 2×2 LLM×embedding ablasyon sonuçları
 
 ## Lisans
 
