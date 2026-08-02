@@ -75,8 +75,8 @@ farklı bir rol.
 ## Bilinen sınır
 
 Bu ADR sadece **aday kümesini** kesinleştiriyor — hangi kombinasyonun
-gerçekten en iyi sonucu vereceği hâlâ Faz 6'daki RAGAS ölçümüne bağlı,
-henüz karar verilmedi.
+gerçekten en iyi sonucu vereceği Faz 6'daki RAGAS ölçümüne bağlıydı,
+bkz. son güncelleme notu.
 
 ## Güncelleme (2026-07-31): `embeddingmagibu-200m` ablasyon kapsamından çıkarıldı
 
@@ -129,3 +129,17 @@ endpoint'inin `seed`'i gerçekten destekleyip desteklemediği doğrulanmadı,
 ve cache katmanı zaten canlı trafik için daha güçlü bir determinizm
 sağlıyor. Faz 6'nın kendi işi başlarken tekrar değerlendirilecek, şimdilik
 eklenmedi.
+
+## Güncelleme (2026-08-02): RAGAS sonucu — kazanan kombinasyon netleşti
+
+`feature/ragas-evaluation`'da 2×2 ızgaranın tamamı 100 soru üzerinde
+koşuldu. Sonuç: LLM seçimi (`gpt-4o-mini` vs `qwen3:4b-instruct-2507-q4_K_M`)
+embedding seçiminden çok daha belirleyici çıktı — `gpt-4o-mini` neredeyse
+her metrikte önde (bkz. [ADR-0008](0008-llm-comparison-phase-4.md)'in
+güncelleme notu). Embedding tarafında (`text-embedding-3-small` vs
+`qwen3-embedding:0.6b`) fark küçük ve tutarsız yönde. Tam tablo için bkz.
+[docs/ragas_evaluation.md](../ragas_evaluation.md).
+
+**Not:** Yukarıdaki `seed` parametresi / determinizm sorusu bu ablasyonda
+tekrar ele alınmadı — hâlâ açık, ileride gerçekten gerekirse (örn. RAGAS
+sonuçları tekrar tekrar farklı çıkıyor gibi bir şüphe oluşursa) bakılabilir.

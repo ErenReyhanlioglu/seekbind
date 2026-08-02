@@ -49,7 +49,7 @@ test kanıtı ve "SeekBind 2.0" notu için bkz. [ADR-0017](adr/0017-tool-calling
 ## Faz 6 — Değerlendirme
 
 - ✅ `feature/ragas-testset` — 100 test sorusu hazırlama (`evaluation/test_set.json`)
-- ⬜ `feature/ragas-evaluation` — RAGAS ile Faithfulness/Relevancy/Precision/Recall ölçümü; evaluator modeli için bkz. [ADR-0009](adr/0009-ragas-evaluator-model.md). Ablasyon aday kümesi kesinleşti — 2 LLM × 2 embedding = 4 kombinasyon (`embeddingmagibu-200m` gerçek kanıtlara dayanarak kapsam dışı bırakıldı), bkz. [ADR-0023](adr/0023-ablation-candidate-models.md); tam mı kademeli mi çalıştırılacağı pilot teste bağlı, henüz kesinleşmedi. `seed` parametresi (LLM çağrı tekrarlanabilirliği) bu fazda tekrar değerlendirilecek — bkz. ADR-0023 güncelleme notu
+- ✅ `feature/ragas-evaluation` — RAGAS (Faithfulness/Answer Relevancy/Context Precision/Context Recall, evaluator `gpt-4.1-mini` — bkz. [ADR-0009](adr/0009-ragas-evaluator-model.md)) + deterministik ID-bazlı metrikler (Top-1 accuracy, MRR, Recall@5, Precision@5, Hit Rate@5, pooled Context Precision, expected-empty accuracy — RAGAS'ın LLM-yargıcından bağımsız, `expected_business_ids` ile doğrudan ID karşılaştırması) ile 2×2 ablasyon (`gpt-4o-mini`/`qwen3:4b-instruct-2507-q4_K_M` × `text-embedding-3-small`/`qwen3-embedding:0.6b`, bkz. [ADR-0023](adr/0023-ablation-candidate-models.md)) 100 soru üzerinde tam olarak (kademeli değil) koşuldu. Sonuç: LLM seçimi embedding seçiminden çok daha belirleyici, `gpt-4o-mini` genel olarak önde — [ADR-0008](adr/0008-llm-comparison-phase-4.md)'in kararını ampirik olarak destekliyor. Tam tablo ve yorum için bkz. [docs/ragas_evaluation.md](ragas_evaluation.md). **Faz 6 tamamlandı.**
 
 ## Faz 7 — Frontend
 

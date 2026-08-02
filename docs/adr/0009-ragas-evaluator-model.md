@@ -1,9 +1,9 @@
 # ADR-0009: RAGAS evaluator modeli
 
-**Durum:** Kabul edildi (genel ilke), spesifik model + ablasyon
-kapsamı henüz belirsiz — Faz 6 pilot testine bağlı
+**Durum:** Kabul edildi, uygulandı
 **Tarih:** 2026-07-24 (genel ilke) · 2026-07-28 (model adayı ve
-açık noktalar eklendi)
+açık noktalar eklendi) · 2026-08-02 (açık noktalar netleşti — bkz.
+güncelleme notu)
 
 ## Bağlam
 
@@ -43,7 +43,8 @@ gerçek token/maliyet ölçümü) ile netleştirilecek:
 hazırlanırken, 9 sorunun (`intent_tags`'te `expected_empty` etiketi —
 örn. "online muayene yapan bir diş kliniği var mı?") gerçek DB'ye göre
 bilinçli/doğru olarak boş sonuç döndürdüğü belirlendi (bkz.
-`scripts/build_ragas_ground_truth.py`). Bu sorularda pipeline doğru
+`scripts/ragas_testset/build_ground_truth.py` — [ADR-0027](0027-ragas-testset-ground-truth-quality.md)
+kapsamında `scripts/ragas_testset/` paketine taşındı). Bu sorularda pipeline doğru
 çalışıyorsa `contexts` boş döner.
 
 **Sorun:** Context Recall ve Context Precision, referans cevaptaki
@@ -65,3 +66,22 @@ olmadan uydurma yapmadığını (halüsinasyon yapmadığını) tam da bu sorula
 4 metrik de yine aynı 100 soruluk sabit set üzerinden koşulur (ADR-0009'un
 genel ilkesiyle tutarlı) — bu sadece koşum sonrası analiz/segmentasyon
 kararı, koşum kapsamını değiştirmiyor.
+
+## Güncelleme (2026-08-02): Açık noktalar netleşti
+
+`feature/ragas-evaluation` tamamlandı, "Karar" bölümündeki iki açık nokta
+kesinleşti:
+
+1. **Evaluator modeli:** `gpt-4.1-mini` varsayımı doğrulandı, değişmedi.
+2. **Ablasyon kapsamı:** kademeli değil, tam ızgara koşuldu — ama
+   [ADR-0023](0023-ablation-candidate-models.md)'ün `embeddingmagibu-200m`'i
+   kapsam dışı bırakmasıyla ızgara 3×3'ten 2×2'ye küçüldü (4 kombinasyon,
+   100 sorunun tamamında).
+
+Ayrıca yukarıdaki "Sorun" notunda sorulan soru da cevaplandı: RAGAS,
+context boşken NaN döndürüyor — ama sadece `expected_empty` satırlarında
+değil, gerçek bir koşumda expected_empty OLMAYAN tekil bir soruda da NaN
+gözlendi (muhtemelen RAGAS'ın kendi iç 0/0 durumu). `evaluation/ragas_metrics.py`'nin
+aggregate ortalaması bu tek NaN'la kirlenmişti (`sum()` NaN'ı yayıyordu) —
+NaN'lı sorular artık ortalamadan hariç tutuluyor. Sonuçlar için bkz.
+[docs/ragas_evaluation.md](../ragas_evaluation.md).
