@@ -177,7 +177,24 @@ seekbind/
 │
 ├── docker/
 │   ├── Dockerfile.backend        — backend image
-│   └── Dockerfile.frontend       — frontend image (henüz kullanılmıyor, frontend/ boş)
+│   └── Dockerfile.frontend       — boş, kullanılmıyor (frontend deploy edilmiyor, sadece localde demo)
 │
-└── frontend/                     — React (21st.dev MCP ile üretilecek, henüz başlanmadı — Faz 7)
+└── frontend/                     — demo arayüzü (React + Vite + TS + Tailwind v4, sadece localde çalışır — Faz 7 tamamlandı)
+    ├── package.json / vite.config.ts / tsconfig*.json
+    ├── index.html
+    ├── .env.example               — VITE_API_BASE_URL, VITE_DEMO_USER_ID
+    ├── public/
+    └── src/
+        ├── main.tsx / App.tsx      — giriş noktası + üst seviye state (idle/loading/success/error)
+        ├── index.css               — Tailwind import + siyah/amber tema token'ları (@theme)
+        ├── types.ts                — backend/api/schemas.py ile senkron tutulan tipler
+        ├── lib/
+        │   ├── api.ts              — /recommend API client (AbortController ile iptal)
+        │   └── utils.ts            — cn() (clsx + tailwind-merge)
+        └── components/
+            ├── SearchBar.tsx       — hero arama, aramadan sonra kompakt bara geçiş
+            ├── AiSummary.tsx       — AI Önerisi kutusu
+            ├── BusinessCard.tsx    — işletme kartı
+            ├── ResultsGrid.tsx     — kart grid'i (masaüstü, 3 sütun)
+            └── ui/banner.tsx       — 21st.dev katalogundan uyarlanan shadcn primitive'i
 ```
