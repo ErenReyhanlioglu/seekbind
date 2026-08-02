@@ -28,6 +28,7 @@ from backend.services.embedding import (
     OpenAIEmbedding,
 )
 from backend.services.llm import LLMProvider, OllamaLLM, OpenAILLM
+from evaluation.deterministic_metrics import compute_deterministic_metrics
 from evaluation.ragas_metrics import run_ragas_metrics
 from evaluation.ragas_traces import collect_traces, load_questions, select_subset
 from scripts.diagnostics._result_paths import sanitize_model_name
@@ -95,6 +96,7 @@ async def _run_combo(
     if traces_only:
         return
     summary = run_ragas_metrics(traces)
+    summary["deterministic_metrics"] = compute_deterministic_metrics(traces)
     scores_path = _write_json(summary, results_dir, "scores", label)
     logger.info("RAGAS skorları kaydedildi: %s", scores_path)
 
@@ -103,6 +105,7 @@ async def _run_from_traces(traces_path: Path, label: str | None) -> None:
     payload = json.loads(traces_path.read_text(encoding="utf-8"))
     traces = payload["traces"]
     summary = run_ragas_metrics(traces)
+    summary["deterministic_metrics"] = compute_deterministic_metrics(traces)
     scores_path = _write_json(summary, traces_path.parent, "scores", label)
     logger.info("RAGAS skorları kaydedildi: %s", scores_path)
 
