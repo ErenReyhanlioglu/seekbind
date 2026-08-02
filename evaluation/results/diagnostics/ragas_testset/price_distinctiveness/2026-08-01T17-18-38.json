@@ -1,0 +1,434 @@
+{
+  "Avukat": {
+    "cheap": {
+      "matched_count": 5,
+      "total_count": 20,
+      "fraction": 0.25,
+      "entropy": 0.8112781244591328,
+      "is_viable": true
+    },
+    "expensive": {
+      "matched_count": 5,
+      "total_count": 20,
+      "fraction": 0.25,
+      "entropy": 0.8112781244591328,
+      "is_viable": true
+    }
+  },
+  "Berber": {
+    "cheap": {
+      "matched_count": 5,
+      "total_count": 17,
+      "fraction": 0.29411764705882354,
+      "entropy": 0.873981048127358,
+      "is_viable": true
+    },
+    "expensive": {
+      "matched_count": 5,
+      "total_count": 17,
+      "fraction": 0.29411764705882354,
+      "entropy": 0.873981048127358,
+      "is_viable": true
+    }
+  },
+  "Cilt Bakım Merkezi": {
+    "cheap": {
+      "matched_count": 1,
+      "total_count": 2,
+      "fraction": 0.5,
+      "entropy": 1.0,
+      "is_viable": false
+    },
+    "expensive": {
+      "matched_count": 1,
+      "total_count": 2,
+      "fraction": 0.5,
+      "entropy": 1.0,
+      "is_viable": false
+    }
+  },
+  "Dil Kursu": {
+    "cheap": {
+      "matched_count": 5,
+      "total_count": 20,
+      "fraction": 0.25,
+      "entropy": 0.8112781244591328,
+      "is_viable": true
+    },
+    "expensive": {
+      "matched_count": 5,
+      "total_count": 20,
+      "fraction": 0.25,
+      "entropy": 0.8112781244591328,
+      "is_viable": true
+    }
+  },
+  "Diş Kliniği": {
+    "cheap": {
+      "matched_count": 5,
+      "total_count": 20,
+      "fraction": 0.25,
+      "entropy": 0.8112781244591328,
+      "is_viable": true
+    },
+    "expensive": {
+      "matched_count": 5,
+      "total_count": 20,
+      "fraction": 0.25,
+      "entropy": 0.8112781244591328,
+      "is_viable": true
+    }
+  },
+  "Elektrikçi": {
+    "cheap": {
+      "matched_count": 5,
+      "total_count": 20,
+      "fraction": 0.25,
+      "entropy": 0.8112781244591328,
+      "is_viable": true
+    },
+    "expensive": {
+      "matched_count": 5,
+      "total_count": 20,
+      "fraction": 0.25,
+      "entropy": 0.8112781244591328,
+      "is_viable": true
+    }
+  },
+  "Epilasyon Merkezi": {
+    "cheap": {
+      "matched_count": 3,
+      "total_count": 9,
+      "fraction": 0.3333333333333333,
+      "entropy": 0.9182958340544896,
+      "is_viable": true
+    },
+    "expensive": {
+      "matched_count": 3,
+      "total_count": 9,
+      "fraction": 0.3333333333333333,
+      "entropy": 0.9182958340544896,
+      "is_viable": true
+    }
+  },
+  "Fizyoterapist": {
+    "cheap": {
+      "matched_count": 5,
+      "total_count": 20,
+      "fraction": 0.25,
+      "entropy": 0.8112781244591328,
+      "is_viable": true
+    },
+    "expensive": {
+      "matched_count": 6,
+      "total_count": 20,
+      "fraction": 0.3,
+      "entropy": 0.8812908992306927,
+      "is_viable": true
+    }
+  },
+  "Fotoğrafçı": {
+    "cheap": {
+      "matched_count": 5,
+      "total_count": 20,
+      "fraction": 0.25,
+      "entropy": 0.8112781244591328,
+      "is_viable": true
+    },
+    "expensive": {
+      "matched_count": 5,
+      "total_count": 20,
+      "fraction": 0.25,
+      "entropy": 0.8112781244591328,
+      "is_viable": true
+    }
+  },
+  "Göz Doktoru": {
+    "cheap": {
+      "matched_count": 2,
+      "total_count": 7,
+      "fraction": 0.2857142857142857,
+      "entropy": 0.863120568566631,
+      "is_viable": false
+    },
+    "expensive": {
+      "matched_count": 2,
+      "total_count": 7,
+      "fraction": 0.2857142857142857,
+      "entropy": 0.863120568566631,
+      "is_viable": false
+    }
+  },
+  "Güzellik Salonu": {
+    "cheap": {
+      "matched_count": 5,
+      "total_count": 20,
+      "fraction": 0.25,
+      "entropy": 0.8112781244591328,
+      "is_viable": true
+    },
+    "expensive": {
+      "matched_count": 5,
+      "total_count": 20,
+      "fraction": 0.25,
+      "entropy": 0.8112781244591328,
+      "is_viable": true
+    }
+  },
+  "Klima Servisi": {
+    "cheap": {
+      "matched_count": 5,
+      "total_count": 20,
+      "fraction": 0.25,
+      "entropy": 0.8112781244591328,
+      "is_viable": true
+    },
+    "expensive": {
+      "matched_count": 5,
+      "total_count": 20,
+      "fraction": 0.25,
+      "entropy": 0.8112781244591328,
+      "is_viable": true
+    }
+  },
+  "Kuaför": {
+    "cheap": {
+      "matched_count": 5,
+      "total_count": 20,
+      "fraction": 0.25,
+      "entropy": 0.8112781244591328,
+      "is_viable": true
+    },
+    "expensive": {
+      "matched_count": 5,
+      "total_count": 20,
+      "fraction": 0.25,
+      "entropy": 0.8112781244591328,
+      "is_viable": true
+    }
+  },
+  "Muhasebeci": {
+    "cheap": {
+      "matched_count": 5,
+      "total_count": 20,
+      "fraction": 0.25,
+      "entropy": 0.8112781244591328,
+      "is_viable": true
+    },
+    "expensive": {
+      "matched_count": 5,
+      "total_count": 20,
+      "fraction": 0.25,
+      "entropy": 0.8112781244591328,
+      "is_viable": true
+    }
+  },
+  "Müzik Kursu": {
+    "cheap": {
+      "matched_count": 5,
+      "total_count": 20,
+      "fraction": 0.25,
+      "entropy": 0.8112781244591328,
+      "is_viable": true
+    },
+    "expensive": {
+      "matched_count": 5,
+      "total_count": 20,
+      "fraction": 0.25,
+      "entropy": 0.8112781244591328,
+      "is_viable": true
+    }
+  },
+  "Nail Salon": {
+    "cheap": {
+      "matched_count": 5,
+      "total_count": 18,
+      "fraction": 0.2777777777777778,
+      "entropy": 0.8524051786494786,
+      "is_viable": true
+    },
+    "expensive": {
+      "matched_count": 5,
+      "total_count": 18,
+      "fraction": 0.2777777777777778,
+      "entropy": 0.8524051786494786,
+      "is_viable": true
+    }
+  },
+  "Noter": {
+    "cheap": {
+      "matched_count": 2,
+      "total_count": 8,
+      "fraction": 0.25,
+      "entropy": 0.8112781244591328,
+      "is_viable": false
+    },
+    "expensive": {
+      "matched_count": 2,
+      "total_count": 8,
+      "fraction": 0.25,
+      "entropy": 0.8112781244591328,
+      "is_viable": false
+    }
+  },
+  "Oto Servis": {
+    "cheap": {
+      "matched_count": 5,
+      "total_count": 20,
+      "fraction": 0.25,
+      "entropy": 0.8112781244591328,
+      "is_viable": true
+    },
+    "expensive": {
+      "matched_count": 5,
+      "total_count": 20,
+      "fraction": 0.25,
+      "entropy": 0.8112781244591328,
+      "is_viable": true
+    }
+  },
+  "Psikolog": {
+    "cheap": {
+      "matched_count": 5,
+      "total_count": 20,
+      "fraction": 0.25,
+      "entropy": 0.8112781244591328,
+      "is_viable": true
+    },
+    "expensive": {
+      "matched_count": 5,
+      "total_count": 20,
+      "fraction": 0.25,
+      "entropy": 0.8112781244591328,
+      "is_viable": true
+    }
+  },
+  "Spor Salonu": {
+    "cheap": {
+      "matched_count": 5,
+      "total_count": 20,
+      "fraction": 0.25,
+      "entropy": 0.8112781244591328,
+      "is_viable": true
+    },
+    "expensive": {
+      "matched_count": 5,
+      "total_count": 20,
+      "fraction": 0.25,
+      "entropy": 0.8112781244591328,
+      "is_viable": true
+    }
+  },
+  "Sürücü Kursu": {
+    "cheap": {
+      "matched_count": 5,
+      "total_count": 20,
+      "fraction": 0.25,
+      "entropy": 0.8112781244591328,
+      "is_viable": true
+    },
+    "expensive": {
+      "matched_count": 5,
+      "total_count": 20,
+      "fraction": 0.25,
+      "entropy": 0.8112781244591328,
+      "is_viable": true
+    }
+  },
+  "Telefon Tamiri": {
+    "cheap": {
+      "matched_count": 5,
+      "total_count": 18,
+      "fraction": 0.2777777777777778,
+      "entropy": 0.8524051786494786,
+      "is_viable": true
+    },
+    "expensive": {
+      "matched_count": 5,
+      "total_count": 18,
+      "fraction": 0.2777777777777778,
+      "entropy": 0.8524051786494786,
+      "is_viable": true
+    }
+  },
+  "Tesisatçı": {
+    "cheap": {
+      "matched_count": 5,
+      "total_count": 20,
+      "fraction": 0.25,
+      "entropy": 0.8112781244591328,
+      "is_viable": true
+    },
+    "expensive": {
+      "matched_count": 6,
+      "total_count": 20,
+      "fraction": 0.3,
+      "entropy": 0.8812908992306927,
+      "is_viable": true
+    }
+  },
+  "Veteriner": {
+    "cheap": {
+      "matched_count": 5,
+      "total_count": 20,
+      "fraction": 0.25,
+      "entropy": 0.8112781244591328,
+      "is_viable": true
+    },
+    "expensive": {
+      "matched_count": 5,
+      "total_count": 20,
+      "fraction": 0.25,
+      "entropy": 0.8112781244591328,
+      "is_viable": true
+    }
+  },
+  "Yoga Stüdyosu": {
+    "cheap": {
+      "matched_count": 5,
+      "total_count": 20,
+      "fraction": 0.25,
+      "entropy": 0.8112781244591328,
+      "is_viable": true
+    },
+    "expensive": {
+      "matched_count": 5,
+      "total_count": 20,
+      "fraction": 0.25,
+      "entropy": 0.8112781244591328,
+      "is_viable": true
+    }
+  },
+  "Yüzme Havuzu": {
+    "cheap": {
+      "matched_count": 5,
+      "total_count": 19,
+      "fraction": 0.2631578947368421,
+      "entropy": 0.8314743880097291,
+      "is_viable": true
+    },
+    "expensive": {
+      "matched_count": 5,
+      "total_count": 19,
+      "fraction": 0.2631578947368421,
+      "entropy": 0.8314743880097291,
+      "is_viable": true
+    }
+  },
+  "Özel Ders": {
+    "cheap": {
+      "matched_count": 5,
+      "total_count": 20,
+      "fraction": 0.25,
+      "entropy": 0.8112781244591328,
+      "is_viable": true
+    },
+    "expensive": {
+      "matched_count": 5,
+      "total_count": 20,
+      "fraction": 0.25,
+      "entropy": 0.8112781244591328,
+      "is_viable": true
+    }
+  }
+}

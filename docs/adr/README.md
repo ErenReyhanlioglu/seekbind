@@ -44,3 +44,4 @@ tarafından supersede edildi)
 | [0024](0024-fallback-mechanism.md) | Sağlayıcılar arası otomatik fallback (LLM + embedding) | Kabul edildi, uygulandı | 2026-07-31 |
 | [0025](0025-prompt-injection-detection-strategy.md) | Prompt injection tespiti — kalıp bazlı filtre | Kabul edildi | 2026-07-31 |
 | [0026](0026-ci-pipeline-scope.md) | CI pipeline kapsamı — lint, unit + kısmi entegrasyon, birleşik coverage gate'i, build | Kabul edildi | 2026-08-01 |
+| [0027](0027-ragas-testset-ground-truth-quality.md) | RAGAS ground truth kalite metodolojisi — `ragas_testset` paketi | Kabul edildi, uygulandı | 2026-08-01 |
