@@ -1,0 +1,26 @@
+{
+  "sample_count": 100,
+  "total_tokens": [
+    {
+      "input_tokens": 937152,
+      "output_tokens": 169729,
+      "model": "gpt-4.1-mini-2025-04-14"
+    }
+  ],
+  "metrics": {
+    "faithfulness": {
+      "mean_all": 0.7399079115329116
+    },
+    "answer_relevancy": {
+      "mean_all": 0.5982635353787803
+    },
+    "context_precision": {
+      "mean_all": 0.4172638888720214,
+      "mean_excluding_expected_empty": 0.45853174601321034
+    },
+    "context_recall": {
+      "mean_all": 0.5266666666666666,
+      "mean_excluding_expected_empty": 0.5677655677655677
+    }
+  }
+}

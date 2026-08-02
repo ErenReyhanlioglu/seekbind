@@ -1,0 +1,133 @@
+{
+  "traces": [
+    {
+      "id": "q001",
+      "question": "İzmit'te güvenilir bir diş kliniği arıyorum",
+      "category": "Diş Kliniği",
+      "intent_tags": [
+        "simple"
+      ],
+      "answer": "İzmit'te güvenilir bir diş kliniği arıyorsanız, Yahyakaptan Diş Hekimi Aydın Cevizli'yi öneririm. 7/24 hizmet veren bu klinik, implant ve gülüş tasarımı gibi kapsamlı tedaviler sunarak her yaştan hastaya özel çözümler üretmektedir. Ayrıca, Dentriva Diş Yahyakaptan da iyi bir seçenek; ortodonti ve pedodonti alanlarında geniş bir yelpazeye sahip. DentAtlas Ağız ve Diş Sağlığı Polikliniği ise estetik çözümlerle birlikte implant tedavisi sunarak ağız sağlığınızı desteklemektedir. Bu kliniklerin hepsi yüksek hasta memnuniyeti ile dikkat çekiyor.",
+      "contexts": [
+        "1. Yahyakaptan Diş Hekimi Aydın Cevizli- İzmit Nöbetçi Diş - Kocaeli İzmit Acil 7/24 Diş Kliniği -İzmit özel Diş Hastanesi (Diş Kliniği)\n   Fiyat aralığı: 5369-7077 TL\n   Puan: 4.9/5\n   Hizmetler: implant, gülüş tasarımı, diş çekimi, diş beyazlatma\n   Açıklama: Yahyakaptan Diş Hekimi Aydın Cevizli, İzmit'te 7/24 ulaşılabilen özel diş kliniği olarak implant uygulamaları, diş çekimi ve gülüş tasarımı gibi kapsamlı tedaviler sunmaktadır. Diş beyazlatma işlemleriyle estetik görünümünüzü destekleyen kliniğin uzman kadrosu, her yaştan hastaya kişiye özel çözümler üretmektedir.",
+        "2. Dentriva Diş Yahyakaptan - İzmit İmplant-İzmit Nöbetçi Diş-İzmit Diş Teli-İzmit Çocuk Diş-İzmit Ortodonti-İzmit Pedodonti (Diş Kliniği)\n   Fiyat aralığı: 5057-6738 TL\n   Puan: 4.8/5\n   Hizmetler: diş temizliği (detertraj), diş dolgusu, zirkonyum kaplama, protez, ortodonti (tel tedavisi)\n   Açıklama: Dentriva Diş Yahyakaptan, İzmit'te ortodonti ve pedodonti alanlarında da hizmet sunan geniş kapsamlı bir diş kliniğidir. Zirkonyum kaplama ve protez uygulamalarının yanı sıra diş dolgusu ve profesyonel diş temizliği de yapılmaktadır. Modern tedavi yöntemleriyle hasta memnuniyetine önem veren klinik, her yaştan bireye uygun çözümler üretmektedir.",
+        "3. DentAtlas Ağız Ve Diş Sağlığı Polikliniği (Diş Kliniği)\n   Fiyat aralığı: 950-6033 TL\n   Puan: 4.8/5\n   Hizmetler: diş temizliği (detertraj), diş beyazlatma, zirkonyum kaplama, implant, ortodonti (tel tedavisi), gülüş tasarımı\n   Açıklama: DentAtlas Ağız ve Diş Sağlığı Polikliniği, İzmit'te uzun süren seanslarda diş temizliği, ortodonti ve gülüş tasarımı gibi hizmetler vermektedir. Zirkonyum kaplamalar ile estetik çözümler sunarken, implant tedavileriyle eksik dişlerinizi tamamlamayı hedefler. Kapsamlı tedavi seçenekleriyle ağız sağlığınızı bütünsel olarak destekleyen bir merkezdir.",
+        "4. Dentizmit Ağız ve Diş Sağlığı Polikliniği - Dent İzmit Diş Sağlığı (Diş Kliniği)\n   Fiyat aralığı: 5079-6391 TL\n   Puan: 4.7/5\n   Hizmetler: protez, diş çekimi, diş temizliği (detertraj), diş beyazlatma\n   Açıklama: Dentizmit Ağız ve Diş Sağlığı Polikliniği, protez ve diş temizliği hizmetlerinin yanı sıra diş beyazlatma seçenekleriyle ağız sağlığınızı desteklemektedir. Diş çekimi gibi temel işlemler, deneyimli hekimler tarafından titizlikle gerçekleştirilmektedir. Hem sağlık hem estetik açıdan kapsamlı çözümler sunan bu klinik, İzmit bölgesinde hizmet vermektedir.",
+        "5. Özel Marka Ağız ve Diş Sağlığı Polikliniği (Diş Kliniği)\n   Fiyat aralığı: 3098-4950 TL\n   Puan: 4.3/5\n   Hizmetler: diş dolgusu, protez, diş temizliği (detertraj), diş beyazlatma, pedodonti (çocuk diş hekimliği)\n   Açıklama: Özel Marka Ağız ve Diş Sağlığı Polikliniği, çocuk diş hekimliği hizmetlerinin yanı sıra diş dolgusu, protez ve diş temizliği gibi temel işlemleri profesyonel şekilde sunmaktadır. Diş beyazlatma uygulamaları ile estetik kaygılara yönelik çözümler sağlamaktadır. Hem yetişkinlere hem de çocuklara uygun, erişilebilir fiyatlarla hizmet veren bir kliniktir."
+      ],
+      "reference": "İyi değerlendirilen Diş Kliniği seçenekleri arasında Diş Hekimi Ahmet Melih Bozoğlu Diş Kliniği ve Yahyakaptan Diş Hekimi Aydın Cevizli- İzmit Nöbetçi Diş - Kocaeli İzmit Acil 7/24 Diş Kliniği -İzmit özel Diş Hastanesi öne çıkıyor (puanları 4.9-5.0/5 arasında), fiyatlar 3446-7949 TL arasında değişiyor."
+    },
+    {
+      "id": "q013",
+      "question": "Erkeklere özel, uygun fiyatlı bir kuaför var mı?",
+      "category": "Kuaför",
+      "intent_tags": [
+        "gender:male",
+        "price_preference:cheap",
+        "expected_empty"
+      ],
+      "answer": "Aramanıza uygun bir işletme bulamadım, farklı bir arama deneyebilirsin.",
+      "contexts": [],
+      "reference": "Kuaför kategorisinde hem erkeklere özel hem uygun fiyatlı kriterlerini birlikte karşılayan bir işletme bulunmuyor."
+    },
+    {
+      "id": "q026",
+      "question": "Akne tedavisi için bir cilt bakım merkezi önerir misin?",
+      "category": "Cilt Bakım Merkezi",
+      "intent_tags": [
+        "simple"
+      ],
+      "answer": "Akne tedavisi için en uygun seçeneklerden biri Sudabe Yılmaz Estetik Ve Güzellik. Burada, cilt sağlığınızı ön planda tutan uzmanlar tarafından yapılan detaylı cilt analizleri ile ihtiyaçlarınıza uygun akne tedavisi ve diğer cilt bakım uygulamaları sunuluyor. Ayrıca, cildinizi canlandırmak için nem bakımı ve peeling seçenekleri de mevcut. Yüksek bir puana sahip olması, müşteri memnuniyetinin de oldukça iyi olduğunu gösteriyor. \n\nDiğer bir seçenek ise Sıla Bülbül Beauty Home. Burada da cilt analizi ve akne tedavisi gibi hizmetler sunulmakta, ayrıca dermapen gibi özel yöntemlerle cildinize özen gösteriliyor. İki işletme de profesyonel ve kaliteli hizmet sunarak cilt sağlığınıza katkı sağlamayı hedefliyor.",
+      "contexts": [
+        "1. Sudabe Yılmaz Estetik Ve Güzellik (Cilt Bakım Merkezi)\n   Fiyat aralığı: 592-1085 TL\n   Puan: 4.9/5\n   Hizmetler: akne tedavisi, cilt analizi, mezoterapi, peeling, nem bakımı, cilt bakımı\n   Açıklama: Sudabe Yılmaz Estetik Ve Güzellik, cilt sağlığınızı ön planda tutarak akne tedavisinden mezoterapiye kadar çeşitli cilt bakım uygulamaları sunar. Uzmanlar tarafından yapılan detaylı cilt analizleri sayesinde ihtiyacınıza uygun peeling ve nem bakımı seçenekleri bulunur. Yüz yüze verilen yaklaşık yarım saatlik seanslarda, cildinizi yenilemek ve canlandırmak amaçlanır.",
+        "2. Sıla Bülbül Beauty Home | Lazer Epilasyon, Microblading, Dudak Vitamin, Kirpik Lifting, Hydrafacial, Dudak Renklendirme (Cilt Bakım Merkezi)\n   Fiyat aralığı: 1505-1995 TL\n   Puan: 4.8/5\n   Hizmetler: cilt bakımı, dermapen, nem bakımı, cilt analizi, anti-aging bakım, akne tedavisi\n   Açıklama: Sıla Bülbül Beauty Home, cilt yaşlanmasını geciktirmeye yönelik anti-aging bakımlar ve dermapen uygulamalarıyla öne çıkar. Cilt analizleri ve nemlendirme hizmetlerinin yanı sıra, akne sorunlarına yönelik profesyonel çözümler sunar. Yüz yüze gerçekleştirilen seanslarda, cildinize özel bakım yöntemleriyle doğal ve sağlıklı bir görünüm hedeflenir."
+      ],
+      "reference": "İyi değerlendirilen Cilt Bakım Merkezi seçenekleri arasında Sudabe Yılmaz Estetik Ve Güzellik ve Sıla Bülbül Beauty Home | Lazer Epilasyon, Microblading, Dudak Vitamin, Kirpik Lifting, Hydrafacial, Dudak Renklendirme öne çıkıyor (puanları 4.8-4.9/5 arasında), fiyatlar 592-1995 TL arasında değişiyor."
+    },
+    {
+      "id": "q038",
+      "question": "Uygun fiyatlı özel ders veren biri var mı?",
+      "category": "Özel Ders",
+      "intent_tags": [
+        "price_preference:cheap"
+      ],
+      "answer": "İzmit bölgesinde uygun fiyatlı özel ders arayışınıza yönelik birkaç seçenek önerebilirim. Öncelikle, Tasarı Kurs, matematik ve İngilizce gibi branşlarda ders veriyor ve esnek saat seçenekleri ile online ders imkanı sunuyor. Diğer bir seçenek olan Kocaeli Özel Eğitim Öğretmeni Burhan Hoca, fizik ve geometri dersleriyle birlikte sınav hazırlığı konusunda destek sağlıyor. Her iki işletme de kaliteli eğitim sunmayı amaçlıyor ve fiyat aralıkları oldukça makul seviyelerde.",
+      "contexts": [
+        "1. Tasarı Kurs (LGS-YKS- Özel Ders) (Özel Ders)\n   Fiyat aralığı: 469-745 TL\n   Puan: 4.8/5\n   Hizmetler: ingilizce dersi, matematik dersi, sınav hazırlık dersi, kimya dersi\n   Açıklama: Tasarı Kurs, matematik ve İngilizce başta olmak üzere sınav hazırlığında farklı branşlarda dersler verir. Öğrencilerin ihtiyacına göre şekillenen ders saatleri ve online seçenekle kolay erişim sağlar. Ortalama fiyat aralığında, kaliteli eğitim sunmayı hedefler.",
+        "2. Kocaeli Özel Eğitim Öğretmeni | Burhan Hoca (Özel Ders)\n   Fiyat aralığı: 432-805 TL\n   Puan: 4.8/5\n   Hizmetler: fizik dersi, YKS/LGS hazırlık, geometri dersi, matematik dersi\n   Açıklama: Kocaeli Özel Eğitim Öğretmeni Burhan Hoca, matematik ve fizik başta olmak üzere geometri ve sınav hazırlık dersleri veriyor. Dersler hem yüz yüze hem de online olarak gerçekleşiyor. Öğrencilerin ihtiyaçlarına göre esnek bir program uygulanıyor.",
+        "3. Matematik Özel Ders Derince - İzmit (Özel Ders)\n   Fiyat aralığı: 458-737 TL\n   Puan: 4.8/5\n   Hizmetler: ingilizce dersi, kimya dersi, matematik dersi, YKS/LGS hazırlık, online özel ders\n   Açıklama: Matematik Özel Ders Derince - İzmit, matematik ve fen bilimleri alanlarında öğrencilere destek oluyor. YKS ve LGS hazırlık sürecinde kişiye özel programlarla başarıya ulaşmayı hedefliyor. Hem yüz yüze hem de online ders seçenekleriyle geniş bir kitleye hizmet veriyor.",
+        "4. İzmit Matematik (Özel Ders)\n   Fiyat aralığı: 504-855 TL\n   Puan: 4.9/5\n   Hizmetler: matematik dersi, sınav hazırlık dersi, YKS/LGS hazırlık, kimya dersi, fizik dersi, online özel ders\n   Açıklama: İzmit Matematik, matematik, fizik ve kimya gibi temel bilim derslerinde sınavlara hazırlık desteği sunar. YKS ve LGS gibi önemli sınavlar için planlı çalışmayı sağlayan uzun süreli online ders imkanıyla öğrencilere esneklik sağlar. Geniş kitlelere hitap eden bu eğitimde, konular derinlemesine işlenerek öğrencilerin başarıları artırılmaya çalışılır.",
+        "5. İzmit Özel Matematik (Özel Ders)\n   Fiyat aralığı: 524-923 TL\n   Puan: 4.7/5\n   Hizmetler: matematik dersi, fizik dersi, biyoloji dersi, ingilizce dersi, sınav hazırlık dersi\n   Açıklama: İzmit Özel Matematik, çeşitli fen ve dil derslerinin yanı sıra sınav hazırlık desteği sağlıyor. Kısa süreli derslerle verimli öğrenme sağlamak isteyenler için uygun bir seçenek. Online derslerle de zamandan tasarruf ederek eğitim almak mümkün."
+      ],
+      "reference": "Uygun fiyatlı 5 Özel Ders seçeneği bulundu, örnek olarak İzmit Matematik ve Tasarı Kurs (LGS-YKS- Özel Ders) sayılabilir (puanları 4.7-4.9/5 arasında, fiyatlar 432-923 TL arasında değişiyor)."
+    },
+    {
+      "id": "q051",
+      "question": "Evimde priz arızası var, bir elektrikçi lazım",
+      "category": "Elektrikçi",
+      "intent_tags": [
+        "simple"
+      ],
+      "answer": "Priz arızanız için öncelikle KUZU ELEKTRİK’i öneririm. Güvenilir bir hizmet sunarak arıza tespiti ve onarımı konusunda deneyim sahibidirler. Ayrıca, Değişim Elektrik de iyi bir alternatif; hızlı müdahale ile sorunları etkili bir şekilde çözme becerisine sahip. İzmit Elektrikçi de arıza tespiti ve priz montajı konularında destek sağlayarak güvenli elektrik kullanımı için gereken kontrolleri yapıyor. Bu işletmeler, ihtiyaçlarınızı karşılayacak deneyimli ekiplerle hizmet veriyor.",
+      "contexts": [
+        "1. KUZU ELEKTRİK (Elektrikçi)\n   Fiyat aralığı: 2081-2725 TL\n   Puan: 4.8/5\n   Hizmetler: elektrik tesisatı kurulumu, priz/anahtar montajı, arıza tespiti ve onarımı\n   Açıklama: KUZU ELEKTRİK, elektrik tesisatı kurulumu ve arıza onarımında güvenilir bir seçenek olarak öne çıkıyor. Priz ve anahtar montajı hizmetleriyle ev ve iş yerlerindeki elektrik ihtiyaçlarınızı karşılıyor. Yüz yüze iletişimle detaylı tespit ve çözümler sunarak memnuniyet sağlamayı amaçlar.",
+        "2. Değişim Elektrik (Elektrikçi)\n   Fiyat aralığı: 1451-2093 TL\n   Puan: 4.8/5\n   Hizmetler: priz/anahtar montajı, jeneratör bakımı, arıza tespiti ve onarımı\n   Açıklama: Değişim Elektrik, priz ve anahtar montajının yanı sıra jeneratör bakımı ve elektrik arızalarında da destek verir. Alanında deneyimli ekipleri, sorunları hızlıca tespit edip onarır. Kısa sürede müdahale ile elektrik sorunlarınızı en aza indirir.",
+        "3. İzmit elektrikçi (Elektrikçi)\n   Fiyat aralığı: 1341-1894 TL\n   Puan: 4.8/5\n   Hizmetler: arıza tespiti ve onarımı, priz/anahtar montajı, topraklama kontrolü, kaçak akım kontrolü, aydınlatma montajı, elektrik tesisatı kurulumu\n   Açıklama: İzmit Elektrikçi, arıza tespiti ve priz montajı gibi temel elektrik işleri konusunda destek veriyor. Topraklama ve kaçak akım kontrolleri ile güvenli elektrik kullanımı sağlamaya odaklanıyor. Aydınlatma sistemlerinin kurulumu ve elektrik tesisatı döşemede deneyimli ekibiyle hizmetinizde. Hızlı müdahale isteyenler için ideal bir tercih olarak öne çıkıyor.",
+        "4. CAN ELEKTRİK (Elektrikçi)\n   Fiyat aralığı: 332-1283 TL\n   Puan: 4.8/5\n   Hizmetler: priz/anahtar montajı, arıza tespiti ve onarımı, topraklama kontrolü\n   Açıklama: CAN ELEKTRİK, priz ve anahtar montajı ile elektrik arızalarının tespit ve onarımında hizmet verir. Topraklama kontrolleri sayesinde elektrik tesisatınızın güvenliğini sağlamayı amaçlar. Müşterilerine hızlı ve güvenilir hizmet sunarak sorunları yerinde çözer.",
+        "5. Yahyakaptan Elektrikçi (Elektrikçi)\n   Fiyat aralığı: 2545-2950 TL\n   Puan: 4.5/5\n   Hizmetler: elektrik tesisatı kurulumu, arıza tespiti ve onarımı, topraklama kontrolü, kaçak akım kontrolü\n   Açıklama: Yahyakaptan Elektrikçi, elektrik tesisatı kurulumundan arıza onarımına kadar geniş kapsamlı hizmet veriyor. Topraklama ve kaçak akım kontrolleri ile güvenli elektrik kullanımına dikkat ediyor. Deneyimli kadrosuyla elektriksel sorunları çözmek için titiz ve kapsamlı çalışmalar yapıyor. Orta-yüksek fiyat aralığında kaliteli hizmet anlayışıyla müşterilerine ulaşıyor."
+      ],
+      "reference": "İyi değerlendirilen Elektrikçi seçenekleri arasında SİPAHİ ELEKTRİK ELEKTRONİK ve Özkardeş Elektrik öne çıkıyor (puanları 4.8-4.9/5 arasında), fiyatlar 688-2998 TL arasında değişiyor."
+    },
+    {
+      "id": "q063",
+      "question": "Kedimin aşı zamanı geldi, bir veteriner önerir misin?",
+      "category": "Veteriner",
+      "intent_tags": [
+        "simple"
+      ],
+      "answer": "Kedinizin aşı zamanı için birkaç iyi seçenek var. Öncelikle, Animalistan Veteriner Polikliniği, aşılama ve genel muayene gibi hizmetleriyle güvenilir bir adres olarak öne çıkıyor. Ayrıca, PETLAND PETSHOP da aşı, mikroçip uygulaması ve acil müdahale gibi hizmetler sunarak evcil dostlarınızın sağlığını detaylı bir şekilde kontrol etme imkanı sağlıyor. UZMAN VETERİNER KLİNİĞİ İZMİT KOCAELİ ise hızlı randevu süreleri ile ihtiyaçlarınıza hızlıca yanıt verebilir. Bu seçeneklerden birini değerlendirerek kedinizin sağlığını güvence altına alabilirsiniz.",
+      "contexts": [
+        "1. Animalistan Veteriner Polikliniği (Veteriner)\n   Fiyat aralığı: 1789-2698 TL\n   Puan: 4.6/5\n   Hizmetler: aşılama, genel muayene, acil müdahale\n   Açıklama: Animalistan Veteriner Polikliniği, genel muayene ve acil müdahale gibi temel veteriner hizmetlerini sunar. Aşılama işlemleri düzenli olarak yapılmakta olup, hayvanlarınızın sağlıklı kalması için güvenilir bir adres olarak öne çıkar. Her yaş ve türden evcil hayvana açık hizmet anlayışıyla çalışır.",
+        "2. PETLAND PETSHOP (Veteriner)\n   Fiyat aralığı: 1986-2536 TL\n   Puan: 4.8/5\n   Hizmetler: aşılama, acil müdahale, genel muayene, mikroçip uygulama\n   Açıklama: PETLAND PETSHOP, evcil hayvan sahiplerine aşı, mikroçip uygulaması ve acil müdahale hizmetlerini sunar. Genel muayene ile dostlarınızın sağlık durumunu detaylıca kontrol eder, acil durumlarda hızlı müdahale imkanı sağlar. Hizmetler yüz yüze ve kapsamlı bir bakım anlayışıyla gerçekleştirilir.",
+        "3. UZMAN VETERİNER KLİNİĞİ İZMİT KOCAELİ (Veteriner)\n   Fiyat aralığı: 1749-2393 TL\n   Puan: 4.7/5\n   Hizmetler: kısırlaştırma, acil müdahale, diş bakımı, aşılama\n   Açıklama: UZMAN VETERİNER KLİNİĞİ İZMİT KOCAELİ, acil müdahale ve kısırlaştırma hizmetlerinde uzmanlaşmış bir merkezdir. Diş bakımı ve aşı uygulamaları da düzenli olarak yapılmakta, evcil hayvanların sağlığı titizlikle takip edilmektedir. Kısa randevu süreleriyle ihtiyaçlarınızı hızlıca karşılamaya odaklanır.",
+        "4. ANIMAL ACADEMY VETERİNER KLİNİĞİ KÖRFEZ (Veteriner)\n   Fiyat aralığı: 637-1729 TL\n   Puan: 4.5/5\n   Hizmetler: genel muayene, acil müdahale, aşılama, mikroçip uygulama\n   Açıklama: ANIMAL ACADEMY VETERİNER KLİNİĞİ KÖRFEZ, acil müdahale ve mikroçip uygulaması gibi önemli hizmetler sunarak evcil hayvanların sağlığını destekler. Aşılama ve genel muayene hizmetleriyle düzenli bakım sağlamayı amaçlar. Hastalarına yüz yüze ve detaylı veterinerlik hizmeti sunar.",
+        "5. Pasteur Veterinary (Veteriner)\n   Fiyat aralığı: 361-1395 TL\n   Puan: 4.7/5\n   Hizmetler: aşılama, acil müdahale, pet pasaportu işlemleri, diş bakımı, kısırlaştırma, genel muayene\n   Açıklama: Pasteur Veterinary, evcil dostlarınızın sağlığını korumak için aşılama, diş bakımı ve kısırlaştırma gibi önemli hizmetler sunar. Pet pasaportu işlemleriyle seyahat hazırlıklarını kolaylaştırırken, genel muayene ve acil müdahale seçenekleriyle kapsamlı bakım sağlar. Hizmetleri, hayvanların ihtiyaçlarına uygun şekilde planlanır."
+      ],
+      "reference": "İyi değerlendirilen Veteriner seçenekleri arasında HIÇKIDIK PETSHOP AKVARYUM İZMİT ve Fauna Veteriner Kliniği Kocaeli öne çıkıyor (puanları 4.8-4.9/5 arasında), fiyatlar 347-2952 TL arasında değişiyor."
+    },
+    {
+      "id": "q076",
+      "question": "Uygun fiyatlı bir avukat önerir misin?",
+      "category": "Avukat",
+      "intent_tags": [
+        "price_preference:cheap"
+      ],
+      "answer": "İzmit'te uygun fiyatlı bir avukat arıyorsanız, Avukat Adem Çeçen iyi bir seçenek olabilir. Miras, gayrimenkul ve icra hukuku gibi konularda danışmanlık hizmeti sunan Adem Çeçen, online veya yüz yüze görüşme imkanı ile hukuki destek almanızı sağlıyor. Ayrıca, Kocaeli'de geniş bir hizmet yelpazesine sahip olan Avukat Mustafa Gaffar Tanyıldız da dikkate değer bir alternatif olarak öne çıkıyor; miras ve gayrimenkul hukuku konularında uzmanlaşmış durumda. Bu iki avukat, hem uygun fiyat seçenekleri hem de alanlarındaki deneyimleri ile ihtiyaçlarınıza iyi cevap verebilir.",
+      "contexts": [
+        "1. izmit Avukat Adem Çeçen | Kocaeli Boşanma Avukatı - İzmit Ceza Avukatı - Kocaeli Miras Avukatı (Avukat)\n   Fiyat aralığı: 4295-8174 TL\n   Puan: 4.8/5\n   Hizmetler: miras hukuku danışmanlığı, danışmanlık, icra takibi, sözleşme hazırlama, gayrimenkul hukuku danışmanlığı\n   Açıklama: İzmitli Avukat Adem Çeçen, miras, gayrimenkul, icra ve sözleşme işlemlerinde danışmanlık veriyor. Online veya yüz yüze görüşmelerle yaklaşık bir saat süren detaylı hukuki destek sunan büro, Kocaeli’de uygun fiyat seçenekleriyle hizmet vermektedir. Boşanma ve diğer alanlarda da kapsamlı hukuki yardım sağlamaktadır.",
+        "2. KOCAELİ İZMİT AVUKAT MUSTAFA GAFFAR TANYILDIZ (Avukat)\n   Fiyat aralığı: 2209-15244 TL\n   Puan: 4.8/5\n   Hizmetler: miras hukuku danışmanlığı, gayrimenkul hukuku danışmanlığı, ceza davası, sözleşme hazırlama\n   Açıklama: Mustafa Gaffar Tanyıldız, miras ve gayrimenkul hukuku alanlarındaki uzmanlığıyla tanınıyor. Ayrıca ceza davaları ve sözleşme hazırlıkları konusunda da kapsamlı hizmet sunuyor. İzmit’te hem yüz yüze hem de online olarak hukuki destek almak isteyenler için uygun bir adres.",
+        "3. Kocaeli Avukat Zihni Tolga Şenol | İzmit Avukat | Kocaeli Kira Avukatı | Kocaeli Ceza Avukatı | Miras,Gayrimenkul Avukatı (Avukat)\n   Fiyat aralığı: 2665-17193 TL\n   Puan: 4.9/5\n   Hizmetler: ceza davası, danışmanlık, boşanma davası\n   Açıklama: Kocaeli Avukat Zihni Tolga Şenol, ceza davalarından boşanma süreçlerine kadar geniş bir hukuk yelpazesinde destek sunuyor. Online danışmanlık imkanı sayesinde mesafeler engel olmadan hukuki yardıma ulaşabilirsiniz. Kira ve miras gibi özel alanlarda da deneyimli çözümler sağlanıyor.",
+        "4. Avukat Ayşe Nur EFE AKYÜZ Hukuk Bürosu İzmit / Kocaeli (Avukat)\n   Fiyat aralığı: 2361-18244 TL\n   Puan: 4.9/5\n   Hizmetler: sözleşme hazırlama, danışmanlık, boşanma davası, gayrimenkul hukuku danışmanlığı, icra takibi, iş hukuku davası\n   Açıklama: Avukat Ayşe Nur EFE AKYÜZ Hukuk Bürosu, Kocaeli İzmit bölgesinde hukuk alanında kapsamlı çözümler sunuyor. Boşanma davalarından iş hukuku davalarına, gayrimenkul hukuku danışmanlığından icra takiplerine kadar çeşitli hizmetler sağlanıyor. Hem yüz yüze hem de online olarak ulaşılabilir olması, farklı ihtiyaçlara uygun destek alınmasını kolaylaştırıyor.",
+        "5. Kocaeli Avukat | İzmit Avukat | A&G HUKUK BÜROSU (Avukat)\n   Fiyat aralığı: 4088-14695 TL\n   Puan: 4.9/5\n   Hizmetler: danışmanlık, sözleşme hazırlama, gayrimenkul hukuku danışmanlığı, boşanma davası, icra takibi, iş hukuku davası\n   Açıklama: A&G Hukuk Bürosu, Kocaeli genelinde danışmanlık, sözleşme hazırlama ve boşanma davaları gibi alanlarda hizmet veriyor. Gayrimenkul hukuku ve iş hukuku davaları konusunda da destek sağlayan büro, uzun süreli danışmanlık ihtiyaçlarına cevap veriyor. İcra takiplerinde de müvekkillerinin haklarını korumayı amaçlıyor."
+      ],
+      "reference": "Uygun fiyatlı 5 Avukat seçeneği bulundu, örnek olarak Kocaeli Avukat | İzmit Avukat | A&G HUKUK BÜROSU ve Kocaeli Avukat Zihni Tolga Şenol | İzmit Avukat | Kocaeli Kira Avukatı | Kocaeli Ceza Avukatı | Miras,Gayrimenkul Avukatı sayılabilir (puanları 4.8-4.9/5 arasında, fiyatlar 2209-18244 TL arasında değişiyor)."
+    },
+    {
+      "id": "q088",
+      "question": "Puanı en düşük oto servisi hangisi, kaçınmak istiyorum",
+      "category": "Oto Servis",
+      "intent_tags": [
+        "rating_preference:low"
+      ],
+      "answer": "En düşük puana sahip oto servisi Auto King - İzmit Oto Servis. Puanı 3.6/5 olan bu işletme, yağ, akü ve balata değişimi gibi temel araç bakım hizmetleri sunuyor. Ancak, daha önceki müşterilerin değerlendirmeleri, bu işletmenin beklenen standartların altında kalabileceğini gösteriyor. Eğer oto servis arayışınızda daha memnun edici bir deneyim istiyorsanız, diğer seçenekleri değerlendirmenizi öneririm.",
+      "contexts": [
+        "1. Auto King - İzmit Oto Servis (Oto Servis)\n   Fiyat aralığı: 2210-9346 TL\n   Puan: 3.6/5\n   Hizmetler: yağ değişimi, akü değişimi, balata değişimi\n   Açıklama: Auto King İzmit, temel araç bakım ihtiyaçları olan yağ, akü ve balata değişimlerinde hizmet veriyor. Yüz yüze ve hızlı çözüm odaklı çalışan servis, uygun fiyat aralığında hizmet sunmayı hedefliyor. Çok sayıda değerlendirmeye sahip olan işletme, araçların rutin bakımlarında tercih ediliyor.",
+        "2. ÇAĞ OTO - Kocaeli Volkswagen Servisi (Oto Servis)\n   Fiyat aralığı: 512-14196 TL\n   Puan: 4.1/5\n   Hizmetler: periyodik bakım, akü değişimi, fren bakımı, yağ değişimi, lastik değişimi, motor tamiri\n   Açıklama: ÇAĞ OTO, Kocaeli bölgesinde Volkswagen araçlara yönelik özel servis hizmetleri sağlıyor. Periyodik bakımların yanı sıra fren ve motor tamirleri gibi teknik işlemler de burada gerçekleştiriliyor. Yağ ve akü değişimi ile lastik hizmetleri, aracınızın sorunsuz çalışması için sunulan diğer hizmetler arasında yer alıyor.",
+        "3. Kocaeli Yılmazlar Otomotiv (Oto Servis)\n   Fiyat aralığı: 4490-6718 TL\n   Puan: 4.2/5\n   Hizmetler: periyodik bakım, rot balans, balata değişimi\n   Açıklama: Kocaeli Yılmazlar Otomotiv, periyodik bakım hizmetleri ile aracınızın düzenli performansını korumanıza yardımcı olur. Rot balans ve balata değişimi işlemlerinde deneyimli bir ekiple çalışır. Hızlı ve etkili çözümler sayesinde bekleme süreniz kısa tutulur.",
+        "4. Cakir Oto Ford Ozel Servisi (Oto Servis)\n   Fiyat aralığı: 5829-12340 TL\n   Puan: 4.4/5\n   Hizmetler: yağ değişimi, akü değişimi, fren bakımı, lastik değişimi\n   Açıklama: Cakir Oto Ford Özel Servisi, özellikle yağ ve akü değişimi ile fren ve lastik değişimi hizmetlerinde kapsamlı destek sağlar. Aracınızın ihtiyacına uygun çözümler sunarak bakımını yapar. Randevu süresi uzun tutulmakta, böylece detaylı müdahaleler mümkün olmaktadır.",
+        "5. M&R Oto Tamirhanesi (Oto Servis)\n   Fiyat aralığı: 5669-14665 TL\n   Puan: 4.4/5\n   Hizmetler: elektrik arıza tespiti, yağ değişimi, lastik değişimi, periyodik bakım\n   Açıklama: M&R Oto Tamirhanesi, özellikle elektrik arızalarının tespiti konusunda destek veriyor. Ayrıca periyodik bakım ve yağ değişimi hizmetleri ile araçlarınızın düzenli bakımını sağlamayı hedefliyor. Lastik değişimi gibi temel bakım ihtiyaçlarınızı da karşılayan bu işletme, araç sağlığınızı korumaya yönelik çözümler sunuyor."
+      ],
+      "reference": "En düşük puanlı Oto Servis seçeneği olarak M&R Oto Tamirhanesi ve Cakir Oto Ford Ozel Servisi öne çıkıyor (puanları 3.6-4.4/5 arasında) — bunlardan kaçınmak isteyebilirsin."
+    }
+  ]
+}

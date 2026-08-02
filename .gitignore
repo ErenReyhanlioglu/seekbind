@@ -46,7 +46,3 @@ data/raw/*
 data/processed/*
 !data/processed/.gitkeep
 
-# RAGAS sonuçları Faz 6'da üretilecek, şimdilik boş — klasör yapısı .gitkeep ile korunur.
-# diagnostics/ ise doğrulanmış gerçek sonuçlar içeriyor (örn. embedding diversity), tamamen takip edilir.
-evaluation/results/ragas/*
-!evaluation/results/ragas/.gitkeep
