@@ -13,6 +13,11 @@ SeekBind, [DateBind](https://datebind.com) randevu platformu için geliştirilen
 5. Uygunluk skoruna göre sıralanmış sonuçlar kart listesi olarak sunulur
 6. Her kartta ilgili sağlayıcının DateBind randevu sayfasına yönlendiren buton bulunur
 
+`/recommend` isteğinin bu adımların arkasında gerçekte hangi sırayla,
+hangi dış sistemlere (Redis, Postgres, Qdrant, LLM/embedding API'leri,
+Jina, Langfuse) uğrayarak ilerlediğinin detaylı diyagramı için bkz.
+[docs/request_lifecycle.md](docs/request_lifecycle.md).
+
 ## Teknik Altyapı
 
 **Veri Kaynağı**
@@ -116,6 +121,7 @@ uv run python -m scripts.enrich_with_llm     # LLM ile açıklama/keyword üreti
 
 > **Not:** Backend API (arama, öneri, randevu) uçtan uca çalışır durumda ve
 > entegrasyon testleriyle doğrulanmış — bkz. [docs/roadmap.md](docs/roadmap.md).
+> Proje dosya yapısına genel bakış için bkz. [docs/file_tree.md](docs/file_tree.md).
 > Frontend henüz geliştirilmedi (planlanan). Yukarıdaki adımlar veri
 > hazırlama pipeline'ını kapsar.
 
