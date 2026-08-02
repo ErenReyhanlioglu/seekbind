@@ -1,12 +1,15 @@
-# İstek Yaşam Döngüsü — `/recommend`
+# 4 — Code: `/recommend` İstek Yaşam Döngüsü
 
-Bir `/recommend` isteğinin HTTP girişinden yanıta kadar geçtiği tüm
-aşamaların, dallanma noktalarının ve dış sistem çağrılarının detaylı
-kaydı. Kapsam bilinçli olarak `/recommend`'e (asıl AI akışı) sınırlı —
-`/book` (calendar-service) kendi ayrı, daha basit akışına sahip, burada
-kapsanmıyor.
+[3-component.md](3-component.md)'deki component'lerin bir `/recommend`
+isteğinde tam olarak hangi sırayla, hangi dallanma noktalarıyla
+birbirini çağırdığının detaylı kaydı. Bu seviye yoğun — önce önceki 3
+seviyeyi okuduysan (sistemin genel şeklini bildiğini varsayarak) takip
+etmesi daha kolay olur.
 
-## Diyagram 1 — Ana istek akışı
+Kapsam `/recommend`'e sınırlı — `/book` (Calendar Service) kendi ayrı,
+daha basit akışına sahip, burada kapsanmıyor. LLM/embedding çağrılarının
+cache+fallback mekaniği de ayrı bir dosyada — bkz.
+[4-code-provider-fallback-cache.md](4-code-provider-fallback-cache.md).
 
 ```mermaid
 sequenceDiagram
@@ -42,7 +45,7 @@ sequenceDiagram
     Note over Svc: True ise sadece flag'lenir, henüz kesilmez
 
     Svc->>LLM: parse_intent() — temperature=0.0
-    Note over LLM,Redis: cache + fallback zinciri — bkz. Diyagram 2
+    Note over LLM,Redis: cache + fallback zinciri — bkz. diğer dosya
     alt intent parsing başarısız (IntentParsingError)
         Svc->>Svc: ham sorgu + boş SearchFilters() ile devam
     else başarılı
@@ -56,7 +59,7 @@ sequenceDiagram
     end
 
     Svc->>LLM: vector_search() içindeki embed_batch() çağrısı
-    Note over LLM,Redis: cache + fallback zinciri — bkz. Diyagram 2
+    Note over LLM,Redis: cache + fallback zinciri — bkz. diğer dosya
     Svc->>Qdrant: query_points()
     Svc->>BM25: bm25_index.search()
     opt hard filtre var (kategori/fiyat/konum)
@@ -84,7 +87,7 @@ sequenceDiagram
         Svc-->>Route: RECOMMENDATION_FALLBACK_MESSAGE (generation hiç çağrılmaz, arama sonuçları yine döner)
     else
         Svc->>LLM: generate_recommendation() — temperature=0.7 (ASLA cache'lenmez)
-        Note over LLM,Redis: sadece fallback, cache atlanır — bkz. Diyagram 2
+        Note over LLM,Redis: sadece fallback, cache atlanır — bkz. diğer dosya
         alt generation başarısız (RecommendationGenerationError)
             Svc->>Svc: RECOMMENDATION_FALLBACK_MESSAGE'a düş, arama sonuçları yine döner
         end
@@ -96,7 +99,7 @@ sequenceDiagram
     Route-->>Client: 200 OK (GZip'li)
 ```
 
-### Önemli dallanma noktaları
+## Önemli dallanma noktaları
 
 - **Rate limit (429)** — en dışta, route'a hiç girmeden kesiliyor. Redis'e
   ulaşılamazsa fail-open (istek engellenmez), CLAUDE.md'nin genel
@@ -110,64 +113,6 @@ sequenceDiagram
   sonuçta LLM'e hiç gidilmiyor (gösterilecek bir şey yok), injection'da
   bilerek `generate_recommendation()` atlanıyor (güvenlik), generation
   hatasında LLM çağrısı denendi ama başarısız oldu.
-
-## Diyagram 2 — LLM/Embedding çağrısı: cache + fallback çözümlemesi
-
-Ana akışta 3 yerde ("LLM Sağlayıcı" katmanına her gidişte) aynı desen
-tekrar ediyor — ayrı bir diyagram olarak tutuluyor ki ana akış boğulmasın.
-Kompozisyon: **`Fallback(Cache(OpenAI), Cache(Ollama))`** — cache,
-fallback'in İÇİNDE, yani önce OpenAI-keyed cache'e bakılır, OpenAI
-gerçekten başarısız olursa Ollama-keyed cache'e (ayrı bir anahtar
-uzayında) geçilir.
-
-```mermaid
-sequenceDiagram
-    autonumber
-    participant Svc as Çağıran (intent/embedding/generation)
-    participant FB as FallbackProvider
-    participant C1 as CachedProvider (OpenAI)
-    participant R1 as Redis
-    participant O1 as OpenAI API
-    participant C2 as CachedProvider (Ollama)
-    participant R2 as Redis
-    participant O2 as Ollama (yerel)
-
-    Svc->>FB: complete() / embed_batch()
-    FB->>C1: primary.call()
-    C1->>R1: cache anahtarını kontrol et
-    Note over C1,R1: sadece temperature=0.0 çağrıları cache'lenir (embedding her zaman cache'lenir)
-    alt cache hit
-        R1-->>C1: kayıtlı yanıt
-        C1-->>FB: yanıt (from_cache=true, token sayıları sıfırlanır)
-    else cache miss (ya da Redis'e ulaşılamıyor — fail-open)
-        C1->>O1: gerçek API çağrısı
-        alt OpenAI başarılı
-            O1-->>C1: yanıt
-            C1->>R1: sonucu cache'e yaz (TTL'li)
-            C1-->>FB: yanıt
-        else LLMServiceError / EmbeddingServiceError
-            O1-->>C1: hata
-            C1-->>FB: hata yeniden fırlatılır
-            FB->>C2: secondary.call()
-            C2->>R2: cache anahtarını kontrol et (Ollama-keyed, AYRI anahtar uzayı)
-            alt cache hit
-                R2-->>C2: kayıtlı yanıt
-            else cache miss
-                C2->>O2: gerçek çağrı (yerel)
-                O2-->>C2: yanıt
-                C2->>R2: sonucu cache'e yaz
-            end
-            C2-->>FB: yanıt
-        end
-    end
-    FB-->>Svc: nihai yanıt
-```
-
-**Not:** Embedding fallback'i (Ollama'ya geçiş) sadece yanıt kaynağını
-değil, **hangi Qdrant collection'ının sorgulanacağını da** değiştirir
-(`businesses_openai` vs `businesses_ollama-qwen3-embedding-0-6b`) — bu
-`contextvars.ContextVar` ile task-scoped takip ediliyor, paylaşılan
-`@lru_cache`'li örnekte yarış durumunu önlemek için.
 
 ## Dış sistem vs in-process ayrımı
 
