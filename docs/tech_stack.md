@@ -2,19 +2,19 @@ Teknoloji
 -----------------------
 PostgreSQL             
 Qdrant                 
+Redis
 Docker                 
 FastAPI                
-React (21s dev MCP)    
+React (21st.dev MCP)    
 OpenAI Embedding       
 GPT-4o-mini            
 Ollama                 
 Semantic Search        
 RAG                    
-Tool Calling           
 Fallback Mekanizması   
 Langfuse               
-python-dotenv          
-requirements.txt       
+pydantic-settings
+uv + pyproject.toml
 Git + GitHub           
 RAGAS                  
 Hybrid Search          

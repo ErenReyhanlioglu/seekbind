@@ -29,9 +29,9 @@ tarafından supersede edildi)
 | [0009](0009-ragas-evaluator-model.md) | RAGAS evaluator modeli | Kabul edildi | 2026-07-28 |
 | [0010](0010-hybrid-search-with-rrf.md) | Hybrid search (BM25 + vektör, RRF) | Kabul edildi | 2026-07-24 |
 | [0011](0011-hard-filter-vs-semantic-separation.md) | Kesin filtre / semantik ayrımı | Kabul edildi, uygulandı | 2026-07-29 |
-| [0012](0012-synthetic-description-mode-collapse-mitigation.md) | Sentetik açıklama mode collapse önlemi | Kabul edildi | 2026-07-24 |
+| [0012](0012-synthetic-description-mode-collapse-mitigation.md) | Sentetik açıklama mode collapse önlemi | Kabul edildi, doğrulandı | 2026-07-24 |
 | [0013](0013-reranker-provider-selection.md) | Reranker sağlayıcısı seçimi (Jina AI) | Kabul edildi | 2026-07-28 |
-| [0014](0014-price-threshold-resolution.md) | Fiyat eşiği hesaplama (LLM tahmini yerine gerçek DB verisi) | Kabul edildi | 2026-07-29 |
+| [0014](0014-price-threshold-resolution.md) | Fiyat eşiği hesaplama (LLM tahmini yerine gerçek DB verisi) | Kabul edildi, uygulandı | 2026-07-29 |
 | [0015](0015-rating-based-ranking-gap.md) | Puan/kalite bazlı sıralama eksikliği | Kabul edildi, uygulandı | 2026-07-29 |
 | [0016](0016-langfuse-trace-grouping.md) | Langfuse trace gruplama ve yapılandırılmış metadata | Kabul edildi, uygulandı | 2026-07-29 |
 | [0017](0017-tool-calling-not-needed.md) | Tool calling gerekli değil — çoklu-hizmet arama SeekBind 2.0'a bırakıldı | Kabul edildi | 2026-07-29 |
@@ -44,3 +44,4 @@ tarafından supersede edildi)
 | [0024](0024-fallback-mechanism.md) | Sağlayıcılar arası otomatik fallback (LLM + embedding) | Kabul edildi, uygulandı | 2026-07-31 |
 | [0025](0025-prompt-injection-detection-strategy.md) | Prompt injection tespiti — kalıp bazlı filtre | Kabul edildi | 2026-07-31 |
 | [0026](0026-ci-pipeline-scope.md) | CI pipeline kapsamı — lint, unit + kısmi entegrasyon, birleşik coverage gate'i, build | Kabul edildi | 2026-08-01 |
+| [0027](0027-ragas-testset-ground-truth-quality.md) | RAGAS ground truth kalite metodolojisi — `ragas_testset` paketi | Kabul edildi, uygulandı | 2026-08-01 |

@@ -1,0 +1,103 @@
+{
+  "traces": [
+    {
+      "id": "q001",
+      "question": "İzmit'te güvenilir bir diş kliniği arıyorum",
+      "category": "Diş Kliniği",
+      "intent_tags": [
+        "simple"
+      ],
+      "answer": "İzmit'te güvenilir bir diş kliniği arıyorsanız, Yahyakaptan Diş Hekimi Aydın Cevizli'yi değerlendirmenizi öneririm. 7/24 hizmet veren bu klinik, implant ve gülüş tasarımı gibi kapsamlı tedaviler sunuyor ve uzman kadrosu ile her yaştan hastaya özel çözümler üretiyor. Dentriva Diş Yahyakaptan da güçlü bir alternatif; ortodonti ve pedodonti gibi alanlarda geniş bir yelpazede hizmet veriyor. Diş sağlığınızı önceliklendiren bu klinikler, yüksek hasta memnuniyeti ile öne çıkıyor.",
+      "contexts": [
+        "1. Yahyakaptan Diş Hekimi Aydın Cevizli- İzmit Nöbetçi Diş - Kocaeli İzmit Acil 7/24 Diş Kliniği -İzmit özel Diş Hastanesi (Diş Kliniği)\n   Fiyat aralığı: 5369-7077 TL\n   Puan: 4.9/5\n   Hizmetler: implant, gülüş tasarımı, diş çekimi, diş beyazlatma\n   Açıklama: Yahyakaptan Diş Hekimi Aydın Cevizli, İzmit'te 7/24 ulaşılabilen özel diş kliniği olarak implant uygulamaları, diş çekimi ve gülüş tasarımı gibi kapsamlı tedaviler sunmaktadır. Diş beyazlatma işlemleriyle estetik görünümünüzü destekleyen kliniğin uzman kadrosu, her yaştan hastaya kişiye özel çözümler üretmektedir.",
+        "2. Dentriva Diş Yahyakaptan - İzmit İmplant-İzmit Nöbetçi Diş-İzmit Diş Teli-İzmit Çocuk Diş-İzmit Ortodonti-İzmit Pedodonti (Diş Kliniği)\n   Fiyat aralığı: 5057-6738 TL\n   Puan: 4.8/5\n   Hizmetler: diş temizliği (detertraj), diş dolgusu, zirkonyum kaplama, protez, ortodonti (tel tedavisi)\n   Açıklama: Dentriva Diş Yahyakaptan, İzmit'te ortodonti ve pedodonti alanlarında da hizmet sunan geniş kapsamlı bir diş kliniğidir. Zirkonyum kaplama ve protez uygulamalarının yanı sıra diş dolgusu ve profesyonel diş temizliği de yapılmaktadır. Modern tedavi yöntemleriyle hasta memnuniyetine önem veren klinik, her yaştan bireye uygun çözümler üretmektedir.",
+        "3. DentAtlas Ağız Ve Diş Sağlığı Polikliniği (Diş Kliniği)\n   Fiyat aralığı: 950-6033 TL\n   Puan: 4.8/5\n   Hizmetler: diş temizliği (detertraj), diş beyazlatma, zirkonyum kaplama, implant, ortodonti (tel tedavisi), gülüş tasarımı\n   Açıklama: DentAtlas Ağız ve Diş Sağlığı Polikliniği, İzmit'te uzun süren seanslarda diş temizliği, ortodonti ve gülüş tasarımı gibi hizmetler vermektedir. Zirkonyum kaplamalar ile estetik çözümler sunarken, implant tedavileriyle eksik dişlerinizi tamamlamayı hedefler. Kapsamlı tedavi seçenekleriyle ağız sağlığınızı bütünsel olarak destekleyen bir merkezdir.",
+        "4. Dentizmit Ağız ve Diş Sağlığı Polikliniği - Dent İzmit Diş Sağlığı (Diş Kliniği)\n   Fiyat aralığı: 5079-6391 TL\n   Puan: 4.7/5\n   Hizmetler: protez, diş çekimi, diş temizliği (detertraj), diş beyazlatma\n   Açıklama: Dentizmit Ağız ve Diş Sağlığı Polikliniği, protez ve diş temizliği hizmetlerinin yanı sıra diş beyazlatma seçenekleriyle ağız sağlığınızı desteklemektedir. Diş çekimi gibi temel işlemler, deneyimli hekimler tarafından titizlikle gerçekleştirilmektedir. Hem sağlık hem estetik açıdan kapsamlı çözümler sunan bu klinik, İzmit bölgesinde hizmet vermektedir.",
+        "5. Özel Marka Ağız ve Diş Sağlığı Polikliniği (Diş Kliniği)\n   Fiyat aralığı: 3098-4950 TL\n   Puan: 4.3/5\n   Hizmetler: diş dolgusu, protez, diş temizliği (detertraj), diş beyazlatma, pedodonti (çocuk diş hekimliği)\n   Açıklama: Özel Marka Ağız ve Diş Sağlığı Polikliniği, çocuk diş hekimliği hizmetlerinin yanı sıra diş dolgusu, protez ve diş temizliği gibi temel işlemleri profesyonel şekilde sunmaktadır. Diş beyazlatma uygulamaları ile estetik kaygılara yönelik çözümler sağlamaktadır. Hem yetişkinlere hem de çocuklara uygun, erişilebilir fiyatlarla hizmet veren bir kliniktir."
+      ],
+      "reference": "İyi değerlendirilen Diş Kliniği seçenekleri arasında Diş Hekimi Ahmet Melih Bozoğlu Diş Kliniği ve Yahyakaptan Diş Hekimi Aydın Cevizli- İzmit Nöbetçi Diş - Kocaeli İzmit Acil 7/24 Diş Kliniği -İzmit özel Diş Hastanesi öne çıkıyor (puanları 4.9-5.0/5 arasında), fiyatlar 3446-7949 TL arasında değişiyor.",
+      "result_ids": [
+        1,
+        3,
+        5,
+        2,
+        6
+      ],
+      "expected_business_ids": [
+        16,
+        1,
+        4,
+        20,
+        15
+      ]
+    },
+    {
+      "id": "q026",
+      "question": "Akne tedavisi için bir cilt bakım merkezi önerir misin?",
+      "category": "Cilt Bakım Merkezi",
+      "intent_tags": [
+        "simple"
+      ],
+      "answer": "Akne tedavisi için öncelikle Sudabe Yılmaz Estetik Ve Güzellik'i öneririm. Uzman ekipleri, cilt sağlığınızı ön planda tutarak akne tedavisinden mezoterapiye kadar geniş bir hizmet yelpazesi sunuyor. Ayrıca, detaylı cilt analizi ile ihtiyaçlarınıza uygun peeling ve nem bakımı seçenekleri de mevcut. \n\nDiğer bir seçenek ise Sıla Bülbül Beauty Home. Burada da akne tedavisine yönelik profesyonel çözümler sunulmakta. Cilt analizi ve nem bakımı gibi hizmetlerle, cildinize özel uygulamalar yaparak sağlıklı bir görünüm elde etmeyi hedefliyorlar. Her iki merkez de yüksek puanlarıyla güvenilir bir tercih olacaktır.",
+      "contexts": [
+        "1. Sudabe Yılmaz Estetik Ve Güzellik (Cilt Bakım Merkezi)\n   Fiyat aralığı: 592-1085 TL\n   Puan: 4.9/5\n   Hizmetler: akne tedavisi, cilt analizi, mezoterapi, peeling, nem bakımı, cilt bakımı\n   Açıklama: Sudabe Yılmaz Estetik Ve Güzellik, cilt sağlığınızı ön planda tutarak akne tedavisinden mezoterapiye kadar çeşitli cilt bakım uygulamaları sunar. Uzmanlar tarafından yapılan detaylı cilt analizleri sayesinde ihtiyacınıza uygun peeling ve nem bakımı seçenekleri bulunur. Yüz yüze verilen yaklaşık yarım saatlik seanslarda, cildinizi yenilemek ve canlandırmak amaçlanır.",
+        "2. Sıla Bülbül Beauty Home | Lazer Epilasyon, Microblading, Dudak Vitamin, Kirpik Lifting, Hydrafacial, Dudak Renklendirme (Cilt Bakım Merkezi)\n   Fiyat aralığı: 1505-1995 TL\n   Puan: 4.8/5\n   Hizmetler: cilt bakımı, dermapen, nem bakımı, cilt analizi, anti-aging bakım, akne tedavisi\n   Açıklama: Sıla Bülbül Beauty Home, cilt yaşlanmasını geciktirmeye yönelik anti-aging bakımlar ve dermapen uygulamalarıyla öne çıkar. Cilt analizleri ve nemlendirme hizmetlerinin yanı sıra, akne sorunlarına yönelik profesyonel çözümler sunar. Yüz yüze gerçekleştirilen seanslarda, cildinize özel bakım yöntemleriyle doğal ve sağlıklı bir görünüm hedeflenir."
+      ],
+      "reference": "İyi değerlendirilen Cilt Bakım Merkezi seçenekleri arasında Sudabe Yılmaz Estetik Ve Güzellik ve Sıla Bülbül Beauty Home | Lazer Epilasyon, Microblading, Dudak Vitamin, Kirpik Lifting, Hydrafacial, Dudak Renklendirme öne çıkıyor (puanları 4.8-4.9/5 arasında), fiyatlar 592-1995 TL arasında değişiyor.",
+      "result_ids": [
+        152,
+        153
+      ],
+      "expected_business_ids": [
+        152,
+        153
+      ]
+    },
+    {
+      "id": "q051",
+      "question": "Evimde priz arızası var, bir elektrikçi lazım",
+      "category": "Elektrikçi",
+      "intent_tags": [
+        "simple"
+      ],
+      "answer": "Evinizdeki priz arızası için önerim KUZU ELEKTRİK. Güvenilir bir hizmet sunan bu işletme, priz ve anahtar montajı ile arıza tespiti konularında deneyimli bir ekibe sahip. Hızlı ve etkili çözümlerle sorunlarınızı yerinde halletmeyi amaçlıyor. Diğer seçenekler arasında Değişim Elektrik de dikkate değer; prizin yanı sıra jeneratör bakımı gibi ek hizmetler sunarak kapsamlı bir destek sağlıyor. İzmit Elektrikçi ise hızlı müdahale kabiliyetiyle öne çıkıyor ve güvenli elektrik kullanımı için gerekli kontrolleri yapıyor. Bu isimlerden birini tercih ederek rahatlıkla sorununuzu çözebilirsiniz.",
+      "contexts": [
+        "1. KUZU ELEKTRİK (Elektrikçi)\n   Fiyat aralığı: 2081-2725 TL\n   Puan: 4.8/5\n   Hizmetler: elektrik tesisatı kurulumu, priz/anahtar montajı, arıza tespiti ve onarımı\n   Açıklama: KUZU ELEKTRİK, elektrik tesisatı kurulumu ve arıza onarımında güvenilir bir seçenek olarak öne çıkıyor. Priz ve anahtar montajı hizmetleriyle ev ve iş yerlerindeki elektrik ihtiyaçlarınızı karşılıyor. Yüz yüze iletişimle detaylı tespit ve çözümler sunarak memnuniyet sağlamayı amaçlar.",
+        "2. Değişim Elektrik (Elektrikçi)\n   Fiyat aralığı: 1451-2093 TL\n   Puan: 4.8/5\n   Hizmetler: priz/anahtar montajı, jeneratör bakımı, arıza tespiti ve onarımı\n   Açıklama: Değişim Elektrik, priz ve anahtar montajının yanı sıra jeneratör bakımı ve elektrik arızalarında da destek verir. Alanında deneyimli ekipleri, sorunları hızlıca tespit edip onarır. Kısa sürede müdahale ile elektrik sorunlarınızı en aza indirir.",
+        "3. İzmit elektrikçi (Elektrikçi)\n   Fiyat aralığı: 1341-1894 TL\n   Puan: 4.8/5\n   Hizmetler: arıza tespiti ve onarımı, priz/anahtar montajı, topraklama kontrolü, kaçak akım kontrolü, aydınlatma montajı, elektrik tesisatı kurulumu\n   Açıklama: İzmit Elektrikçi, arıza tespiti ve priz montajı gibi temel elektrik işleri konusunda destek veriyor. Topraklama ve kaçak akım kontrolleri ile güvenli elektrik kullanımı sağlamaya odaklanıyor. Aydınlatma sistemlerinin kurulumu ve elektrik tesisatı döşemede deneyimli ekibiyle hizmetinizde. Hızlı müdahale isteyenler için ideal bir tercih olarak öne çıkıyor.",
+        "4. CAN ELEKTRİK (Elektrikçi)\n   Fiyat aralığı: 332-1283 TL\n   Puan: 4.8/5\n   Hizmetler: priz/anahtar montajı, arıza tespiti ve onarımı, topraklama kontrolü\n   Açıklama: CAN ELEKTRİK, priz ve anahtar montajı ile elektrik arızalarının tespit ve onarımında hizmet verir. Topraklama kontrolleri sayesinde elektrik tesisatınızın güvenliğini sağlamayı amaçlar. Müşterilerine hızlı ve güvenilir hizmet sunarak sorunları yerinde çözer.",
+        "5. Yahyakaptan Elektrikçi (Elektrikçi)\n   Fiyat aralığı: 2545-2950 TL\n   Puan: 4.5/5\n   Hizmetler: elektrik tesisatı kurulumu, arıza tespiti ve onarımı, topraklama kontrolü, kaçak akım kontrolü\n   Açıklama: Yahyakaptan Elektrikçi, elektrik tesisatı kurulumundan arıza onarımına kadar geniş kapsamlı hizmet veriyor. Topraklama ve kaçak akım kontrolleri ile güvenli elektrik kullanımına dikkat ediyor. Deneyimli kadrosuyla elektriksel sorunları çözmek için titiz ve kapsamlı çalışmalar yapıyor. Orta-yüksek fiyat aralığında kaliteli hizmet anlayışıyla müşterilerine ulaşıyor."
+      ],
+      "reference": "İyi değerlendirilen Elektrikçi seçenekleri arasında SİPAHİ ELEKTRİK ELEKTRONİK ve Özkardeş Elektrik öne çıkıyor (puanları 4.8-4.9/5 arasında), fiyatlar 688-2998 TL arasında değişiyor.",
+      "result_ids": [
+        322,
+        328,
+        314,
+        327,
+        318
+      ],
+      "expected_business_ids": [
+        313,
+        317,
+        316,
+        323,
+        314
+      ]
+    },
+    {
+      "id": "q008",
+      "question": "Kadın bir psikologla görüşmek istiyorum, uygun fiyatlı olsun",
+      "category": "Psikolog",
+      "intent_tags": [
+        "gender:female",
+        "price_preference:cheap",
+        "expected_empty"
+      ],
+      "answer": "Aramanıza uygun bir işletme bulamadım, farklı bir arama deneyebilirsin.",
+      "contexts": [],
+      "reference": "Psikolog kategorisinde hem kadın hem uygun fiyatlı (kategorinin en düşük çeyrek fiyat aralığı) kriterlerini birlikte karşılayan bir işletme bulunmuyor.",
+      "result_ids": [],
+      "expected_business_ids": []
+    }
+  ]
+}

@@ -10,10 +10,10 @@ WORKDIR /app
 
 # Önce bağımlılıkları çöz, katman cache'inden faydalan
 COPY pyproject.toml uv.lock ./
-RUN uv sync --frozen --no-install-project --no-dev
+RUN uv sync --frozen --no-install-project --no-default-groups
 
 COPY backend/ ./backend/
-RUN uv sync --frozen --no-dev
+RUN uv sync --frozen --no-default-groups
 
 EXPOSE 8000
 

@@ -1,7 +1,5 @@
 """API endpoint tanımları."""
 
-from datetime import date
-
 from fastapi import APIRouter, Depends, HTTPException
 from qdrant_client import AsyncQdrantClient
 from sqlalchemy import text
@@ -15,7 +13,7 @@ from backend.api.schemas import (
     RecommendationResponse,
     RecommendRequest,
 )
-from backend.config import get_settings
+from backend.config import DEMO_REFERENCE_TODAY, get_settings
 from backend.db.qdrant import get_qdrant_client
 from backend.db.session import get_db_session
 from backend.services.calendar import SlotNotFoundError, book_appointment
@@ -97,7 +95,7 @@ async def recommend(
         llm_provider=llm_provider,
         raw_query=request.query,
         user_id=request.user_id,
-        today=date.today(),
+        today=DEMO_REFERENCE_TODAY,
         limit=request.limit,
         offset=request.offset,
     )
