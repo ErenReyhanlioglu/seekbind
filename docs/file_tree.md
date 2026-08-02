@@ -33,6 +33,7 @@ seekbind/
 │   ├── database_schema.md        — ER diyagramı + tasarım kararları
 │   ├── prompts.md                — backend/prompts/ dosyalarının indeksi
 │   ├── ragas_evaluation.md       — RAGAS 2×2 ablasyon sonuçları
+│   ├── request_lifecycle.md      — /recommend istek yaşam döngüsü (mermaid sequence diyagramları)
 │   └── adr/                      — mimari kararlar (ADR), her karar kendi dosyasında
 │       ├── README.md             — ADR indeksi + format açıklaması
 │       └── 0000-...-0027-...md   — 28 numaralı ADR dosyası
