@@ -14,6 +14,8 @@
 
 SeekBind, [DateBind](https://datebind.com) randevu platformu için geliştirilen yapay zeka destekli bir hizmet arama ve öneri sistemidir. Kullanıcılar doğal dil ile ihtiyaçlarını ifade ederek *"Yarın sabah için İzmit'te uygun fiyatlı bir dişçi istiyorum"* kendilerine en uygun hizmet sağlayıcıları ve müsait randevu slotlarını görebilir.
 
+![SeekBind Demo](docs/images/seekbind-demo.png)
+
 ## Nasıl Çalışır?
 
 1. Kullanıcı ihtiyacını serbest metin olarak yazar
@@ -126,8 +128,9 @@ beklenen bir donanım kısıtı, mimari farkı değil. Detay için bkz.
 - [uv](https://docs.astral.sh/uv/) — bağımlılık/ortam yönetimi
 - Git + GitHub
 
-**Frontend** (planlanan — Faz 7)
-- React ([21st.dev](https://21st.dev/) MCP ile üretilecek)
+**Frontend** (demo amaçlı, sadece localde çalışır)
+- React 19 + TypeScript + [Vite](https://vite.dev/) + Tailwind CSS v4
+- Bazı bileşenler [21st.dev](https://21st.dev/) MCP'den uyarlandı
 
 **Veri Toplama**
 - [SerpAPI](https://serpapi.com/) — Google Maps üzerinden gerçek işletme verisi
@@ -163,11 +166,22 @@ uv run python -m scripts.generate_synthetic  # kural tabanlı zenginleştirme
 uv run python -m scripts.enrich_with_llm     # LLM ile açıklama/keyword üretimi
 ```
 
+**Frontend demo'sunu çalıştırmak için** (opsiyonel, sadece localde):
+
+```bash
+# Backend'i başlat (ayrı bir terminalde)
+uv run uvicorn backend.main:app --reload
+
+# Frontend'i başlat
+cd frontend
+cp .env.example .env
+npm install
+npm run dev  # http://localhost:5173
+```
+
 > **Not:** Backend API (arama, öneri, randevu) uçtan uca çalışır durumda ve
 > entegrasyon testleriyle doğrulanmış — bkz. [docs/roadmap.md](docs/roadmap.md).
 > Proje dosya yapısına genel bakış için bkz. [docs/file_tree.md](docs/file_tree.md).
-> Frontend henüz geliştirilmedi (planlanan). Yukarıdaki adımlar veri
-> hazırlama pipeline'ını kapsar.
 
 ## Dokümantasyon
 
