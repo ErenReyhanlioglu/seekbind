@@ -53,7 +53,7 @@ test kanıtı ve "SeekBind 2.0" notu için bkz. [ADR-0017](adr/0017-tool-calling
 
 ## Faz 7 — Frontend
 
-- ⬜ `feature/frontend-mvp` — React arayüzü (backend stabil olduktan sonra)
+- ✅ `feat/frontend-mvp` — demo arayüzü: React 19 + TypeScript + Vite + Tailwind v4, sadece localde çalışır (deploy edilmiyor). Hero arama → aramadan sonra kompakt bara geçiş, AI Önerisi kutusu (`recommendation` metni), işletme kart grid'i (`weighted_rating`, adres, fiyat aralığı, `tags`'ten rozetler). Backend'e `CORSMiddleware` (`CORS_ALLOWED_ORIGINS`, config'ten) eklendi. `user_id` için gerçek bir auth akışı yok — DB'deki tek referans test kullanıcısı (`scripts/seed_test_user.py`, `id=1`) `VITE_DEMO_USER_ID` ile kullanılıyor. Bazı bileşenler (AI kutusunun temeli) 21st.dev MCP katalogundan uyarlandı, geri kalanı elle yazıldı. **Faz 7 tamamlandı.**
 
 ---
 

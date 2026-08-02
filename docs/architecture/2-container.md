@@ -13,7 +13,7 @@ C4Container
     Person(user, "Kullanıcı")
 
     System_Boundary(seekbind, "SeekBind") {
-        Container(frontend, "Frontend", "React (planlanan)", "Henüz geliştirilmedi — Faz 7")
+        Container(frontend, "Frontend", "React + Vite + TS + Tailwind", "Demo arayüzü, sadece localde çalışır (deploy edilmiyor)")
         Container(api, "Backend API", "Python, FastAPI", "Arama, öneri ve randevu uç noktaları")
         ContainerDb(postgres, "PostgreSQL", "İlişkisel DB", "İşletme, randevu slotu, kullanıcı profili verisi")
         ContainerDb(qdrant, "Qdrant", "Vektör DB", "İşletme açıklamalarının embedding'leri")
@@ -26,9 +26,9 @@ C4Container
     System_Ext(langfuse, "Langfuse")
     System_Ext(datebind, "DateBind")
 
-    Rel(user, frontend, "Kullanır (planlanan)")
-    Rel(frontend, api, "HTTP/JSON (planlanan)")
-    Rel(user, api, "HTTP/JSON (şu an frontend yokken doğrudan)")
+    Rel(user, frontend, "Kullanır")
+    Rel(frontend, api, "HTTP/JSON")
+    Rel(user, api, "HTTP/JSON (doğrudan — örn. API dokümantasyonu, test)")
 
     Rel(api, postgres, "SQL — SQLAlchemy async")
     Rel(api, qdrant, "Vektör arama")
@@ -42,9 +42,11 @@ C4Container
 
 ## Notlar
 
-- **Frontend "planlanan" durumda** — kod yok, sadece hedeflenen teknoloji
-  (React) gösteriliyor. Bu satır Faz 7 başlayınca gerçek bir container'a
-  dönüşecek.
+- **Frontend sadece localde çalışan bir demo** — production'a deploy
+  edilmiyor, bu yüzden `DateBind`'a yönlendirme dışında ayrı bir dış
+  sistemle entegrasyonu yok. Kullanıcı kimliği için gerçek bir auth akışı
+  da yok — DB'deki tek referans test kullanıcısı kullanılıyor (bkz.
+  `docs/roadmap.md` Faz 7).
 - **Backend API tek bir container** — mono-repo, tek FastAPI uygulaması;
   ayrı bir mikroservis mimarisi yok. İçindeki modüler bölünme (RAG
   service, search service, calendar service vb.) bir sonraki seviyede
